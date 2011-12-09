@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Pushpop Demo</title>
+	<link rel="stylesheet" type="text/css" href="bootstrap.css"/>
+	<link rel="stylesheet" type="text/css" href="pushpop.css"/>
+	<style type="text/css">
+    #slideHorizontal {
+      background-color: #f00;
+    }
+    #slideVertical {
+      background-color: #0f0;
+    }
+    #flipHorizontal {
+      background-color: #00f;
+    }
+    #flipVertical {
+      background-color: #ff0;
+    }
+    #crossFade {
+      background-color: #f0f;
+    }
+    #zoom {
+      background-color: #0ff;
+    }
+	</style>
+	<script type="text/javascript" src="jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="pushpop.js"></script>
+</head>
+<body>
+  <div class="view" id="root">
+    <a class="btn push slideHorizontal" href="#slideHorizontal">Slide Horizontal</a>
+    <a class="btn push slideVertical" href="#slideVertical">Slide Vertical</a>
+    <a class="btn push flipHorizontal" href="#flipHorizontal">Flip Horizontal</a>
+    <a class="btn push flipVertical" href="#flipVertical">Flip Vertical</a>
+    <a class="btn push crossFade" href="#crossFade">Cross Fade</a>
+    <a class="btn push zoom" href="#zoom">Zoom</a>
+    
+    <!-- IFrames not yet supported -->
+    <!--<a class="btn push slideHorizontal" href="slideHorizontal.html">Slide Horizontal (IFrame)</a>
+    <a class="btn push slideVertical" href="slideVertical.html">Slide Vertical (IFrame)</a>-->
+  </div>
+  <div id="slideHorizontal" class="view">
+    <a class="btn pop slideHorizontal" href="#">Back</a>
+  </div>
+  <div id="slideVertical" class="view">
+    <a class="btn pop slideVertical" href="#">Back</a>
+  </div>
+  <div id="flipHorizontal" class="view">
+    <a class="btn pop flipHorizontal" href="#">Back</a>
+  </div>
+  <div id="flipVertical" class="view">
+    <a class="btn pop flipVertical" href="#">Back</a>
+  </div>
+  <div id="crossFade" class="view">
+    <a class="btn pop crossFade" href="#">Back</a>
+  </div>
+  <div id="zoom" class="view">
+    <a class="btn pop zoom" href="#">Back</a>
+  </div>
+</body>
+</html>
