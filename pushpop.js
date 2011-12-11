@@ -13,9 +13,9 @@ var Pushpop = {
         }
         
         $activeViewElement.removeClass('active push pop transition ' +
-          'slideHorizontal slideVertical flipHorizontal flipVertical crossFade zoom');
+          'slideHorizontal slideVertical flipHorizontal flipVertical cardSwap crossFade zoom');
         $newActiveViewElement.removeClass('push pop transition ' +
-          'slideHorizontal slideVertical flipHorizontal flipVertical crossFade zoom');
+          'slideHorizontal slideVertical flipHorizontal flipVertical cardSwap crossFade zoom');
         
         $newActiveViewElement.addClass('active')
           .unbind('webkitTransitionEnd').unbind('oTransitionEnd').unbind('transitionend');
@@ -95,6 +95,10 @@ var Pushpop = {
         else if (transition === 'flipVertical') {
           transition = 'slideVertical';
         }
+        
+        else if (transition === 'cardSwap') {
+          transition = 'zoom';
+        }
       }
       
       $activeViewElement.addClass(transition + ' push');
@@ -151,6 +155,10 @@ var Pushpop = {
 
         else if (transition === 'flipVertical') {
           transition = 'slideVertical';
+        }
+        
+        else if (transition === 'cardSwap') {
+          transition = 'zoom';
         }
       }
       
@@ -250,6 +258,10 @@ $(function() {
     
     else if ($this.hasClass('flipVertical')) {
       transition = 'flipVertical';
+    }
+    
+    else if ($this.hasClass('cardSwap')) {
+      transition = 'cardSwap';
     }
     
     else if ($this.hasClass('crossFade')) {
