@@ -5,8 +5,9 @@ var Pushpop = {
       case 'webkitTransitionEnd':
       case 'oTransitionEnd':
       case 'transitionend':
+        var activeView = Pushpop.activeView();
         var $activeViewElement = $('.view.active');
-        var $newActiveViewElement = $(Pushpop.activeView().element);
+        var $newActiveViewElement = $(activeView.element);
         
         if (!Pushpop.isGecko()) {
           $(document.documentElement).removeClass('transition');
@@ -20,6 +21,10 @@ var Pushpop = {
         $newActiveViewElement.addClass('active')
           .unbind('webkitTransitionEnd').unbind('oTransitionEnd').unbind('transitionend');
         
+        $(document.body).animate({
+          scrollLeft: activeView.scrollX,
+          scrollTop: activeView.scrollY
+        }, 400);
         break;
       default:
         break;
@@ -83,99 +88,106 @@ var Pushpop = {
     
     views.push(view);
     
-    if (!view.isRoot) {
-      var $activeViewElement = $(activeView.element);
-      var $newActiveViewElement = $(newActiveView.element);
-      
-      if (isGecko) {
-        if (transition === 'flipHorizontal') {
-          transition = 'slideHorizontal';
-        }
+    if (view.isRoot) return;
 
-        else if (transition === 'flipVertical') {
-          transition = 'slideVertical';
-        }
-        
-        else if (transition === 'cardSwap') {
-          transition = 'zoom';
-        }
+    activeView.scrollX = window.scrollX;
+    activeView.scrollY = window.scrollY;
+    
+    window.scrollTo(0, 0);
+    
+    var $activeViewElement = $(activeView.element);
+    var $newActiveViewElement = $(newActiveView.element);
+    
+    if (isGecko) {
+      if (transition === 'flipHorizontal') {
+        transition = 'slideHorizontal';
+      }
+
+      else if (transition === 'flipVertical') {
+        transition = 'slideVertical';
       }
       
-      $activeViewElement.addClass(transition + ' push');
-      $newActiveViewElement.addClass(transition + ' push');
-      
-      $newActiveViewElement.bind('webkitTransitionEnd oTransitionEnd transitionend', this.handleEvent);
-      
-      setTimeout(function() {
-        if (!isGecko) {
-          $(document.documentElement).addClass('transition');
-        }
-        
-        $activeViewElement.addClass('transition');
-        $newActiveViewElement.addClass('transition');
-      }, isGecko ? 100 : 0);
+      else if (transition === 'cardSwap') {
+        transition = 'zoom';
+      }
     }
+    
+    $activeViewElement.addClass(transition + ' push');
+    $newActiveViewElement.addClass(transition + ' push');
+    
+    $newActiveViewElement.bind('webkitTransitionEnd oTransitionEnd transitionend', this.handleEvent);
+    
+    setTimeout(function() {
+      if (!isGecko) {
+        $(document.documentElement).addClass('transition');
+      }
+      
+      $activeViewElement.addClass('transition');
+      $newActiveViewElement.addClass('transition');
+    }, isGecko ? 100 : 0);
   },
   pop: function(viewOrTransition, transition) {
     var views = this.views;
     var isGecko = this.isGecko();
     var activeView, newActiveView;
     
-    if (views.length > 1) {
-      activeView = this.activeView();
-      
-      if (typeof viewOrTransition === 'string') {
-        transition = viewOrTransition;
-      } else {
-        newActiveView = viewOrTransition;
-      }
+    if (views.length <= 1) return;
     
-      if (newActiveView) {
-        var isOnStack = this.getView(newActiveView) !== null;
+    window.scrollTo(0, 0);
     
-        if (isOnStack) {
-          while (this.activeView() !== newActiveView) {
-            views.pop();
-          }
-        }
-      }
+    activeView = this.activeView();
     
-      else {
-        views.pop();
-        newActiveView = this.activeView();
-      }
-      
-      var $activeViewElement = $(activeView.element);
-      var $newActiveViewElement = $(newActiveView.element);
-      
-      if (isGecko) {
-        if (transition === 'flipHorizontal') {
-          transition = 'slideHorizontal';
-        }
-
-        else if (transition === 'flipVertical') {
-          transition = 'slideVertical';
-        }
-        
-        else if (transition === 'cardSwap') {
-          transition = 'zoom';
-        }
-      }
-      
-      $activeViewElement.addClass(transition + ' pop');
-      $newActiveViewElement.addClass(transition + ' pop');
-      
-      $newActiveViewElement.bind('webkitTransitionEnd oTransitionEnd transitionend', this.handleEvent);
-      
-      setTimeout(function() {
-        if (!isGecko) {
-          $(document.documentElement).addClass('transition');
-        }
-        
-        $activeViewElement.addClass('transition');
-        $newActiveViewElement.addClass('transition');
-      }, isGecko ? 100 : 0);
+    if (typeof viewOrTransition === 'string') {
+      transition = viewOrTransition;
+    } else {
+      newActiveView = viewOrTransition;
     }
+  
+    if (newActiveView) {
+      var isOnStack = this.getView(newActiveView) !== null;
+  
+      if (isOnStack) {
+        while (this.activeView() !== newActiveView) {
+          views.pop();
+        }
+      }
+    }
+  
+    else {
+      views.pop();
+      newActiveView = this.activeView();
+    }
+    
+    var $activeViewElement = $(activeView.element);
+    var $newActiveViewElement = $(newActiveView.element);
+    
+    if (isGecko) {
+      if (transition === 'flipHorizontal') {
+        transition = 'slideHorizontal';
+      }
+
+      else if (transition === 'flipVertical') {
+        transition = 'slideVertical';
+      }
+      
+      else if (transition === 'cardSwap') {
+        transition = 'zoom';
+      }
+    }
+    
+    $activeViewElement.addClass(transition + ' pop');
+    $newActiveViewElement.addClass(transition + ' pop');
+    
+    $newActiveViewElement.bind('webkitTransitionEnd oTransitionEnd transitionend', this.handleEvent);
+    
+    setTimeout(function() {
+      if (!isGecko) {
+        $(document.documentElement).addClass('transition');
+      }
+      
+      $activeViewElement.addClass('transition');
+      $newActiveViewElement.addClass('transition');
+    }, isGecko ? 100 : 0);
   }
 };
 
@@ -222,13 +234,15 @@ Pushpop.View = function(elementOrHref) {
 Pushpop.View.prototype = {
   element: null,
   isRoot: false,
-  href: ''
+  href: '',
+  scrollX: 0,
+  scrollY: 0
 };
 
 $(function() {
   
   // Set the first <div class="view"/> child of the document body as the root View.
-  Pushpop.push(new Pushpop.View($('body > div.view:first-child').addClass('active')));
+  Pushpop.push(new Pushpop.View($('body > div.view:first').addClass('active')));
   
   // Attach all Views as immediate children of the document body.
   var body = $(document.body);
@@ -276,14 +290,14 @@ $(function() {
       if (isPop && href === '#') {
         Pushpop.pop(transition);
       }
-    
+  
       else {
         var view = Pushpop.getView(href) || new Pushpop.View(href);
-      
+    
         if (isPop) {
           Pushpop.pop(view, transition);
         }
-      
+    
         else {
           Pushpop.push(view, transition);
         }
