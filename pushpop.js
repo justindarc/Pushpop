@@ -1,3 +1,5 @@
+'use strict';
+
 var Pushpop = {
   views: [],
   handleEvent: function(evt) {
@@ -17,14 +19,12 @@ var Pushpop = {
           'slideHorizontal slideVertical flipHorizontal flipVertical cardSwap crossFade zoom');
         $newActiveViewElement.removeClass('push pop transition ' +
           'slideHorizontal slideVertical flipHorizontal flipVertical cardSwap crossFade zoom');
-        
         $newActiveViewElement.addClass('active')
           .unbind('webkitTransitionEnd').unbind('oTransitionEnd').unbind('transitionend');
         
-        $(document.body).animate({
-          scrollLeft: activeView.scrollX,
-          scrollTop: activeView.scrollY
-        }, 400);
+        setTimeout(function() {
+          window.scrollTo(activeView.scrollX, activeView.scrollY);
+        }, 100);
         break;
       default:
         break;
@@ -44,6 +44,43 @@ var Pushpop = {
     }
     
     return this._isGecko = false;
+  },
+  animateScrollTo: function(x, y, milliseconds, callback) {
+    var stepCount = milliseconds / 15;
+    var incrementX = (x - window.pageXOffset) / stepCount;
+    var incrementY = (y - window.pageYOffset) / stepCount;
+    
+    var interval = setInterval(function() {
+      var currentX = window.pageXOffset + incrementX;
+      var currentY = window.pageYOffset + incrementY;
+      
+      if (incrementX > 0) {
+        if (currentX > x) currentX = x;
+      } else {
+        if (currentX < x) currentX = x;
+      }
+
+      if (incrementY > 0) {
+        if (currentY > y) currentY = y;
+      } else {
+        if (currentY < y) currentY = y;
+      }
+      
+      if (currentX === x && currentY === y) {
+        clearInterval(interval);
+        
+        if (callback && typeof callback === 'function') {
+          setTimeout(function() {
+            callback();
+          }, 100);
+        }
+      }
+      
+      window.scroll(currentX, currentY);
+      
+      incrementX *= 0.925;
+      incrementY *= 0.925;
+    }, 15);
   },
   activeView: function() {
     var views = this.views;
@@ -77,7 +114,7 @@ var Pushpop = {
   push: function(view, transition) {
     var views = this.views;
     var isGecko = this.isGecko();
-    var activeView, newActiveView;
+    var transition, activeView, newActiveView;
     
     view.isRoot = views.length === 0;
     
@@ -92,8 +129,6 @@ var Pushpop = {
 
     activeView.scrollX = window.scrollX;
     activeView.scrollY = window.scrollY;
-    
-    window.scrollTo(0, 0);
     
     var $activeViewElement = $(activeView.element);
     var $newActiveViewElement = $(newActiveView.element);
@@ -112,24 +147,28 @@ var Pushpop = {
       }
     }
     
-    $activeViewElement.addClass(transition + ' push');
-    $newActiveViewElement.addClass(transition + ' push');
-    
     $newActiveViewElement.bind('webkitTransitionEnd oTransitionEnd transitionend', this.handleEvent);
     
     setTimeout(function() {
-      if (!isGecko) {
-        $(document.documentElement).addClass('transition');
-      }
-      
-      $activeViewElement.addClass('transition');
-      $newActiveViewElement.addClass('transition');
-    }, isGecko ? 100 : 0);
+      window.scrollTo(0, 0);
+
+      $activeViewElement.addClass(transition + ' push');
+      $newActiveViewElement.addClass(transition + ' push');
+
+      setTimeout(function() {
+        if (!isGecko) {
+          $(document.documentElement).addClass('transition');
+        }
+
+        $activeViewElement.addClass('transition');
+        $newActiveViewElement.addClass('transition');
+      }, isGecko ? 100 : 0);
+    }, 100);
   },
   pop: function(viewOrTransition, transition) {
     var views = this.views;
     var isGecko = this.isGecko();
-    var activeView, newActiveView;
+    var transition, activeView, newActiveView;
     
     if (views.length <= 1) return;
     

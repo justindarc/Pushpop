@@ -8,18 +8,20 @@ html.transition, html.transition > body {
 
 html.transition .topbar {
   z-index: 999998;
+  -webkit-transform-style: preserve-3d;
 }
 
 .topbar ~ .view {
-  margin-top: 40px;
+  top: 40px;
 }
 
 .view {
   border: 0;
   width: 100%;
-  height: 100%;
+  min-height: 100%;
   display: none;
   position: relative;
+  -webkit-transform-style: preserve-3d;
 }
 
 .view.active {
@@ -27,6 +29,8 @@ html.transition .topbar {
 }
 
 .view.push, .view.pop {
+  min-height: 0;
+  height: 100%;
   display: block;
   position: absolute;
   overflow: hidden;
@@ -35,10 +39,10 @@ html.transition .topbar {
 
 /* slideHorizontal */
 .view.slideHorizontal {
-  -webkit-transition: all 0.5s ease;
-  -moz-transition: all 0.5s ease;
-  -o-transition: all 0.5s ease;
-  transition: all 0.5s ease;
+  -webkit-transition: -webkit-transform 0.5s ease;
+  -moz-transition: -moz-transform 0.5s ease;
+  -o-transition: -o-transform 0.5s ease;
+  transition: transform 0.5s ease;
 }
 
 .view.push.slideHorizontal {
@@ -99,10 +103,10 @@ html.transition .topbar {
 
 /* slideVertical */
 .view.slideVertical {
-  -webkit-transition: all 0.5s ease;
-  -moz-transition: all 0.5s ease;
-  -o-transition: all 0.5s ease;
-  transition: all 0.5s ease;
+  -webkit-transition: -webkit-transform 0.5s ease;
+  -moz-transition: -moz-transform 0.5s ease;
+  -o-transition: -o-transform 0.5s ease;
+  transition: transform 0.5s ease;
 }
 
 .view.push.slideVertical {
@@ -129,18 +133,18 @@ html.transition .topbar {
 }
 
 .view.push.slideVertical.active.transition {
-  -webkit-transform: translate3d(0, 0, 0);
-  -moz-transform: translateY(0);
-  -o-transform: translateY(0);
-  transform: translateY(0);
+  -webkit-transform: translate3d(0, 1%, 0);
+  -moz-transform: translateY(1%);
+  -o-transform: translateY(1%);
+  transform: translateY(1%);
 }
 
 .view.pop.slideVertical {
   z-index: 0;
-  -webkit-transform: translate3d(0, 0, 0);
-  -moz-transform: translateY(0);
-  -o-transform: translateY(0);
-  transform: translateY(0);
+  -webkit-transform: translate3d(0, 1%, 0);
+  -moz-transform: translateY(1%);
+  -o-transform: translateY(1%);
+  transform: translateY(1%);
 }
 
 .view.pop.slideVertical.transition {
@@ -167,8 +171,12 @@ html.transition .topbar {
 
 /* flipHorizontal (WebKit-only) */
 .view.flipHorizontal {
-  -webkit-transition: all 1s ease;
-  transition: all 1s ease;
+  -webkit-transition-property: -webkit-transform, -webkit-box-shadow;
+  -webkit-transition-duration: 1s, 1s;
+  -webkit-transition-timing-function: ease, ease;
+  transition-property: transform, box-shadow;
+  transition-duration: 1s, 1s;
+  transition-timing-function: ease, ease;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   z-index: 999999;
@@ -232,8 +240,12 @@ html.transition .topbar {
 
 /* flipVertical (WebKit-only) */
 .view.flipVertical {
-  -webkit-transition: all 1s ease;
-  transition: all 1s ease;
+  -webkit-transition-property: -webkit-transform, -webkit-box-shadow;
+  -webkit-transition-duration: 1s, 1s;
+  -webkit-transition-timing-function: ease, ease;
+  transition-property: transform, box-shadow;
+  transition-duration: 1s, 1s;
+  transition-timing-function: ease, ease;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
 }
@@ -296,8 +308,12 @@ html.transition .topbar {
 
 /* cardSwap (WebKit-only) */
 .view.cardSwap {
-  -webkit-transition: all 1s cubic-bezier(0.25, 1, 0.75, 0.5);
-  transition: all 1s cubic-bezier(0.25, 1, 0.75, 0.5);
+  -webkit-transition-property: -webkit-transform, -webkit-box-shadow;
+  -webkit-transition-duration: 1s, 1s;
+  -webkit-transition-timing-function: cubic-bezier(0.25, 1, 0.75, 0.5), cubic-bezier(0.25, 1, 0.75, 0.5);
+  transition-property: transform, box-shadow;
+  transition-duration: 1s, 1s;
+  transition-timing-function: cubic-bezier(0.25, 1, 0.75, 0.5), cubic-bezier(0.25, 1, 0.75, 0.5);
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
 }
@@ -403,9 +419,15 @@ html.transition .topbar {
 
 /* zoom */
 .view.zoom {
-  -webkit-transition: all 0.5s ease;
-  -moz-transition: all 0.5s ease;
-  transition: all 0.5s ease;
+  -webkit-transition-property: -webkit-transform, opacity;
+  -webkit-transition-duration: 0.5s, 0.5s;
+  -webkit-transition-timing-function: ease, ease;
+  -moz-transition-property: -moz-transform, opacity;
+  -moz-transition-duration: 0.5s;
+  -moz-transition-timing-function: ease;
+  transition-property: transform, opacity;
+  transition-duration: 0.5s;
+  transition-timing-function: ease;
   -webkit-box-shadow: 0 2px 12px rgba(0, 0, 0, 1);
   /* Disabled for performance on Gecko */
   /*-moz-box-shadow: 0 2px 12px rgba(0, 0, 0, 1);
@@ -416,9 +438,9 @@ html.transition .topbar {
 .view.push.zoom {
   z-index: 1;
   opacity: 0;
-  -webkit-transform: scale3d(0, 0, 1);
-  -moz-transform: scale(0);
-  transform: scale(0);
+  -webkit-transform: scale3d(0.5, 0.5, 1);
+  -moz-transform: scale(0.5);
+  transform: scale(0.5);
 }
 
 .view.push.zoom.transition {
@@ -429,7 +451,7 @@ html.transition .topbar {
 }
 
 .view.push.zoom.active {
-  z-index: 0;
+  z-index: 2;
   opacity: 1;
   -webkit-transform: scale3d(1, 1, 1);
   -moz-transform: scale(1);
@@ -438,17 +460,17 @@ html.transition .topbar {
 
 .view.push.zoom.active.transition {
   opacity: 0;
-  -webkit-transform: scale3d(2, 2, 1);
-  -moz-transform: scale(2);
-  transform: scale(2);
+  -webkit-transform: scale3d(1.5, 1.5, 1);
+  -moz-transform: scale(1.5);
+  transform: scale(1.5);
 }
 
 .view.pop.zoom {
-  z-index: 0;
+  z-index: 2;
   opacity: 0;
-  -webkit-transform: scale3d(2, 2, 1);
-  -moz-transform: scale(2);
-  transform: scale(2);
+  -webkit-transform: scale3d(1.5, 1.5, 1);
+  -moz-transform: scale(1.5);
+  transform: scale(1.5);
 }
 
 .view.pop.zoom.transition {
@@ -468,7 +490,7 @@ html.transition .topbar {
 
 .view.pop.zoom.active.transition {
   opacity: 0;
-  -webkit-transform: scale3d(0, 0, 1);
-  -moz-transform: scale(0);
-  transform: scale(0);
+  -webkit-transform: scale3d(0.5, 0.5, 1);
+  -moz-transform: scale(0.5);
+  transform: scale(0.5);
 }
