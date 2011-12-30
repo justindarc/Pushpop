@@ -4,11 +4,12 @@ html, body {
 
 html.transition, html.transition > body {
   overflow: hidden;
+  -webkit-transform-style: preserve-3d;
+  -webkit-transform: perspective(2000) translate3d(0, 0, 1px);
 }
 
 html.transition .topbar {
   z-index: 999998;
-  -webkit-transform-style: preserve-3d;
 }
 
 .topbar ~ .view {
@@ -21,7 +22,6 @@ html.transition .topbar {
   min-height: 100%;
   display: none;
   position: relative;
-  -webkit-transform-style: preserve-3d;
 }
 
 .view.active {
