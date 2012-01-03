@@ -292,6 +292,23 @@ Pushpop.View.prototype = {
   lastTransition: 'slideHorizontal'
 };
 
+Pushpop.TableView = function(element) {
+  var $element = $(element);
+  
+  if ($element.size() === 1) {
+    $element.data('tableview', this);
+    
+    // Required to enable :active pseudo-state to occur.
+    $element.bind('touchstart', function() {});
+    
+    this.element = $element.get(0);
+  }
+};
+
+Pushpop.TableView.prototype = {
+  element: null
+};
+
 $(function() {
   
   var $topbar = Pushpop.$topbar = $('.topbar');
@@ -306,6 +323,11 @@ $(function() {
   
   $('.view').each(function(index, element) {
     body.append(element);
+  });
+  
+  // Initialize all TableViews.
+  $('.tableview').each(function(index, element) {
+    var tableView = new Pushpop.TableView(element);
   });
   
   // Attach a click event handler to all anchor links set up for push or pop.

@@ -8,6 +8,7 @@ ul.tableview {
   margin-left: 0;
   font-size: 16px;
   margin: 1em 1em 0;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 ul.tableview:after {
@@ -67,15 +68,22 @@ ul.tableview > li:active {
 
 ul.tableview > li:active, ul.tableview > li > a:active {
   background: #058cf5; /* Old browsers */
-  background: -moz-linear-gradient(top,  rgba(5,140,245,1) 0%, rgba(1,93,230,1) 100%); /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(5,140,245,1)), color-stop(100%,rgba(1,93,230,1))); /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(top,  rgba(5,140,245,1) 0%,rgba(1,93,230,1) 100%); /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(top,  rgba(5,140,245,1) 0%,rgba(1,93,230,1) 100%); /* Opera 11.10+ */
-  background: -ms-linear-gradient(top,  rgba(5,140,245,1) 0%,rgba(1,93,230,1) 100%); /* IE10+ */
-  background: linear-gradient(top,  rgba(5,140,245,1) 0%,rgba(1,93,230,1) 100%); /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#058cf5', endColorstr='#015de6',GradientType=0 ); /* IE6-9 */
+  background: -moz-linear-gradient(top, rgb(5, 140, 245) 0%, rgb(1, 93, 230) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgb(5, 140, 245)), color-stop(100%, rgb(1, 93, 230))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, rgb(5, 140, 245) 0%, rgb(1, 93, 230) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, rgb(5, 140, 245) 0%, rgb(1, 93, 230) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, rgb(5, 140, 245) 0%, rgb(1, 93, 230) 100%); /* IE10+ */
+  background: linear-gradient(top, rgb(5, 140, 245) 0%, rgb(1, 93, 230) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#058cf5', endColorstr='#015de6', GradientType=0); /* IE6-9 */
   color: #fff;
   text-shadow: none;
+}
+
+ul.tableview > li.header:active, ul.tableview > li.header > a:active {
+  background: none;
+  border-top: none;
+  color: #4c566c;
+  text-shadow: #fff 0 1px 0;
 }
 
 ul.tableview > li > a {
@@ -87,7 +95,7 @@ ul.tableview > li > a {
   padding: 0.7em 0.65em 0.85em;
 }
 
-ul.tableview > li.header {
+ul.tableview > li.header, ul.tableview > li.header > a {
   background-color: transparent;
   border: none;
   color: #4c566c;
@@ -115,13 +123,13 @@ ul.tableview .detail-disclosure-button:before {
   display: inline-block;
   float: right;
   background: #058cf5; /* Old browsers */
-  background: -moz-linear-gradient(top,  rgba(5,140,245,1) 0%, rgba(1,93,230,1) 100%); /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(5,140,245,1)), color-stop(100%,rgba(1,93,230,1))); /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(top,  rgba(5,140,245,1) 0%,rgba(1,93,230,1) 100%); /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(top,  rgba(5,140,245,1) 0%,rgba(1,93,230,1) 100%); /* Opera 11.10+ */
-  background: -ms-linear-gradient(top,  rgba(5,140,245,1) 0%,rgba(1,93,230,1) 100%); /* IE10+ */
-  background: linear-gradient(top,  rgba(5,140,245,1) 0%,rgba(1,93,230,1) 100%); /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#058cf5', endColorstr='#015de6',GradientType=0 ); /* IE6-9 */
+  background: -moz-linear-gradient(top, rgb(5, 140, 245) 0%, rgb(1, 93, 230) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgb(5, 140, 245)), color-stop(100%, rgb(1, 93, 230))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, rgb(5, 140, 245) 0%, rgb(1, 93, 230) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, rgb(5, 140, 245) 0%, rgb(1, 93, 230) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, rgb(5, 140, 245) 0%, rgb(1, 93, 230) 100%); /* IE10+ */
+  background: linear-gradient(top, rgb(5, 140, 245) 0%, rgb(1, 93, 230) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#058cf5', endColorstr='#015de6', GradientType=0); /* IE6-9 */
   width: 1.2em;
   height: 1.2em;
   border: 0.15em solid #fff;
@@ -157,4 +165,9 @@ ul.tableview .checkmark:after {
   -moz-transform: rotate(-50deg);
   -o-transform: rotate(-50deg);
   transform: rotate(-50deg);
+}
+
+ul.tableview .checkmark:active:after {
+  border-left-color: #fff;
+  border-bottom-color: #fff;
 }
