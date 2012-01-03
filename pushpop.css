@@ -43,6 +43,7 @@ html.transition .topbar {
 }
 
 .view {
+  background-color: #dee0e6;
   border: 0;
   width: 100%;
   min-height: 100%;

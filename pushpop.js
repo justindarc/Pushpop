@@ -168,7 +168,7 @@ var Pushpop = {
 
         $activeViewElement.addClass('transition');
         $newActiveViewElement.addClass('transition');
-      }, isGecko ? 100 : 0);
+      }, 100);
     }, 100);
   },
   pop: function(viewOrTransition, transition) {
@@ -239,7 +239,7 @@ var Pushpop = {
       
       $activeViewElement.addClass('transition');
       $newActiveViewElement.addClass('transition');
-    }, isGecko ? 100 : 0);
+    }, 100);
   }
 };
 
@@ -294,12 +294,57 @@ Pushpop.View.prototype = {
 
 Pushpop.TableView = function(element) {
   var $element = $(element);
+  var $body = $(document.body);
   
   if ($element.size() === 1) {
     $element.data('tableview', this);
     
     // Required to enable :active pseudo-state to occur.
     $element.bind('touchstart', function() {});
+    
+    // Set up picker cells.
+    $element.children('li.picker-cell').each(function(index, element) {
+      var $element = $(element);
+      var $pickerTableView = $element.children('ul.tableview:first');
+      
+      if ($pickerTableView.size() !== 1) return;
+      
+      var name = $element.attr('data-name');
+      var defaultText = $element.attr('data-default-text');
+      var defaultValue = $element.attr('data-default-value') || defaultText;
+      
+      var $view = $('<div class="view"/>');
+      var $span = $('<span>' + defaultText + '</span>');
+      var $input = $('<input type="hidden" name="' + name + '" value="' + defaultValue + '"/>');
+      
+      $view.append($pickerTableView);
+      $body.append($view);
+      $element.append($span).append($input);
+      
+      $pickerTableView.delegate('li', 'click', function(evt) {
+        var $this = $(this);
+        
+        if ($this.hasClass('header')) return;
+        
+        var text = $this.text();
+        var value = $this.attr('data-value') || text;
+        
+        $span.html(text);
+        $input.val(value);
+        
+        Pushpop.pop();
+      });
+      
+      $element.data('picker-view', new Pushpop.View($view));
+      $element.data('picker-selection', $span.get(0));
+    });
+    
+    $element.delegate('li.picker-cell', 'click', function(evt) {
+      var $this = $(this);
+      var pickerView = $this.data('picker-view');
+      
+      Pushpop.push(pickerView, 'slideHorizontal');
+    });
     
     this.element = $element.get(0);
   }
@@ -319,10 +364,10 @@ $(function() {
   Pushpop.push(new Pushpop.View($('body > div.view:first').addClass('active')));
   
   // Attach all Views as immediate children of the document body.
-  var body = $(document.body);
+  var $body = $(document.body);
   
   $('.view').each(function(index, element) {
-    body.append(element);
+    $body.append(element);
   });
   
   // Initialize all TableViews.

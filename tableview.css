@@ -2,6 +2,10 @@ body {
   background-color: #dee0e6;
 }
 
+ul.tableview > li > ul.tableview {
+  display: none;
+}
+
 ul.tableview {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   list-style: none;
@@ -103,6 +107,30 @@ ul.tableview > li.header, ul.tableview > li.header > a {
   position: relative;
   text-shadow: #fff 0 1px 0;
   font-weight: bold;
+}
+
+ul.tableview > li.picker-cell > label {
+  display: inline-block;
+  padding: 0;
+  color: #000;
+  font-size: inherit;
+  font-weight: bold;
+  line-height: inherit;
+  float: none;
+  text-align: left;
+  text-shadow: #fff 0 1px 0;
+  width: 50%;
+}
+
+ul.tableview > li.picker-cell:active > * {
+  color: #fff;
+  text-shadow: none;
+}
+
+ul.tableview > li.picker-cell > span {
+  color: #4c566c;
+  float: right;
+  font-weight: normal;
 }
 
 ul.tableview .disclosure-indicator:after {
