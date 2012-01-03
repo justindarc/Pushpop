@@ -8,30 +8,14 @@
 	<link rel="stylesheet" type="text/css" href="pushpop.css"/>
 	<link rel="stylesheet" type="text/css" href="tableview.css"/>
 	<style type="text/css">
-	  #root {
-	    background-color: #ddd;
-	  }
-    #slideHorizontal {
-      background-color: #f00;
-    }
-    #slideVertical {
-      background-color: #0f0;
-    }
-    #flipHorizontal {
-      background-color: #00f;
-    }
-    #flipVertical {
-      background-color: #ff0;
-    }
-    #cardSwap {
-      background-color: #888;
-    }
-    #crossFade {
-      background-color: #f0f;
-    }
-    #zoom {
-      background-color: #0ff;
-    }
+	  #root { background-color: #ddd; }
+    #slideHorizontal { background-color: #f00; }
+    #slideVertical { background-color: #0f0; }
+    #flipHorizontal { background-color: #00f; }
+    #flipVertical { background-color: #ff0; }
+    #cardSwap { background-color: #888; }
+    #crossFade { background-color: #f0f; }
+    #zoom { background-color: #0ff; }
 	</style>
 	<script type="text/javascript" src="jquery-1.7.1.min.js"></script>
 	<script type="text/javascript" src="pushpop.js"></script>
@@ -69,53 +53,36 @@
     <p>Praesent tempor urna et est consequat laoreet. Nullam vitae justo non quam fringilla faucibus non condimentum erat. Etiam lacinia imperdiet libero, non ornare felis ultrices sed. Ut eu cursus dolor. Sed eros turpis, molestie id malesuada id, accumsan eget nisi. Maecenas vitae ante in massa mollis consequat quis et nunc. Proin at nulla massa. Fusce hendrerit lorem at dolor dignissim in tempor metus scelerisque. Aliquam a massa enim. Maecenas auctor pellentesque pharetra. Praesent leo urna, bibendum ut consequat in, molestie non est. Vivamus nulla purus, vestibulum et adipiscing vel, convallis at sem. Morbi consequat hendrerit lectus, a egestas orci lobortis vel.</p>
     <p>Aliquam bibendum blandit augue vel mollis. Proin euismod est eu massa lobortis id lacinia felis pulvinar. Quisque arcu odio, volutpat ac sodales vel, ultrices eget justo. Donec id suscipit arcu. Proin tortor est, rutrum in adipiscing a, tempor quis odio. Sed elit justo, tincidunt quis pulvinar a, gravida eget nisi. Quisque cursus, erat feugiat condimentum vestibulum, neque erat dictum turpis, tincidunt egestas nibh lectus ac libero. Pellentesque risus sapien, placerat at hendrerit interdum, tristique eu elit. Maecenas gravida hendrerit est, sit amet tincidunt dolor euismod non. Fusce molestie, erat eu placerat tristique, libero magna consequat nisl, in ultricies lacus massa aliquet enim. Quisque dapibus quam at quam ultricies imperdiet.</p>
     
-    <a class="btn push slideHorizontal" href="#slideHorizontal">Slide Horizontal</a>
-    <a class="btn push slideVertical" href="#slideVertical">Slide Vertical</a>
-    <a class="btn push flipHorizontal" href="#flipHorizontal">Flip Horizontal</a>
-    <a class="btn push flipVertical" href="#flipVertical">Flip Vertical</a>
-    <a class="btn push cardSwap" href="#cardSwap">Card Swap</a>
-    <a class="btn push crossFade" href="#crossFade">Cross Fade</a>
-    <a class="btn push zoom" href="#zoom">Zoom</a>
-    
     <ul class="tableview">
+      <li class="header">These Are Supported Transitions</li>
+      <li><a class="push disclosure-indicator slideHorizontal" href="#slideHorizontal">Slide Horizontal</a></li>
+      <li><a class="push disclosure-indicator slideVertical" href="#slideVertical">Slide Vertical</a></li>
+      <li><a class="push disclosure-indicator flipHorizontal" href="#flipHorizontal">Flip Horizontal</a></li>
+      <li><a class="push disclosure-indicator flipVertical" href="#flipVertical">Flip Vertical</a></li>
+      <li><a class="push disclosure-indicator cardSwap" href="#cardSwap">Card Swap</a></li>
+      <li><a class="push disclosure-indicator crossFade" href="#crossFade">Cross Fade</a></li>
+      <li class="last-child"><a class="push disclosure-indicator zoom" href="#zoom">Zoom</a></li>
       <li class="header">This Is A Header</li>
-      <li><a href="#">Keyboard</a></li>
+      <li>Keyboard</li>
       <li class="detail-disclosure-button">International</li>
-      <li><a class="disclosure-indicator" href="#">Accessibility</a></li>
-      <li class="last-child">Selection</li>
-      <li class="header">This Is Another Header</li>
-      <li>Item 1</li>
-      <li class="disclosure-indicator">Item 2</li>
-      <li>Item 3</li>
-      <li class="detail-disclosure-button">Item 4</li>
-      <li>Item 5</li>
-      <li class="checkmark">Item 6</li>
+      <li>Accessibility</li>
+      <li class="checkmark">Selection</li>
     </ul>
     
     <!-- IFrames not yet supported -->
-    <!--<a class="btn push slideHorizontal" href="slideHorizontal.html">Slide Horizontal (IFrame)</a>
-    <a class="btn push slideVertical" href="slideVertical.html">Slide Vertical (IFrame)</a>-->
+    <!--
+    <a class="btn push slideHorizontal" href="slideHorizontal.html">Slide Horizontal (IFrame)</a>
+    <a class="btn push slideVertical" href="slideVertical.html">Slide Vertical (IFrame)</a>
+    -->
   </div>
-  <div id="slideHorizontal" class="view">
-    <a class="btn pop slideHorizontal" href="#">Back</a>
-  </div>
-  <div id="slideVertical" class="view">
-    <a class="btn pop slideVertical" href="#">Back</a>
-  </div>
-  <div id="flipHorizontal" class="view">
-    <a class="btn pop flipHorizontal" href="#">Back</a>
-  </div>
-  <div id="flipVertical" class="view">
-    <a class="btn pop flipVertical" href="#">Back</a>
-  </div>
-  <div id="cardSwap" class="view">
-    <a class="btn pop cardSwap" href="#">Back</a>
-  </div>
-  <div id="crossFade" class="view">
-    <a class="btn pop crossFade" href="#">Back</a>
-  </div>
-  <div id="zoom" class="view">
-    <a class="btn pop zoom" href="#">Back</a>
-  </div>
+  
+  <!-- Views -->
+  <div id="slideHorizontal" class="view"><a class="btn pop slideHorizontal" href="#">Back</a></div>
+  <div id="slideVertical" class="view"><a class="btn pop slideVertical" href="#">Back</a></div>
+  <div id="flipHorizontal" class="view"><a class="btn pop flipHorizontal" href="#">Back</a></div>
+  <div id="flipVertical" class="view"><a class="btn pop flipVertical" href="#">Back</a></div>
+  <div id="cardSwap" class="view"><a class="btn pop cardSwap" href="#">Back</a></div>
+  <div id="crossFade" class="view"><a class="btn pop crossFade" href="#">Back</a></div>
+  <div id="zoom" class="view"><a class="btn pop zoom" href="#">Back</a></div>
 </body>
 </html>

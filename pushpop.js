@@ -2,6 +2,9 @@
 
 var Pushpop = {
   views: [],
+  $topbar: null,
+  $backButton: null,
+  
   handleEvent: function(evt) {
     switch (evt.type) {
       case 'webkitTransitionEnd':
@@ -114,12 +117,15 @@ var Pushpop = {
   push: function(view, transition) {
     var views = this.views;
     var isGecko = this.isGecko();
+    var $backButton = this.$backButton;
     var transition, activeView, newActiveView;
     
     view.isRoot = views.length === 0;
     
     if (!view.isRoot) {
+      $backButton.addClass('active');
       activeView = this.activeView();
+      activeView.lastTransition = transition;
       newActiveView = view;
     }
     
@@ -168,6 +174,7 @@ var Pushpop = {
   pop: function(viewOrTransition, transition) {
     var views = this.views;
     var isGecko = this.isGecko();
+    var $backButton = this.$backButton;
     var transition, activeView, newActiveView;
     
     if (views.length <= 1) return;
@@ -176,13 +183,9 @@ var Pushpop = {
     
     activeView = this.activeView();
     
-    if (typeof viewOrTransition === 'string') {
-      transition = viewOrTransition;
-    } else {
+    if (viewOrTransition && typeof viewOrTransition !== 'string') {
       newActiveView = viewOrTransition;
-    }
-  
-    if (newActiveView) {
+      
       var isOnStack = this.getView(newActiveView) !== null;
   
       if (isOnStack) {
@@ -190,11 +193,21 @@ var Pushpop = {
           views.pop();
         }
       }
-    }
-  
-    else {
+    } else {
+      if (viewOrTransition) {
+        transition = viewOrTransition;
+      }
+      
       views.pop();
       newActiveView = this.activeView();
+    }
+    
+    if (!transition) {
+      transition = newActiveView.lastTransition;
+    }
+    
+    if (views.length === 1) {
+      $backButton.removeClass('active');
     }
     
     var $activeViewElement = $(activeView.element);
@@ -275,10 +288,15 @@ Pushpop.View.prototype = {
   isRoot: false,
   href: '',
   scrollX: 0,
-  scrollY: 0
+  scrollY: 0,
+  lastTransition: 'slideHorizontal'
 };
 
 $(function() {
+  
+  var $topbar = Pushpop.$topbar = $('.topbar');
+  var $backButton = Pushpop.$backButton = $('<a class="btn pop pull-left" href="#">Back</a>');
+  $topbar.find('.container').prepend($backButton);
   
   // Set the first <div class="view"/> child of the document body as the root View.
   Pushpop.push(new Pushpop.View($('body > div.view:first').addClass('active')));
@@ -325,21 +343,19 @@ $(function() {
       transition = 'zoom';
     }
     
-    if (transition) {
-      if (isPop && href === '#') {
-        Pushpop.pop(transition);
+    if (isPop && href === '#') {
+      Pushpop.pop(transition);
+    }
+
+    else {
+      var view = Pushpop.getView(href) || new Pushpop.View(href);
+  
+      if (isPop) {
+        Pushpop.pop(view, transition);
       }
   
       else {
-        var view = Pushpop.getView(href) || new Pushpop.View(href);
-    
-        if (isPop) {
-          Pushpop.pop(view, transition);
-        }
-    
-        else {
-          Pushpop.push(view, transition);
-        }
+        Pushpop.push(view, transition);
       }
     }
     
