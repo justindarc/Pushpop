@@ -1,5 +1,37 @@
 'use strict';
 
+// Polyfill for requestAnimationFrame() / cancelAnimationFrame()
+(function() {
+  var lastTime = 0;
+  var vendors = ['webkit', 'moz', 'ms', 'o'];
+  
+  for (var i = 0; i < vendors.length && !window.requestAnimationFrame; i++) {
+    window.requestAnimationFrame = window[vendors[i] + 'RequestAnimationFrame'];
+    window.cancelAnimationFrame = window[vendors[i] + 'CancelAnimationFrame'] ||
+      window[vendors[i] + 'RequestCancelAnimationFrame'];
+  }
+
+  if (!window.requestAnimationFrame) {
+    window.requestAnimationFrame = function(callback, element) {
+      var currTime = Date.now();
+      var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+      var id = window.setTimeout(function() {
+        callback(currTime + timeToCall);
+      }, timeToCall);
+      
+      lastTime = currTime + timeToCall;
+      
+      return id;
+    };
+  }
+
+  if (!window.cancelAnimationFrame) {
+    window.cancelAnimationFrame = function(id) {
+      window.clearTimeout(id);
+    };
+  }
+})();
+
 var Pushpop = {
   views: [],
   $topbar: null,
@@ -10,24 +42,20 @@ var Pushpop = {
       case 'webkitTransitionEnd':
       case 'oTransitionEnd':
       case 'transitionend':
-        var activeView = Pushpop.activeView();
-        var $activeViewElement = $('.view.active');
-        var $newActiveViewElement = $(activeView.element);
+        $(document.body).removeClass('transition');
         
-        if (!Pushpop.isGecko()) {
-          $(document.documentElement).removeClass('transition');
-        }
+        window.requestAnimationFrame(function() {
+          var activeView = Pushpop.activeView();        
+          var $activeViewElement = $('.view.active');
+          var $newActiveViewElement = $(activeView.element);
         
-        $activeViewElement.removeClass('active push pop transition ' +
-          'slideHorizontal slideVertical flipHorizontal flipVertical cardSwap crossFade zoom');
-        $newActiveViewElement.removeClass('push pop transition ' +
-          'slideHorizontal slideVertical flipHorizontal flipVertical cardSwap crossFade zoom');
-        $newActiveViewElement.addClass('active')
-          .unbind('webkitTransitionEnd').unbind('oTransitionEnd').unbind('transitionend');
-        
-        setTimeout(function() {
-          window.scrollTo(activeView.scrollX, activeView.scrollY);
-        }, 100);
+          $activeViewElement.removeClass('active').css('top', '').unwrap();
+          $newActiveViewElement.addClass('active').css('top', '').unwrap();
+          
+          window.requestAnimationFrame(function() {
+            window.scrollTo(activeView.scrollX, activeView.scrollY);
+          });
+        });
         break;
       default:
         break;
@@ -53,7 +81,7 @@ var Pushpop = {
     var incrementX = (x - window.pageXOffset) / stepCount;
     var incrementY = (y - window.pageYOffset) / stepCount;
     
-    var interval = setInterval(function() {
+    var interval = window.setInterval(function() {
       var currentX = window.pageXOffset + incrementX;
       var currentY = window.pageYOffset + incrementY;
       
@@ -70,10 +98,10 @@ var Pushpop = {
       }
       
       if (currentX === x && currentY === y) {
-        clearInterval(interval);
+        window.clearInterval(interval);
         
         if (callback && typeof callback === 'function') {
-          setTimeout(function() {
+          window.setTimeout(function() {
             callback();
           }, 100);
         }
@@ -123,6 +151,7 @@ var Pushpop = {
     view.isRoot = views.length === 0;
     
     if (!view.isRoot) {
+      $(document.body).addClass('transition');
       $backButton.addClass('active');
       activeView = this.activeView();
       activeView.lastTransition = transition;
@@ -153,23 +182,22 @@ var Pushpop = {
       }
     }
     
-    $newActiveViewElement.bind('webkitTransitionEnd oTransitionEnd transitionend', this.handleEvent);
+    var activeOffsetY = 0 - activeView.scrollY;
+
+    var $activeTransitionContainer = $('<div class="transition-container push ' + transition + ' active"/>');
+    var $newActiveTransitionContainer = $('<div class="transition-container push ' + transition + '"/>');
     
-    setTimeout(function() {
-      window.scrollTo(0, 0);
+    $activeViewElement.wrap($activeTransitionContainer).css('top', activeOffsetY + 'px');
+    $newActiveViewElement.wrap($newActiveTransitionContainer);
 
-      $activeViewElement.addClass(transition + ' push');
-      $newActiveViewElement.addClass(transition + ' push');
+    $activeTransitionContainer = $activeViewElement.parent();
+    $newActiveTransitionContainer = $newActiveViewElement.parent();
+    $newActiveTransitionContainer.bind('webkitTransitionEnd oTransitionEnd transitionend', this.handleEvent);
 
-      setTimeout(function() {
-        if (!isGecko) {
-          $(document.documentElement).addClass('transition');
-        }
-
-        $activeViewElement.addClass('transition');
-        $newActiveViewElement.addClass('transition');
-      }, 100);
-    }, 100);
+    window.requestAnimationFrame(function() {
+      $activeTransitionContainer.addClass('transition');
+      $newActiveTransitionContainer.addClass('transition');
+    });
   },
   pop: function(viewOrTransition, transition) {
     var views = this.views;
@@ -179,7 +207,7 @@ var Pushpop = {
     
     if (views.length <= 1) return;
     
-    window.scrollTo(0, 0);
+    $(document.body).addClass('transition');
     
     activeView = this.activeView();
     
@@ -227,19 +255,23 @@ var Pushpop = {
       }
     }
     
-    $activeViewElement.addClass(transition + ' pop');
-    $newActiveViewElement.addClass(transition + ' pop');
-    
-    $newActiveViewElement.bind('webkitTransitionEnd oTransitionEnd transitionend', this.handleEvent);
-    
-    setTimeout(function() {
-      if (!isGecko) {
-        $(document.documentElement).addClass('transition');
-      }
-      
-      $activeViewElement.addClass('transition');
-      $newActiveViewElement.addClass('transition');
-    }, 100);
+    var activeOffsetY = 0 - activeView.scrollY;
+    var newActiveOffsetY = 0 - newActiveView.scrollY;
+
+    var $activeTransitionContainer = $('<div class="transition-container pop ' + transition + ' active"/>');
+    var $newActiveTransitionContainer = $('<div class="transition-container pop ' + transition + '"/>');
+
+    $activeViewElement.wrap($activeTransitionContainer).css('top', activeOffsetY + 'px');
+    $newActiveViewElement.wrap($newActiveTransitionContainer).css('top', newActiveOffsetY + 'px');
+
+    $activeTransitionContainer = $activeViewElement.parent();
+    $newActiveTransitionContainer = $newActiveViewElement.parent();
+    $newActiveTransitionContainer.bind('webkitTransitionEnd oTransitionEnd transitionend', this.handleEvent);
+
+    window.requestAnimationFrame(function() {
+      $activeTransitionContainer.addClass('transition');
+      $newActiveTransitionContainer.addClass('transition');
+    });
   }
 };
 
