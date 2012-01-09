@@ -309,17 +309,25 @@ Pushpop.TableView = function(element) {
       
       if ($pickerTableView.size() !== 1) return;
       
-      var name = $element.attr('data-name');
-      var defaultText = $element.attr('data-default-text');
-      var defaultValue = $element.attr('data-default-value') || defaultText;
+      var $input = $element.children('input[type="hidden"]:first');
+      var value = $input.val();
       
-      var $view = $('<div class="view"/>');
-      var $span = $('<span>' + defaultText + '</span>');
-      var $input = $('<input type="hidden" name="' + name + '" value="' + defaultValue + '"/>');
+      var $selectedCell = $pickerTableView.children('li[data-value="' + value + '"]:first');
       
-      $view.append($pickerTableView);
-      $body.append($view);
+      if ($selectedCell.size() === 0) {
+        $selectedCell = $pickerTableView.children('li:contains("' + value + '")');
+      }
+      
+      $selectedCell.addClass('checkmark');
+      
+      var text = ($selectedCell.size() > 0) ? $selectedCell.text() : '(None)';
+      var $span = $('<span>' + text + '</span>');
+      
       $element.append($span).append($input);
+      
+      var $view = $('<div class="view"/>').append($pickerTableView);
+      
+      $body.append($view);
       
       $pickerTableView.delegate('li', 'click', function(evt) {
         var $this = $(this);
@@ -329,6 +337,9 @@ Pushpop.TableView = function(element) {
         var text = $this.text();
         var value = $this.attr('data-value') || text;
         
+        $pickerTableView.find('li.checkmark').removeClass('checkmark');
+        $this.addClass('checkmark');
+      
         $span.html(text);
         $input.val(value);
         
