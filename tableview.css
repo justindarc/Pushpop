@@ -199,3 +199,27 @@ ul.tableview .checkmark:active:after {
   border-left-color: #fff;
   border-bottom-color: #fff;
 }
+
+ul.tableview > li.text-input-cell > label {
+  display: inline-block;
+  padding: 0;
+  color: #000;
+  font-size: inherit;
+  font-weight: bold;
+  line-height: inherit;
+  float: none;
+  text-align: left;
+  text-shadow: #fff 0 1px 0;
+  width: 50%;
+}
+
+ul.tableview > li.text-input-cell:active > * {
+  color: #fff;
+  text-shadow: none;
+}
+
+ul.tableview > li.text-input-cell > span {
+  color: #4c566c;
+  float: right;
+  font-weight: normal;
+}

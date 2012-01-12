@@ -535,3 +535,14 @@ body.transition .view.active {
   -moz-transform: scale(0.5);
   transform: scale(0.5);
 }
+
+/*
+  Auto-grow textareas
+*/
+textarea.autogrow{
+  border: 0;
+  overflow: auto;
+  resize:none;
+  width: 400px;
+  height: auto;
+}

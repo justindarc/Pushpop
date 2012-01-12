@@ -389,6 +389,50 @@ Pushpop.TableView = function(element) {
       Pushpop.push(pickerView, 'slideHorizontal');
     });
     
+    
+    // Set up text input cells.
+    $element.children('li.text-input-cell').each(function(index, element) {
+      var $element = $(element);
+      var $input = $element.children('input[type="text"],textArea:first');
+      
+      if ($input.size() !== 1) return;
+      
+      var value = $input.val();
+      var $span = $('<span>' + value + '</span>');
+      
+      $element.append($span);
+      
+      var $doneButton = $('<a class="btn" href="#">Done</a>');
+      var $view = $('<div class="view"/>').append($input).append($doneButton);
+      
+      $body.append($view);
+      
+      $doneButton.bind('click', function(evt) {
+        var $this = $(this);
+        
+        if ($this.hasClass('header')) return;
+        
+        var text = $input.val();
+        var value = $this.attr('data-value') || text;
+      
+        $span.html(text);
+        $input.val(value);
+        
+        Pushpop.pop();
+      });
+      
+      $element.data('text-input-view', new Pushpop.View($view));
+      $element.data('text-input-selection', $span.get(0));
+    });
+    
+    $element.delegate('li.text-input-cell', 'click', function(evt) {
+      var $this = $(this);
+      var inputView = $this.data('text-input-view');
+      
+      Pushpop.push(inputView, 'slideHorizontal');
+    });
+    
+    
     this.element = $element.get(0);
   }
 };
