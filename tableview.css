@@ -247,3 +247,38 @@ ul.tableview > li.picker-adder-cell > span {
   float: right;
   font-weight: normal;
 }
+
+ul.tableview .delete-button:before{
+  content: "";
+  display: inline-block;
+  float: right;
+  background: #058cf5; /* Old browsers */
+  background: -moz-linear-gradient(top, rgb(255, 0, 0) 0%, rgb(255, 0, 0) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgb(255, 0, 0)), color-stop(100%, rgb(255, 0, 0))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, rgb(255, 0, 0) 0%, rgb(255, 0, 0) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, rgb(255, 0, 0) 0%, rgb(255, 0, 0) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, rgb(255, 0, 0) 0%, rgb(255, 0, 0) 100%); /* IE10+ */
+  background: linear-gradient(top, rgb(255, 0, 0) 0%, rgb(255, 0, 0) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#058cf5', endColorstr='#015de6', GradientType=0); /* IE6-9 */
+  width: 1.2em;
+  height: 1.2em;
+  border: 0.15em solid #fff;
+  -webkit-border-radius: 1em;
+  -moz-border-radius: 1em;
+  border-radius: 1em;
+  -webkit-box-shadow: 0 0.075em 0.1em rgba(0, 0, 0, 1);
+  -moz-box-shadow: 0 0.075em 0.1em rgba(0, 0, 0, 1);
+  box-shadow: 0 0.075em 0.1em rgba(0, 0, 0, 1);
+  margin: -0.2em -0.2em 0 0;
+}
+
+ul.tableview .delete-button:after {
+  content: "";
+  background-color:#fff;
+  height:0.25em;
+  width:0.95em;
+  float:right;
+  display: inline-block;
+  padding: 0;
+  margin: 0.46em -1.2em 0 0;
+}
