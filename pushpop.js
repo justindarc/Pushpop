@@ -433,6 +433,62 @@ Pushpop.TableView = function(element) {
     });
     
     
+    // Set up picker Adder cells.
+    $element.children('li.picker-adder-cell').each(function(index, element) {
+      var $element = $(element);
+      var $pickerAdderTableView = $element.children('ul.tableview:first');
+      
+      if ($pickerAdderTableView.size() !== 1) return;
+      
+      var $input = $element.children('input[type="hidden"]:first');
+      var value = $input.val();
+      
+      var $selectedCell = $pickerAdderTableView.children('li[data-value="' + value + '"]:first');
+      
+      if ($selectedCell.size() === 0) {
+        $selectedCell = $pickerAdderTableView.children('li:contains("' + value + '")');
+      }
+      
+      
+      var text = ($selectedCell.size() > 0) ? $selectedCell.text() :'';
+      var $span = $('<span>' + text + '</span>');
+      
+      
+      
+      var $view = $('<div class="view"/>').append($pickerAdderTableView);
+      
+      $body.append($view);
+      
+      $pickerAdderTableView.delegate('li', 'click', function(evt) {
+        var $this = $(this);
+        
+        if ($this.hasClass('header')) return;
+        
+        var text = $this.text();
+        var value = $this.attr('data-value') || text;
+              
+        $('li.picker-adder-cell').before('<li>' + value +'</li>');
+
+        
+              
+        $span.html(text);
+        $input.val(value);
+        
+        Pushpop.pop();
+      });
+      
+      $element.data('picker-adder-view', new Pushpop.View($view));
+      $element.data('picker-adder-selection', $span.get(0));
+    });
+    
+    $element.delegate('li.picker-adder-cell', 'click', function(evt) {
+      var $this = $(this);
+      var pickerAdderView = $this.data('picker-adder-view');
+      
+      Pushpop.push(pickerAdderView, 'slideHorizontal');
+    });
+    
+    
     this.element = $element.get(0);
   }
 };
