@@ -461,14 +461,25 @@ Pushpop.TableView = function(element) {
       
       $pickerAdderTableView.delegate('li', 'click', function(evt) {
         var $this = $(this);
-        
+        var $input = $element.children('input[type= "hidden"]:first');
+        var inputData = $input.val();
+        var values = inputData.split(',');
+        var isDuplicate = false;
+           
         if ($this.hasClass('header')) return;
         
         var text = $this.text();
         var value = $this.attr('data-value') || text;
-              
-        $('li.picker-adder-cell').before('<li>' + value +'</li>');
-
+           
+        for(var i = 0;i < values.length;i++){
+          if(values[i] === value){
+            isDuplicate = true;
+            break;
+          }
+        }
+        if(!isDuplicate){     
+          $('li.picker-adder-cell').before('<li>' + value +'</li>');
+        }
         
               
         $span.html(text);
