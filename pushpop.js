@@ -472,13 +472,14 @@ Pushpop.TableView = function(element) {
         var value = $this.attr('data-value') || text;
            
         for(var i = 0;i < values.length;i++){
-          if(values[i] === value){
+          if(values[i] === value){            
             isDuplicate = true;
             break;
+            
           }
         }
         if(!isDuplicate){     
-          $('li.picker-adder-cell').before('<li>' + value +'</li>');
+          $('li.picker-adder-cell').before('<li class= delete-button>' + value + '</li>');
         }
         
               
@@ -499,7 +500,10 @@ Pushpop.TableView = function(element) {
       Pushpop.push(pickerAdderView, 'slideHorizontal');
     });
     
-    
+    // $element.delegate('li.delete-button', 'click', function(evt){
+    //   $(this).remove();
+    //   
+    // });
     this.element = $element.get(0);
   }
 };

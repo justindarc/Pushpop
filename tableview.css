@@ -260,8 +260,8 @@ ul.tableview .delete-button:before{
   background: -ms-linear-gradient(top, rgb(255, 0, 0) 0%, rgb(255, 0, 0) 100%); /* IE10+ */
   background: linear-gradient(top, rgb(255, 0, 0) 0%, rgb(255, 0, 0) 100%); /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#058cf5', endColorstr='#015de6', GradientType=0); /* IE6-9 */
-  width: 1.2em;
-  height: 1.2em;
+  width: 1em;
+  height: 1em;
   border: 0.15em solid #fff;
   -webkit-border-radius: 1em;
   -moz-border-radius: 1em;
@@ -275,10 +275,10 @@ ul.tableview .delete-button:before{
 ul.tableview .delete-button:after {
   content: "";
   background-color:#fff;
-  height:0.25em;
-  width:0.95em;
+  height:0.22em;
+  width:0.88em;
   float:right;
   display: inline-block;
   padding: 0;
-  margin: 0.46em -1.2em 0 0;
+  margin: 0.40em -1.0619em 0 0;
 }
