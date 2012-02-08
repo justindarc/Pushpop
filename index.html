@@ -5,7 +5,8 @@
 	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 	<meta name="apple-mobile-web-app-capable" content="yes"/>
 	<title>Pushpop Demo</title>
-	<link rel="stylesheet" type="text/css" href="bootstrap.css"/>
+	<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css"/>
+	<link rel="stylesheet" type="text/css" href="scrollkit.css"/>
 	<link rel="stylesheet" type="text/css" href="pushpop.css"/>
 	<link rel="stylesheet" type="text/css" href="tableview.css"/>
 	<style type="text/css">
@@ -18,12 +19,13 @@
     #crossFade { background-color: #f0f; }
     #zoom { background-color: #0ff; }
 	</style>
-	<script type="text/javascript" src="jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="jquery-1.7.1.js"></script>
+	<script type="text/javascript" src="scrollkit.js"></script>
 	<script type="text/javascript" src="pushpop.js"></script>
 </head>
 <body>
-  <div class="topbar">
-    <div class="fill">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
       <div class="container">
         <a class="brand" href="#">Pushpop</a>
         <ul class="nav">
@@ -31,15 +33,10 @@
           <li><a href="#about">About</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
-        <form action="" class="pull-right">
-          <input class="input-small" type="text" placeholder="Username">
-          <input class="input-small" type="password" placeholder="Password">
-          <button class="btn" type="submit">Sign in</button>
-        </form>
       </div>
     </div>
   </div>
-  <div class="view" id="root">
+  <div class="view sk-scroll-view" id="root">
     <a class="btn push slideHorizontal" href="#slideHorizontal">Slide Horizontal</a>
     <a class="btn push slideVertical" href="#slideVertical">Slide Vertical</a>
     <a class="btn push flipHorizontal" href="#flipHorizontal">Flip Horizontal</a>
@@ -47,13 +44,11 @@
     <a class="btn push cardSwap" href="#cardSwap">Card Swap</a>
     <a class="btn push crossFade" href="#crossFade">Cross Fade</a>
     <a class="btn push zoom" href="#zoom">Zoom</a>
-    
     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec id mauris sit amet lectus ornare sollicitudin in suscipit lorem. Nunc neque felis, euismod eu fermentum non, sollicitudin at diam. Ut luctus tortor sit amet diam vehicula tincidunt. Fusce et ante neque. Mauris varius libero sed metus dapibus eu pellentesque tortor lacinia. Donec sed mauris quis est posuere commodo. Vivamus lacinia tellus at dui tincidunt tempor. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Integer urna dui, consequat nec lacinia eu, posuere ut urna.</p>
     <p>Pellentesque auctor fringilla elit vel dignissim. Cras ac nunc neque. Nulla sed ante nec tellus bibendum mollis eu eget ante. Nunc id dui lectus, in rhoncus lectus. Fusce orci quam, consequat nec faucibus a, euismod non lectus. Vestibulum blandit sapien et massa ultricies suscipit. Pellentesque magna libero, fringilla nec congue sed, dictum id massa. Curabitur id ante nunc. Nullam congue massa ac ligula viverra ut euismod quam convallis. Nunc ultricies blandit felis, blandit rhoncus mi sodales vel. In tortor ligula, feugiat id volutpat sed, vestibulum eu ipsum. Aenean in turpis ut urna sollicitudin ultricies vel sit amet orci. Mauris quis augue augue, sed congue enim.</p>
     <p>Mauris euismod bibendum tincidunt. Suspendisse venenatis justo quis massa vehicula ac ultrices arcu egestas. Nunc placerat blandit leo at porttitor. Donec venenatis lorem at mi aliquam facilisis. Vivamus nec magna vitae lacus viverra sodales. Cras laoreet sem sit amet ipsum sagittis sit amet viverra dolor blandit. Aenean auctor felis eu purus mollis accumsan.</p>
     <p>Praesent tempor urna et est consequat laoreet. Nullam vitae justo non quam fringilla faucibus non condimentum erat. Etiam lacinia imperdiet libero, non ornare felis ultrices sed. Ut eu cursus dolor. Sed eros turpis, molestie id malesuada id, accumsan eget nisi. Maecenas vitae ante in massa mollis consequat quis et nunc. Proin at nulla massa. Fusce hendrerit lorem at dolor dignissim in tempor metus scelerisque. Aliquam a massa enim. Maecenas auctor pellentesque pharetra. Praesent leo urna, bibendum ut consequat in, molestie non est. Vivamus nulla purus, vestibulum et adipiscing vel, convallis at sem. Morbi consequat hendrerit lectus, a egestas orci lobortis vel.</p>
     <p>Aliquam bibendum blandit augue vel mollis. Proin euismod est eu massa lobortis id lacinia felis pulvinar. Quisque arcu odio, volutpat ac sodales vel, ultrices eget justo. Donec id suscipit arcu. Proin tortor est, rutrum in adipiscing a, tempor quis odio. Sed elit justo, tincidunt quis pulvinar a, gravida eget nisi. Quisque cursus, erat feugiat condimentum vestibulum, neque erat dictum turpis, tincidunt egestas nibh lectus ac libero. Pellentesque risus sapien, placerat at hendrerit interdum, tristique eu elit. Maecenas gravida hendrerit est, sit amet tincidunt dolor euismod non. Fusce molestie, erat eu placerat tristique, libero magna consequat nisl, in ultricies lacus massa aliquet enim. Quisque dapibus quam at quam ultricies imperdiet.</p>
-    
     <ul class="tableview">
       <li class="header">These Are Supported Transitions</li>
       <li><a class="push disclosure-indicator slideHorizontal" href="#slideHorizontal">Slide Horizontal</a></li>
@@ -70,7 +65,6 @@
       <li class="checkmark">Selection</li>
       <li class="delete-button">Delete</li>
     </ul>
-    
     <ul class="tableview">
       <li class="header">Picker Table Cells</li>
       <li class="picker-cell">
@@ -87,26 +81,21 @@
         </ul>
       </li>
     </ul>
-    
-
-	<ul class="tableview">
-		<li class="header">Text Input Cells</li>
-		<li class="text-input-cell">
-		  <input type="text" name="color" value="hello"/>
-		  <label>Color</label>
-		</li>
-	</ul>  
-	
-	<ul class="tableview">
-		<li class="header">Text Area Cells</li>
-		<li class="text-input-cell">
-          <textarea class="autogrow" placeholder = "This is example text"></textarea>
-		  <label>Color</label>
-		</li>
-	</ul>
-	
-	
-	<ul class="tableview multipicker">
+  	<ul class="tableview">
+  		<li class="header">Text Input Cells</li>
+  		<li class="text-input-cell">
+  		  <label>Color</label>
+  		  <input type="text" name="color" value="hello"/>
+  		</li>
+  	</ul>
+  	<ul class="tableview">
+  		<li class="header">Text Area Cells</li>
+  		<li class="text-input-cell">
+  		  <label>Color</label>
+  		  <textarea class="autogrow" placeholder = "This is example text"></textarea>
+  		</li>
+  	</ul>
+	  <ul class="tableview multipicker">
       <li class="header">Picker Table Cell Adder</li>
       <li class="picker-adder-cell">
         <input type="hidden" name="color" value="1,1"/>
@@ -122,13 +111,6 @@
         </ul>
       </li>
     </ul>
-			
-		
-    <!-- IFrames not yet supported -->
-    <!--
-    <a class="btn push slideHorizontal" href="slideHorizontal.html">Slide Horizontal (IFrame)</a>
-    <a class="btn push slideVertical" href="slideVertical.html">Slide Vertical (IFrame)</a>
-    -->
   </div>
   
   <!-- Views -->

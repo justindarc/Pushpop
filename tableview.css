@@ -1,7 +1,3 @@
-body {
-  background-color: #dee0e6;
-}
-
 ul.tableview > li > ul.tableview {
   display: none;
 }

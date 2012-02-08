@@ -18,9 +18,7 @@
       var id = window.setTimeout(function() {
         callback(currTime + timeToCall);
       }, timeToCall);
-      
       lastTime = currTime + timeToCall;
-      
       return id;
     };
   }
@@ -34,7 +32,7 @@
 
 var Pushpop = {
   views: [],
-  $topbar: null,
+  $navbar: null,
   $backButton: null,
   
   handleEvent: function(evt) {
@@ -48,13 +46,12 @@ var Pushpop = {
           var activeView = Pushpop.activeView();        
           var $activeViewElement = $('.view.active');
           var $newActiveViewElement = $(activeView.element);
-        
-          $activeViewElement.removeClass('active').css('top', '').unwrap();
-          $newActiveViewElement.addClass('active').css('top', '').unwrap();
           
-          window.requestAnimationFrame(function() {
-            window.scrollTo(activeView.scrollX, activeView.scrollY);
-          });
+          $activeViewElement.removeClass('transition push pop slideHorizontal slideVertical flipHorizontal flipVertical cardSwap crossFade zoom');
+          $newActiveViewElement.removeClass('transition push pop slideHorizontal slideVertical flipHorizontal flipVertical cardSwap crossFade zoom');
+          
+          $activeViewElement.removeClass('active');
+          $newActiveViewElement.addClass('active');
         });
         break;
       default:
@@ -107,8 +104,6 @@ var Pushpop = {
         }
       }
       
-      window.scroll(currentX, currentY);
-      
       incrementX *= 0.925;
       incrementY *= 0.925;
     }, 15);
@@ -152,7 +147,7 @@ var Pushpop = {
     
     if (!view.isRoot) {
       $(document.body).addClass('transition');
-      $backButton.addClass('active');
+      $backButton.removeClass('disabled');
       activeView = this.activeView();
       activeView.lastTransition = transition;
       newActiveView = view;
@@ -161,9 +156,6 @@ var Pushpop = {
     views.push(view);
     
     if (view.isRoot) return;
-
-    activeView.scrollX = window.scrollX;
-    activeView.scrollY = window.scrollY;
     
     var $activeViewElement = $(activeView.element);
     var $newActiveViewElement = $(newActiveView.element);
@@ -181,22 +173,18 @@ var Pushpop = {
         transition = 'zoom';
       }
     }
+
+    $newActiveViewElement.bind('webkitTransitionEnd oTransitionEnd transitionend', this.handleEvent);
+
+    $activeViewElement.addClass('push ' + transition);
+    $newActiveViewElement.addClass('push ' + transition);
     
-    var activeOffsetY = 0 - activeView.scrollY;
-
-    var $activeTransitionContainer = $('<div class="transition-container push ' + transition + ' active"/>');
-    var $newActiveTransitionContainer = $('<div class="transition-container push ' + transition + '"/>');
+    $activeViewElement.get(0).offsetHeight;
+    $newActiveViewElement.get(0).offsetHeight;
     
-    $activeViewElement.wrap($activeTransitionContainer).css('top', activeOffsetY + 'px');
-    $newActiveViewElement.wrap($newActiveTransitionContainer);
-
-    $activeTransitionContainer = $activeViewElement.parent();
-    $newActiveTransitionContainer = $newActiveViewElement.parent();
-    $newActiveTransitionContainer.bind('webkitTransitionEnd oTransitionEnd transitionend', this.handleEvent);
-
     window.requestAnimationFrame(function() {
-      $activeTransitionContainer.addClass('transition');
-      $newActiveTransitionContainer.addClass('transition');
+      $activeViewElement.addClass('transition');
+      $newActiveViewElement.addClass('transition');
     });
   },
   pop: function(viewOrTransition, transition) {
@@ -235,7 +223,7 @@ var Pushpop = {
     }
     
     if (views.length === 1) {
-      $backButton.removeClass('active');
+      $backButton.addClass('disabled');
     }
     
     var $activeViewElement = $(activeView.element);
@@ -254,23 +242,18 @@ var Pushpop = {
         transition = 'zoom';
       }
     }
-    
-    var activeOffsetY = 0 - activeView.scrollY;
-    var newActiveOffsetY = 0 - newActiveView.scrollY;
 
-    var $activeTransitionContainer = $('<div class="transition-container pop ' + transition + ' active"/>');
-    var $newActiveTransitionContainer = $('<div class="transition-container pop ' + transition + '"/>');
+    $newActiveViewElement.bind('webkitTransitionEnd oTransitionEnd transitionend', this.handleEvent);
 
-    $activeViewElement.wrap($activeTransitionContainer).css('top', activeOffsetY + 'px');
-    $newActiveViewElement.wrap($newActiveTransitionContainer).css('top', newActiveOffsetY + 'px');
+    $activeViewElement.addClass('pop ' + transition);
+    $newActiveViewElement.addClass('pop ' + transition);
 
-    $activeTransitionContainer = $activeViewElement.parent();
-    $newActiveTransitionContainer = $newActiveViewElement.parent();
-    $newActiveTransitionContainer.bind('webkitTransitionEnd oTransitionEnd transitionend', this.handleEvent);
+    $activeViewElement.get(0).offsetHeight;
+    $newActiveViewElement.get(0).offsetHeight;
 
     window.requestAnimationFrame(function() {
-      $activeTransitionContainer.addClass('transition');
-      $newActiveTransitionContainer.addClass('transition');
+      $activeViewElement.addClass('transition');
+      $newActiveViewElement.addClass('transition');
     });
   }
 };
@@ -319,8 +302,6 @@ Pushpop.View.prototype = {
   element: null,
   isRoot: false,
   href: '',
-  scrollX: 0,
-  scrollY: 0,
   lastTransition: 'slideHorizontal'
 };
 
@@ -389,7 +370,6 @@ Pushpop.TableView = function(element) {
       Pushpop.push(pickerView, 'slideHorizontal');
     });
     
-    
     // Set up text input cells.
     $element.children('li.text-input-cell').each(function(index, element) {
       var $element = $(element);
@@ -432,7 +412,6 @@ Pushpop.TableView = function(element) {
       Pushpop.push(inputView, 'slideHorizontal');
     });
     
-    
     // Set up picker Adder cells.
     $element.children('li.picker-adder-cell').each(function(index, element) {
       var $element = $(element);
@@ -449,11 +428,8 @@ Pushpop.TableView = function(element) {
         $selectedCell = $pickerAdderTableView.children('li:contains("' + value + '")');
       }
       
-      
-      var text = ($selectedCell.size() > 0) ? $selectedCell.text() :'';
+      var text = ($selectedCell.size() > 0) ? $selectedCell.text() : '';
       var $span = $('<span>' + text + '</span>');
-      
-      
       
       var $view = $('<div class="view"/>').append($pickerAdderTableView);
       
@@ -471,17 +447,16 @@ Pushpop.TableView = function(element) {
         var text = $this.text();
         var value = $this.attr('data-value') || text;
            
-        for(var i = 0;i < values.length;i++){
-          if(values[i] === value){            
+        for (var i = 0; i < values.length; i++) {
+          if (values[i] === value) {
             isDuplicate = true;
             break;
-            
           }
         }
-        if(!isDuplicate){     
+        
+        if (!isDuplicate) {     
           $('li.picker-adder-cell').before('<li class= delete-button>' + value + '</li>');
         }
-        
               
         $span.html(text);
         $input.val(value);
@@ -500,10 +475,6 @@ Pushpop.TableView = function(element) {
       Pushpop.push(pickerAdderView, 'slideHorizontal');
     });
     
-    // $element.delegate('li.delete-button', 'click', function(evt){
-    //   $(this).remove();
-    //   
-    // });
     this.element = $element.get(0);
   }
 };
@@ -513,10 +484,9 @@ Pushpop.TableView.prototype = {
 };
 
 $(function() {
-  
-  var $topbar = Pushpop.$topbar = $('.topbar');
-  var $backButton = Pushpop.$backButton = $('<a class="btn pop pull-left" href="#">Back</a>');
-  $topbar.find('.container').prepend($backButton);
+  var $navbar = Pushpop.$navbar = $('.navbar');
+  var $backButton = Pushpop.$backButton = $('<a class="btn pop pull-left disabled" href="#">Back</a>');
+  $navbar.find('.container').prepend($backButton);
   
   // Set the first <div class="view"/> child of the document body as the root View.
   Pushpop.push(new Pushpop.View($('body > div.view:first').addClass('active')));
