@@ -17,7 +17,8 @@ textarea.autogrow {
   height: auto;
 }
 
-.navbar .container > .btn {
+/* NOTE: Use of .topbar has been removed in Bootstrap 2.x. */
+.navbar .container > .btn, .topbar .container > .btn {
   background-color: #333;
   background-repeat: no-repeat;
   background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#111), color-stop(25%, #111), to(#333));
@@ -37,12 +38,14 @@ textarea.autogrow {
   transition: opacity 0.2s ease;
 }
 
-.navbar .container > .btn:hover {
+/* NOTE: Use of .topbar has been removed in Bootstrap 2.x. */
+.navbar .container > .btn:hover, .topbar .container > .btn:hover {
   background-position: 0 -15px;
   color: #eee;
 }
 
-.navbar .container > .btn.disabled {
+/* NOTE: Use of .topbar has been removed in Bootstrap 2.x. */
+.navbar .container > .btn.disabled, .topbar .container > .btn.disabled {
   opacity: 0;
 }
 
@@ -69,11 +72,13 @@ textarea.autogrow {
   z-index: 2;
 }
 
-.navbar ~ .view {
+/* NOTE: Use of .topbar has been removed in Bootstrap 2.x. */
+.navbar ~ .view, .topbar ~ .view {
   top: 40px;
 }
 
-.navbar ~ .view.sk-scroll-view {
+/* NOTE: Use of .topbar has been removed in Bootstrap 2.x. */
+.navbar ~ .view.sk-scroll-view, .topbar ~ .view.sk-scroll-view {
   height: auto;
   bottom: 0;
 }

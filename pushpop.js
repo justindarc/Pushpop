@@ -484,7 +484,9 @@ Pushpop.TableView.prototype = {
 };
 
 $(function() {
-  var $navbar = Pushpop.$navbar = $('.navbar');
+  
+  // NOTE: Use of .topbar has been removed in Bootstrap 2.x.
+  var $navbar = Pushpop.$navbar = $('.navbar, .topbar');
   var $backButton = Pushpop.$backButton = $('<a class="btn pop pull-left disabled" href="#">Back</a>');
   $navbar.find('.container').prepend($backButton);
   
