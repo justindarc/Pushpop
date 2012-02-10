@@ -8,7 +8,7 @@ ul.tableview {
   margin-left: 0;
   font-size: 16px;
   margin: 1em 1em 0;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-touch-callout: none;
 }
 
 ul.tableview:after {
