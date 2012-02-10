@@ -58,21 +58,6 @@ var Pushpop = {
         break;
     }
   },
-  isGecko: function() {
-    if (this._isGecko !== undefined) {
-      return this._isGecko;
-    }
-    
-    var cssStyleDeclarations = Object.keys(CSSStyleDeclaration.prototype);
-    
-    for (var i = 0; i < cssStyleDeclarations.length; i++) {
-      if (cssStyleDeclarations[i].match(/^Moz/)) {
-        return this._isGecko = true;
-      }
-    }
-    
-    return this._isGecko = false;
-  },
   animateScrollTo: function(x, y, milliseconds, callback) {
     var stepCount = milliseconds / 15;
     var incrementX = (x - window.pageXOffset) / stepCount;
@@ -139,7 +124,6 @@ var Pushpop = {
   },
   push: function(view, transition) {
     var views = this.views;
-    var isGecko = this.isGecko();
     var $backButton = this.$backButton;
     var transition, activeView, newActiveView;
     
@@ -159,20 +143,6 @@ var Pushpop = {
     
     var $activeViewElement = $(activeView.element);
     var $newActiveViewElement = $(newActiveView.element);
-    
-    if (isGecko) {
-      if (transition === 'flipHorizontal') {
-        transition = 'slideHorizontal';
-      }
-
-      else if (transition === 'flipVertical') {
-        transition = 'slideVertical';
-      }
-      
-      else if (transition === 'cardSwap') {
-        transition = 'zoom';
-      }
-    }
 
     $newActiveViewElement.bind('webkitTransitionEnd oTransitionEnd transitionend', this.handleEvent);
 
@@ -189,7 +159,6 @@ var Pushpop = {
   },
   pop: function(viewOrTransition, transition) {
     var views = this.views;
-    var isGecko = this.isGecko();
     var $backButton = this.$backButton;
     var transition, activeView, newActiveView;
     
@@ -228,20 +197,6 @@ var Pushpop = {
     
     var $activeViewElement = $(activeView.element);
     var $newActiveViewElement = $(newActiveView.element);
-    
-    if (isGecko) {
-      if (transition === 'flipHorizontal') {
-        transition = 'slideHorizontal';
-      }
-
-      else if (transition === 'flipVertical') {
-        transition = 'slideVertical';
-      }
-      
-      else if (transition === 'cardSwap') {
-        transition = 'zoom';
-      }
-    }
 
     $newActiveViewElement.bind('webkitTransitionEnd oTransitionEnd transitionend', this.handleEvent);
 
