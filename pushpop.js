@@ -1,35 +1,5 @@
 'use strict';
 
-// Polyfill for requestAnimationFrame() / cancelAnimationFrame()
-(function() {
-  var lastTime = 0;
-  var vendors = ['webkit', 'moz', 'ms', 'o'];
-  
-  for (var i = 0; i < vendors.length && !window.requestAnimationFrame; i++) {
-    window.requestAnimationFrame = window[vendors[i] + 'RequestAnimationFrame'];
-    window.cancelAnimationFrame = window[vendors[i] + 'CancelAnimationFrame'] ||
-      window[vendors[i] + 'RequestCancelAnimationFrame'];
-  }
-
-  if (!window.requestAnimationFrame) {
-    window.requestAnimationFrame = function(callback, element) {
-      var currTime = Date.now();
-      var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-      var id = window.setTimeout(function() {
-        callback(currTime + timeToCall);
-      }, timeToCall);
-      lastTime = currTime + timeToCall;
-      return id;
-    };
-  }
-
-  if (!window.cancelAnimationFrame) {
-    window.cancelAnimationFrame = function(id) {
-      window.clearTimeout(id);
-    };
-  }
-})();
-
 var Pushpop = {
   views: [],
   $navbar: null,
@@ -40,19 +10,16 @@ var Pushpop = {
       case 'webkitTransitionEnd':
       case 'oTransitionEnd':
       case 'transitionend':
-        $(document.body).removeClass('transition');
+        var activeView = Pushpop.activeView();
         
-        window.requestAnimationFrame(function() {
-          var activeView = Pushpop.activeView();        
-          var $activeViewElement = $('.view.active');
-          var $newActiveViewElement = $(activeView.element);
-          
-          $activeViewElement.removeClass('transition push pop slideHorizontal slideVertical flipHorizontal flipVertical cardSwap crossFade zoom');
-          $newActiveViewElement.removeClass('transition push pop slideHorizontal slideVertical flipHorizontal flipVertical cardSwap crossFade zoom');
-          
-          $activeViewElement.removeClass('active');
-          $newActiveViewElement.addClass('active');
-        });
+        if (evt.target !== activeView.element) return;
+        
+        var $activeViewElement = $('.view.active');
+        var $newActiveViewElement = $(activeView.element);
+        
+        $activeViewElement.removeClass('active transition push pop slideHorizontal slideVertical flipHorizontal flipVertical cardSwap crossFade zoom');
+        $newActiveViewElement.removeClass('transition push pop slideHorizontal slideVertical flipHorizontal flipVertical cardSwap crossFade zoom');
+        $newActiveViewElement.addClass('active');
         break;
       default:
         break;
@@ -130,7 +97,6 @@ var Pushpop = {
     view.isRoot = views.length === 0;
     
     if (!view.isRoot) {
-      $(document.body).addClass('transition');
       $backButton.removeClass('disabled');
       activeView = this.activeView();
       activeView.lastTransition = transition;
@@ -149,13 +115,14 @@ var Pushpop = {
     $activeViewElement.addClass('push ' + transition);
     $newActiveViewElement.addClass('push ' + transition);
     
+    // Force reflow to prepare for transition.
+    $activeViewElement.get(0).offsetWidth;
     $activeViewElement.get(0).offsetHeight;
+    $newActiveViewElement.get(0).offsetWidth;
     $newActiveViewElement.get(0).offsetHeight;
     
-    window.requestAnimationFrame(function() {
-      $activeViewElement.addClass('transition');
-      $newActiveViewElement.addClass('transition');
-    });
+    $activeViewElement.addClass('transition');
+    $newActiveViewElement.addClass('transition');
   },
   pop: function(viewOrTransition, transition) {
     var views = this.views;
@@ -163,8 +130,6 @@ var Pushpop = {
     var transition, activeView, newActiveView;
     
     if (views.length <= 1) return;
-    
-    $(document.body).addClass('transition');
     
     activeView = this.activeView();
     
@@ -203,13 +168,14 @@ var Pushpop = {
     $activeViewElement.addClass('pop ' + transition);
     $newActiveViewElement.addClass('pop ' + transition);
 
+    // Force reflow to prepare for transition.
+    $activeViewElement.get(0).offsetWidth;
     $activeViewElement.get(0).offsetHeight;
+    $newActiveViewElement.get(0).offsetWidth;
     $newActiveViewElement.get(0).offsetHeight;
 
-    window.requestAnimationFrame(function() {
-      $activeViewElement.addClass('transition');
-      $newActiveViewElement.addClass('transition');
-    });
+    $activeViewElement.addClass('transition');
+    $newActiveViewElement.addClass('transition');
   }
 };
 
