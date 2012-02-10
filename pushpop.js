@@ -8,8 +8,9 @@ var Pushpop = {
   handleEvent: function(evt) {
     switch (evt.type) {
       case 'webkitTransitionEnd':
-      case 'oTransitionEnd':
       case 'transitionend':
+      case 'oTransitionEnd':
+      case 'transitionEnd':
         var activeView = Pushpop.activeView();
         
         if (evt.target !== activeView.element) return;
