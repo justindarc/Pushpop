@@ -6,10 +6,6 @@ html, body {
 
 body {
   background: #333 url('background.png');
-  -webkit-perspective: 2000px;
-  -moz-perspective: 2000px;
-  -o-perspective: 2000px;
-  perspective: 2000px;
 }
 
 /* NOTE: Use of .topbar has been removed in Bootstrap 2.x. */
@@ -46,10 +42,10 @@ body {
   opacity: 0;
 }
 
-.view {
+.pp-view {
   background-color: #fff;
   display: none;
-  position: relative;
+  position: absolute;
   width: 100%;
   height: 100%;
   top: 0;
@@ -61,98 +57,126 @@ body {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
-.view.sk-scroll-view {
-  position: absolute;
-}
-
-.view.active, .view.push, .view.pop {
+.pp-view.active, .pp-view.push, .pp-view.pop {
   display: block;
 }
 
-/* NOTE: Use of .topbar has been removed in Bootstrap 2.x. */
-.navbar ~ .view, .topbar ~ .view {
-  top: 40px;
+.pp-view-stack {
+  position: absolute;
+  width: 100%;
+  top: 0;
+  bottom: 0;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-perspective: 2000px;
+  -moz-perspective: 2000px;
+  -o-perspective: 2000px;
+  perspective: 2000px;
 }
 
-/* NOTE: Use of .topbar has been removed in Bootstrap 2.x. */
-.navbar ~ .view.sk-scroll-view, .topbar ~ .view.sk-scroll-view {
-  height: auto;
+.pp-split-view-container {
+  position: absolute;
+  width: 100%;
+  top: 0;
   bottom: 0;
 }
 
-/* slideHorizontal */
-.view.slideHorizontal {
+.pp-split-view-container > .pp-split-view-master {
+  border-right: 1px solid #555;
+  position: absolute;
+  width: 300px;
+  height: 100%;
+  left: 0;
+}
+
+.pp-split-view-container > .pp-split-view-detail {
+  position: absolute;
+  height: 100%;
+  left: 301px;
+  right: 0;
+}
+
+/* NOTE: Use of .topbar has been removed in Bootstrap 2.x. */
+.navbar ~ .pp-view-stack, .topbar ~ .pp-view-stack,
+.navbar ~ .pp-split-view-container, .topbar ~ .pp-split-view-container {
+  top: 40px;
+}
+
+/* slide-horizontal */
+.pp-view.slide-horizontal {
   -webkit-transition: -webkit-transform 0.5s ease;
   -moz-transition: -moz-transform 0.5s ease;
   -o-transition: -o-transform 0.5s ease;
   transition: transform 0.5s ease;
 }
 
-.view.push.slideHorizontal {
+.pp-view.push.slide-horizontal {
   -webkit-transform: translate3d(100%, 0, 0);
   -moz-transform: translate3d(100%, 0, 0);
   -o-transform: translate3d(100%, 0, 0);
   transform: translate3d(100%, 0, 0);
 }
 
-.view.push.slideHorizontal.transition {
+.pp-view.push.slide-horizontal.transition {
   -webkit-transform: translate3d(0, 0, 0);
   -moz-transform: translate3d(0, 0, 0);
   -o-transform: translate3d(0, 0, 0);
   transform: translate3d(0, 0, 0);
 }
 
-.view.push.slideHorizontal.active {
+.pp-view.push.slide-horizontal.active {
   -webkit-transform: translate3d(0, 0, 0);
   -moz-transform: translate3d(0, 0, 0);
   -o-transform: translate3d(0, 0, 0);
   transform: translate3d(0, 0, 0);
 }
 
-.view.push.slideHorizontal.active.transition {
+.pp-view.push.slide-horizontal.active.transition {
   -webkit-transform: translate3d(-100%, 0, 0);
   -moz-transform: translate3d(-100%, 0, 0);
   -o-transform: translate3d(-100%, 0, 0);
   transform: translate3d(-100%, 0, 0);
 }
 
-.view.pop.slideHorizontal {
+.pp-view.pop.slide-horizontal {
   -webkit-transform: translate3d(-100%, 0, 0);
   -moz-transform: translate3d(-100%, 0, 0);
   -o-transform: translate3d(-100%, 0, 0);
   transform: translate3d(-100%, 0, 0);
 }
 
-.view.pop.slideHorizontal.transition {
+.pp-view.pop.slide-horizontal.transition {
   -webkit-transform: translate3d(0, 0, 0);
   -moz-transform: translate3d(0, 0, 0);
   -o-transform: translate3d(0, 0, 0);
   transform: translate3d(0, 0, 0);
 }
 
-.view.pop.slideHorizontal.active {
+.pp-view.pop.slide-horizontal.active {
   -webkit-transform: translate3d(0, 0, 0);
   -moz-transform: translate3d(0, 0, 0);
   -o-transform: translate3d(0, 0, 0);
   transform: translate3d(0, 0, 0);
 }
 
-.view.pop.slideHorizontal.active.transition {
+.pp-view.pop.slide-horizontal.active.transition {
   -webkit-transform: translate3d(100%, 0, 0);
   -moz-transform: translate3d(100%, 0, 0);
   -o-transform: translate3d(100%, 0, 0);
   transform: translate3d(100%, 0, 0);
 }
 
-/* slideVertical */
-.view.slideVertical {
+/* slide-vertical */
+.pp-view.slide-vertical {
   -webkit-transition: -webkit-transform 0.5s ease;
   -moz-transition: -moz-transform 0.5s ease;
   -o-transition: -o-transform 0.5s ease;
   transition: transform 0.5s ease;
 }
 
-.view.push.slideVertical {
+.pp-view.push.slide-vertical {
   z-index: 1;
   -webkit-transform: translate3d(0, -100%, 0);
   -moz-transform: translate3d(0, -100%, 0);
@@ -160,14 +184,14 @@ body {
   transform: translate3d(0, -100%, 0);
 }
 
-.view.push.slideVertical.transition {
+.pp-view.push.slide-vertical.transition {
   -webkit-transform: translate3d(0, 0, 0);
   -moz-transform: translate3d(0, 0, 0);
   -o-transform: translate3d(0, 0, 0);
   transform: translate3d(0, 0, 0);
 }
 
-.view.push.slideVertical.active {
+.pp-view.push.slide-vertical.active {
   z-index: 0;
   -webkit-transform: translate3d(0, 0, 0);
   -moz-transform: translate3d(0, 0, 0);
@@ -175,14 +199,14 @@ body {
   transform: translate3d(0, 0, 0);
 }
 
-.view.push.slideVertical.active.transition {
+.pp-view.push.slide-vertical.active.transition {
   -webkit-transform: translate3d(0, 1%, 0);
   -moz-transform: translate3d(0, 1%, 0);
   -o-transform: translate3d(0, 1%, 0);
   transform: translate3d(0, 1%, 0);
 }
 
-.view.pop.slideVertical {
+.pp-view.pop.slide-vertical {
   z-index: 0;
   -webkit-transform: translate3d(0, 1%, 0);
   -moz-transform: translate3d(0, 1%, 0);
@@ -190,14 +214,14 @@ body {
   transform: translate3d(0, 1%, 0);
 }
 
-.view.pop.slideVertical.transition {
+.pp-view.pop.slide-vertical.transition {
   -webkit-transform: translate3d(0, 0, 0);
   -moz-transform: translate3d(0, 0, 0);
   -o-transform: translate3d(0, 0, 0);
   transform: translate3d(0, 0, 0);
 }
 
-.view.pop.slideVertical.active {
+.pp-view.pop.slide-vertical.active {
   z-index: 1;
   -webkit-transform: translate3d(0, 0, 0);
   -moz-transform: translate3d(0, 0, 0);
@@ -205,15 +229,15 @@ body {
   transform: translate3d(0, 0, 0);
 }
 
-.view.pop.slideVertical.active.transition {
+.pp-view.pop.slide-vertical.active.transition {
   -webkit-transform: translate3d(0, -100%, 0);
   -moz-transform: translate3d(0, -100%, 0);
   -o-transform: translate3d(0, -100%, 0);
   transform: translate3d(0, -100%, 0);
 }
 
-/* flipHorizontal */
-.view.flipHorizontal {
+/* flip-horizontal */
+.pp-view.flip-horizontal {
   -webkit-transition: -webkit-transform 1s ease;
   -moz-transition: -moz-transform 1s ease;
   -o-transition: -o-transform 1s ease;
@@ -221,64 +245,64 @@ body {
   z-index: 999999;
 }
 
-.view.push.flipHorizontal {
+.pp-view.push.flip-horizontal {
   -webkit-transform: rotate3d(0, 1, 0, 180deg);
   -moz-transform: rotate3d(0, 1, 0, 180deg);
   -o-transform: rotate3d(0, 1, 0, 180deg);
   transform: rotate3d(0, 1, 0, 180deg);
 }
 
-.view.push.flipHorizontal.transition {
+.pp-view.push.flip-horizontal.transition {
   -webkit-transform: rotate3d(0, 1, 0, 0deg);
   -moz-transform: rotate3d(0, 1, 0, 0deg);
   -o-transform: rotate3d(0, 1, 0, 0deg);
   transform: rotate3d(0, 1, 0, 0deg);
 }
 
-.view.push.flipHorizontal.active {
+.pp-view.push.flip-horizontal.active {
   -webkit-transform: rotate3d(0, 1, 0, 0deg);
   -moz-transform: rotate3d(0, 1, 0, 0deg);
   -o-transform: rotate3d(0, 1, 0, 0deg);
   transform: rotate3d(0, 1, 0, 0deg);
 }
 
-.view.push.flipHorizontal.active.transition {
+.pp-view.push.flip-horizontal.active.transition {
   -webkit-transform: rotate3d(0, 1, 0, -180deg);
   -moz-transform: rotate3d(0, 1, 0, -180deg);
   -o-transform: rotate3d(0, 1, 0, -180deg);
   transform: rotate3d(0, 1, 0, -180deg);
 }
 
-.view.pop.flipHorizontal {
+.pp-view.pop.flip-horizontal {
   -webkit-transform: rotate3d(0, 1, 0, -180deg);
   -moz-transform: rotate3d(0, 1, 0, -180deg);
   -o-transform: rotate3d(0, 1, 0, -180deg);
   transform: rotate3d(0, 1, 0, -180deg);
 }
 
-.view.pop.flipHorizontal.transition {
+.pp-view.pop.flip-horizontal.transition {
   -webkit-transform: rotate3d(0, 1, 0, 0deg);
   -moz-transform: rotate3d(0, 1, 0, 0deg);
   -o-transform: rotate3d(0, 1, 0, 0deg);
   transform: rotate3d(0, 1, 0, 0deg);
 }
 
-.view.pop.flipHorizontal.active {
+.pp-view.pop.flip-horizontal.active {
   -webkit-transform: rotate3d(0, 1, 0, 0deg);
   -moz-transform: rotate3d(0, 1, 0, 0deg);
   -o-transform: rotate3d(0, 1, 0, 0deg);
   transform: rotate3d(0, 1, 0, 0deg);
 }
 
-.view.pop.flipHorizontal.active.transition {
+.pp-view.pop.flip-horizontal.active.transition {
   -webkit-transform: rotate3d(0, 1, 0, 180deg);
   -moz-transform: rotate3d(0, 1, 0, 180deg);
   -o-transform: rotate3d(0, 1, 0, 180deg);
   transform: rotate3d(0, 1, 0, 180deg);
 }
 
-/* flipVertical */
-.view.flipVertical {
+/* flip-vertical */
+.pp-view.flip-vertical {
   -webkit-transition: -webkit-transform 1s ease;
   -moz-transition: -moz-transform 1s ease;
   -o-transition: -o-transform 1s ease;
@@ -286,64 +310,64 @@ body {
   z-index: 999999;
 }
 
-.view.push.flipVertical {
+.pp-view.push.flip-vertical {
   -webkit-transform: rotate3d(1, 0, 0, -180deg);
   -moz-transform: rotate3d(1, 0, 0, -180deg);
   -o-transform: rotate3d(1, 0, 0, -180deg);
   transform: rotate3d(1, 0, 0, -180deg);
 }
 
-.view.push.flipVertical.transition {
+.pp-view.push.flip-vertical.transition {
   -webkit-transform: rotate3d(1, 0, 0, 0deg);
   -moz-transform: rotate3d(1, 0, 0, 0deg);
   -o-transform: rotate3d(1, 0, 0, 0deg);
   transform: rotate3d(1, 0, 0, 0deg);
 }
 
-.view.push.flipVertical.active {
+.pp-view.push.flip-vertical.active {
   -webkit-transform: rotate3d(1, 0, 0, 0deg);
   -moz-transform: rotate3d(1, 0, 0, 0deg);
   -o-transform: rotate3d(1, 0, 0, 0deg);
   transform: rotate3d(1, 0, 0, 0deg);
 }
 
-.view.push.flipVertical.active.transition {
+.pp-view.push.flip-vertical.active.transition {
   -webkit-transform: rotate3d(1, 0, 0, 180deg);
   -moz-transform: rotate3d(1, 0, 0, 180deg);
   -o-transform: rotate3d(1, 0, 0, 180deg);
   transform: rotate3d(1, 0, 0, 180deg);
 }
 
-.view.pop.flipVertical {
+.pp-view.pop.flip-vertical {
   -webkit-transform: rotate3d(1, 0, 0, 180deg);
   -moz-transform: rotate3d(1, 0, 0, 180deg);
   -o-transform: rotate3d(1, 0, 0, 180deg);
   transform: rotate3d(1, 0, 0, 180deg);
 }
 
-.view.pop.flipVertical.transition {
+.pp-view.pop.flip-vertical.transition {
   -webkit-transform: rotate3d(1, 0, 0, 0deg);
   -moz-transform: rotate3d(1, 0, 0, 0deg);
   -o-transform: rotate3d(1, 0, 0, 0deg);
   transform: rotate3d(1, 0, 0, 0deg);
 }
 
-.view.pop.flipVertical.active {
+.pp-view.pop.flip-vertical.active {
   -webkit-transform: rotate3d(1, 0, 0, 0deg);
   -moz-transform: rotate3d(1, 0, 0, 0deg);
   -o-transform: rotate3d(1, 0, 0, 0deg);
   transform: rotate3d(1, 0, 0, 0deg);
 }
 
-.view.pop.flipVertical.active.transition {
+.pp-view.pop.flip-vertical.active.transition {
   -webkit-transform: rotate3d(1, 0, 0, -180deg);
   -moz-transform: rotate3d(1, 0, 0, -180deg);
   -o-transform: rotate3d(1, 0, 0, -180deg);
   transform: rotate3d(1, 0, 0, -180deg);
 }
 
-/* cardSwap */
-.view.cardSwap {
+/* card-swap */
+.pp-view.card-swap {
   -webkit-transition: -webkit-transform 1s cubic-bezier(0.25, 1, 0.75, 0.5);
   -moz-transition: -moz-transform 1s cubic-bezier(0.25, 1, 0.75, 0.5);
   -o-transition: -o-transform 1s cubic-bezier(0.25, 1, 0.75, 0.5);
@@ -351,108 +375,108 @@ body {
   z-index: 999999;
 }
 
-.view.push.cardSwap {
+.pp-view.push.card-swap {
   -webkit-transform: rotate3d(0, 1, 0, -30deg) translate3d(100%, 0, -2000px);
   -moz-transform: rotate3d(0, 1, 0, -30deg) translate3d(100%, 0, -2000px);
   -o-transform: rotate3d(0, 1, 0, -30deg) translate3d(100%, 0, -2000px);
   transform: rotate3d(0, 1, 0, -30deg) translate3d(100%, 0, -2000px);
 }
 
-.view.push.cardSwap.transition {
+.pp-view.push.card-swap.transition {
   -webkit-transform: rotate3d(0, 1, 0, 0deg) translate3d(0, 0, 0);
   -moz-transform: rotate3d(0, 1, 0, 0deg) translate3d(0, 0, 0);
   -o-transform: rotate3d(0, 1, 0, 0deg) translate3d(0, 0, 0);
   transform: rotate3d(0, 1, 0, 0deg) translate3d(0, 0, 0);
 }
 
-.view.push.cardSwap.active {
+.pp-view.push.card-swap.active {
   -webkit-transform: rotate3d(0, 1, 0, 0deg) translate3d(0, 0, 0);
   -moz-transform: rotate3d(0, 1, 0, 0deg) translate3d(0, 0, 0);
   -o-transform: rotate3d(0, 1, 0, 0deg) translate3d(0, 0, 0);
   transform: rotate3d(0, 1, 0, 0deg) translate3d(0, 0, 0);
 }
 
-.view.push.cardSwap.active.transition {
+.pp-view.push.card-swap.active.transition {
   -webkit-transform: rotate3d(0, 1, 0, 50deg) translate3d(0, 0, -1500px);
   -moz-transform: rotate3d(0, 1, 0, 50deg) translate3d(0, 0, -1500px);
   -o-transform: rotate3d(0, 1, 0, 50deg) translate3d(0, 0, -1500px);
   transform: rotate3d(0, 1, 0, 50deg) translate3d(0, 0, -1500px);
 }
 
-.view.pop.cardSwap {
+.pp-view.pop.card-swap {
   -webkit-transform: rotate3d(0, 1, 0, 30deg) translate3d(-100%, 0, -2000px);
   -moz-transform: rotate3d(0, 1, 0, 30deg) translate3d(-100%, 0, -2000px);
   -o-transform: rotate3d(0, 1, 0, 30deg) translate3d(-100%, 0, -2000px);
   transform: rotate3d(0, 1, 0, 30deg) translate3d(-100%, 0, -2000px);
 }
 
-.view.pop.cardSwap.transition {
+.pp-view.pop.card-swap.transition {
   -webkit-transform: rotate3d(0, 1, 0, 0deg) translate3d(0, 0, 0);
   -moz-transform: rotate3d(0, 1, 0, 0deg) translate3d(0, 0, 0);
   -o-transform: rotate3d(0, 1, 0, 0deg) translate3d(0, 0, 0);
   transform: rotate3d(0, 1, 0, 0deg) translate3d(0, 0, 0);
 }
 
-.view.pop.cardSwap.active {
+.pp-view.pop.card-swap.active {
   -webkit-transform: rotate3d(0, 1, 0, 0deg) translate3d(0, 0, 0);
   -moz-transform: rotate3d(0, 1, 0, 0deg) translate3d(0, 0, 0);
   -o-transform: rotate3d(0, 1, 0, 0deg) translate3d(0, 0, 0);
   transform: rotate3d(0, 1, 0, 0deg) translate3d(0, 0, 0);
 }
 
-.view.pop.cardSwap.active.transition {
+.pp-view.pop.card-swap.active.transition {
   -webkit-transform: rotate3d(0, 1, 0, -50deg) translate3d(0, 0, -1500px);
   -moz-transform: rotate3d(0, 1, 0, -50deg) translate3d(0, 0, -1500px);
   -o-transform: rotate3d(0, 1, 0, -50deg) translate3d(0, 0, -1500px);
   transform: rotate3d(0, 1, 0, -50deg) translate3d(0, 0, -1500px);
 }
 
-/* crossFade */
-.view.crossFade {
+/* cross-fade */
+.pp-view.cross-fade {
   -webkit-transition: opacity 0.5s ease;
   -moz-transition: opacity 0.5s ease;
   -o-transition: opacity 0.5s ease;
   transition: opacity 0.5s ease;
 }
 
-.view.push.crossFade {
+.pp-view.push.cross-fade {
   z-index: 1;
   opacity: 0;
 }
 
-.view.push.crossFade.transition {
+.pp-view.push.cross-fade.transition {
   opacity: 1;
 }
 
-.view.push.crossFade.active {
+.pp-view.push.cross-fade.active {
   z-index: 0;
   opacity: 1;
 }
 
-.view.push.crossFade.active.transition {
+.pp-view.push.cross-fade.active.transition {
   opacity: 0;
 }
 
-.view.pop.crossFade {
+.pp-view.pop.cross-fade {
   z-index: 0;
   opacity: 0;
 }
 
-.view.pop.crossFade.transition {
+.pp-view.pop.cross-fade.transition {
   opacity: 1;
 }
 
-.view.pop.crossFade.active {
+.pp-view.pop.cross-fade.active {
   z-index: 1;
   opacity: 1;
 }
 
-.view.pop.crossFade.active.transition {
+.pp-view.pop.cross-fade.active.transition {
   opacity: 0;
 }
 
 /* zoom */
-.view.zoom {
+.pp-view.zoom {
   -webkit-transition-property: -webkit-transform, opacity;
   -webkit-transition-duration: 0.5s, 0.5s;
   -webkit-transition-timing-function: ease, ease;
@@ -468,7 +492,7 @@ body {
   z-index: 999999;
 }
 
-.view.push.zoom {
+.pp-view.push.zoom {
   z-index: 1;
   opacity: 0;
   -webkit-transform: scale3d(0.5, 0.5, 1);
@@ -477,7 +501,7 @@ body {
   transform: scale3d(0.5, 0.5, 1);
 }
 
-.view.push.zoom.transition {
+.pp-view.push.zoom.transition {
   opacity: 1;
   -webkit-transform: scale3d(1, 1, 1);
   -moz-transform: scale3d(1, 1, 1);
@@ -485,7 +509,7 @@ body {
   transform: scale3d(1, 1, 1);
 }
 
-.view.push.zoom.active {
+.pp-view.push.zoom.active {
   z-index: 2;
   opacity: 1;
   -webkit-transform: scale3d(1, 1, 1);
@@ -494,7 +518,7 @@ body {
   transform: scale3d(1, 1, 1);
 }
 
-.view.push.zoom.active.transition {
+.pp-view.push.zoom.active.transition {
   opacity: 0;
   -webkit-transform: scale3d(1.5, 1.5, 1);
   -moz-transform: scale3d(1.5, 1.5, 1);
@@ -502,7 +526,7 @@ body {
   transform: scale3d(1.5, 1.5, 1);
 }
 
-.view.pop.zoom {
+.pp-view.pop.zoom {
   z-index: 2;
   opacity: 0;
   -webkit-transform: scale3d(1.5, 1.5, 1);
@@ -511,7 +535,7 @@ body {
   transform: scale3d(1.5, 1.5, 1);
 }
 
-.view.pop.zoom.transition {
+.pp-view.pop.zoom.transition {
   opacity: 1;
   -webkit-transform: scale3d(1, 1, 1);
   -moz-transform: scale3d(1, 1, 1);
@@ -519,7 +543,7 @@ body {
   transform: scale3d(1, 1, 1);
 }
 
-.view.pop.zoom.active {
+.pp-view.pop.zoom.active {
   z-index: 1;
   opacity: 1;
   -webkit-transform: scale3d(1, 1, 1);
@@ -528,7 +552,7 @@ body {
   transform: scale3d(1, 1, 1);
 }
 
-.view.pop.zoom.active.transition {
+.pp-view.pop.zoom.active.transition {
   opacity: 0;
   -webkit-transform: scale3d(0.5, 0.5, 1);
   -moz-transform: scale3d(0.5, 0.5, 1);
