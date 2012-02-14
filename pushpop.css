@@ -265,6 +265,9 @@ body {
 /* Transition: slide-vertical (2D), flip-vertical (2D) */
 .pp-view.slide-vertical,
 .pp-view.flip-vertical {
+  -webkit-box-shadow: 0 -2px 16px 6px rgba(0, 0, 0, 0.6); /* NOTE: Possible performance implications on some devices/browsers. */
+  -moz-box-shadow: 0 -2px 16px 6px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 -2px 16px 6px rgba(0, 0, 0, 0.6);
   -webkit-transition: -webkit-transform 0.5s ease;
   -moz-transition: -moz-transform 0.5s ease;
   -ms-transition: -ms-transform 0.5s ease;
@@ -350,6 +353,9 @@ body {
 
 /* Transition: slide-vertical (3D) */
 .csstransforms3d .pp-view.slide-vertical {
+  -webkit-box-shadow: 0 -2px 16px 6px rgba(0, 0, 0, 0.6); /* NOTE: Possible performance implications on some devices/browsers. */
+  -moz-box-shadow: 0 -2px 16px 6px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 -2px 16px 6px rgba(0, 0, 0, 0.6);
   -webkit-transition: -webkit-transform 0.5s ease;
   -moz-transition: -moz-transform 0.5s ease;
   -ms-transition: -ms-transform 0.5s ease;
@@ -419,6 +425,9 @@ body {
 
 /* Transition: flip-horizontal (3D) */
 .csstransforms3d .pp-view.flip-horizontal {
+  -webkit-box-shadow: 0 -2px 16px 6px rgba(0, 0, 0, 0.6); /* NOTE: Possible performance implications on some devices/browsers. */
+  -moz-box-shadow: 0 -2px 16px 6px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 -2px 16px 6px rgba(0, 0, 0, 0.6);
   -webkit-transition: -webkit-transform 1s ease;
   -moz-transition: -moz-transform 1s ease;
   -ms-transition: -ms-transform 1s ease;
@@ -484,6 +493,9 @@ body {
 
 /* Transition: flip-vertical (3D) */
 .csstransforms3d .pp-view.flip-vertical {
+  -webkit-box-shadow: 0 -2px 16px 6px rgba(0, 0, 0, 0.6); /* NOTE: Possible performance implications on some devices/browsers. */
+  -moz-box-shadow: 0 -2px 16px 6px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 -2px 16px 6px rgba(0, 0, 0, 0.6);
   -webkit-transition: -webkit-transform 1s ease;
   -moz-transition: -moz-transform 1s ease;
   -ms-transition: -ms-transform 1s ease;
@@ -549,6 +561,9 @@ body {
 
 /* Transition: card-swap (3D) */
 .csstransforms3d .pp-view.card-swap {
+  -webkit-box-shadow: 0 -2px 16px 6px rgba(0, 0, 0, 0.6); /* NOTE: Possible performance implications on some devices/browsers. */
+  -moz-box-shadow: 0 -2px 16px 6px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 -2px 16px 6px rgba(0, 0, 0, 0.6);
   -webkit-transition: -webkit-transform 0.75s cubic-bezier(0.25, 1, 0.5, 0.25);
   -moz-transition: -moz-transform 0.75s cubic-bezier(0.25, 1, 0.5, 0.25);
   -ms-transition: -ms-transform 0.75s cubic-bezier(0.25, 1, 0.5, 0.25);
