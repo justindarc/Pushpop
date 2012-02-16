@@ -7,11 +7,12 @@ ul.pp-tableview {
   list-style: none;
   font-size: 16px;
   margin: 0 1em;
+  padding: 0;
   -webkit-touch-callout: none;
 }
 
 ul.pp-tableview:after {
-  content: "";
+  content: '';
   display: block;
   height: 1em;
 }
@@ -105,8 +106,9 @@ ul.pp-tableview > li.header, ul.pp-tableview > li.header > a {
   font-weight: bold;
 }
 
-ul.pp-tableview > li.picker-cell > label {
+ul.pp-tableview > li.pp-tableview-picker-cell > label {
   display: inline-block;
+  margin: 0;
   padding: 0;
   color: #000;
   font-size: inherit;
@@ -118,21 +120,21 @@ ul.pp-tableview > li.picker-cell > label {
   width: 50%;
 }
 
-ul.pp-tableview > li.picker-cell.active > * {
-  color: #fff;
-  text-shadow: none;
-}
-
-ul.pp-tableview > li.picker-cell > span {
+ul.pp-tableview > li.pp-tableview-picker-cell > span {
   color: #4c566c;
   float: right;
   font-weight: normal;
 }
 
+ul.pp-tableview > li.pp-tableview-picker-cell.active > * {
+  color: #fff;
+  text-shadow: none;
+}
+
 ul.pp-tableview > li.disclosure-indicator:after {
   border: 0.45em solid transparent;
   border-left-color: #666;
-  content: "";
+  content: '';
   display: inline-block;
   position: absolute;
   top: 50%;
@@ -154,7 +156,7 @@ ul.pp-tableview > li.detail-disclosure-button:before {
   background: linear-gradient(top, rgb(5, 140, 245) 0%, rgb(1, 93, 230) 100%); /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#058cf5', endColorstr='#015de6', GradientType=0); /* IE6-9 */
   border: 0.15em solid #fff;
-  content: "";
+  content: '';
   display: inline-block;
   position: absolute;
   top: 50%;
@@ -173,7 +175,7 @@ ul.pp-tableview > li.detail-disclosure-button:before {
 ul.pp-tableview > li.detail-disclosure-button:after {
   border: 0.35em solid transparent;
   border-left-color: #f6f6f6;
-  content: "";
+  content: '';
   display: inline-block;
   position: absolute;
   top: 50%;
@@ -185,7 +187,7 @@ ul.pp-tableview > li.checkmark:after {
   border: 0.2em solid transparent;
   border-left-color: #666;
   border-bottom-color: #666;
-  content: "";
+  content: '';
   display: inline-block;
   position: absolute;
   top: 50%;
@@ -262,7 +264,7 @@ ul.pp-tableview > li.delete-button:before {
   background: linear-gradient(top,  #d4666e 0%,#bd1421 100%); /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d4666e', endColorstr='#bd1421',GradientType=0 ); /* IE6-9 */
   border: 0.15em solid #fff;
-  content: "";
+  content: '';
   display: inline-block;
   position: absolute;
   top: 50%;
@@ -280,7 +282,7 @@ ul.pp-tableview > li.delete-button:before {
 
 ul.pp-tableview > li.delete-button:after {
   background: #fff;
-  content: "";
+  content: '';
   display: inline-block;
   position: absolute;
   height: 0.2em;

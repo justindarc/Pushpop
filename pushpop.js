@@ -13,15 +13,27 @@ if (!window['Pushpop']) window.Pushpop = {};
 
 Pushpop.defaultTransition = 'slide-horizontal';
 
+if (!Pushpop['EventType']) Pushpop.EventType = {};
+$.extend(Pushpop.EventType, {
+  WillPushView: 'Pushpop:WillPushView',
+  DidPushView: 'Pushpop:DidPushView',
+  WillPopView: 'Pushpop:WillPopView',
+  DidPopView: 'Pushpop:DidPopView',
+  WillDismissView: 'Pushpop:WillDismissView',
+  DidDismissView: 'Pushpop:DidDismissView',
+  WillPresentView: 'Pushpop:WillPresentView',
+  DidPresentView: 'Pushpop:DidPresentView'
+});
+
 Pushpop.View = function(element) {
   var $element = this.$element = $(element);
   
   var view = $element.data('view');
   if (view) return view;
   
-  this.element = $element[0];
-  
   $element.data('view', this);
+  
+  element = this.element = $element[0];
 };
 
 Pushpop.View.prototype = {
@@ -42,7 +54,13 @@ Pushpop.View.prototype = {
 
 Pushpop.ViewStack = function(element) {
   var $element = this.$element = $(element);
-  this.element = $element[0];
+  
+  var viewStack = $element.data('viewStack');
+  if (viewStack) return viewStack;
+  
+  $element.data('viewStack', this);
+  
+  element = this.element = $element[0];
   
   var views = this.views = [];
   
@@ -51,8 +69,6 @@ Pushpop.ViewStack = function(element) {
     new Pushpop.View($rootViewElement.addClass('root'));
   
   views.push(rootView);
-  
-  $element.data('viewStack', this);
 };
 
 Pushpop.ViewStack.prototype = {
@@ -80,6 +96,25 @@ Pushpop.ViewStack.prototype = {
         var $newActiveViewElement = newActiveView.$element;
         var $oldActiveViewElement = oldActiveView.$element;
         
+        var $element = viewStack.$element;
+        
+        if ($newActiveViewElement.hasClass('push')) {
+          $newActiveViewElement.trigger(jQuery.Event(Pushpop.EventType.DidPushView, {
+            view: newActiveView
+          }));
+        } else {
+          $oldActiveViewElement.trigger(jQuery.Event(Pushpop.EventType.DidPopView, {
+            view: oldActiveView
+          }));
+        }
+
+        $oldActiveViewElement.trigger(jQuery.Event(Pushpop.EventType.DidDismissView, {
+          view: oldActiveView
+        }));        
+        $newActiveViewElement.trigger(jQuery.Event(Pushpop.EventType.DidPresentView, {
+          view: newActiveView
+        }));
+        
         $newActiveViewElement.unbind(evt);
         $newActiveViewElement.addClass('active');
         $newActiveViewElement.removeClass('transition push pop ' + newActiveView.transition);
@@ -98,10 +133,22 @@ Pushpop.ViewStack.prototype = {
     var oldActiveView = this.getActiveView();
     var newActiveView = view;
     
-    this.views.push(newActiveView);
+    var $element = this.$element;
     
     var $oldActiveViewElement = oldActiveView.$element;
     var $newActiveViewElement = newActiveView.$element;
+    
+    $newActiveViewElement.trigger(jQuery.Event(Pushpop.EventType.WillPushView, {
+      view: newActiveView
+    }));
+    $oldActiveViewElement.trigger(jQuery.Event(Pushpop.EventType.WillDismissView, {
+      view: oldActiveView
+    }));
+    $newActiveViewElement.trigger(jQuery.Event(Pushpop.EventType.WillPresentView, {
+      view: newActiveView
+    }));
+    
+    this.views.push(newActiveView);
 
     $newActiveViewElement.bind('webkitTransitionEnd transitionend oTransitionEnd transitionEnd', {
       newActiveView: newActiveView
@@ -143,9 +190,21 @@ Pushpop.ViewStack.prototype = {
       newActiveView = this.getActiveView();
     }
     
+    var $element = this.$element;
+    
     var $oldActiveViewElement = oldActiveView.$element;
     var $newActiveViewElement = newActiveView.$element;
-
+    
+    $oldActiveViewElement.trigger(jQuery.Event(Pushpop.EventType.WillPopView, {
+      view: oldActiveView
+    }));
+    $oldActiveViewElement.trigger(jQuery.Event(Pushpop.EventType.WillDismissView, {
+      view: oldActiveView
+    }));
+    $newActiveViewElement.trigger(jQuery.Event(Pushpop.EventType.WillPresentView, {
+      view: newActiveView
+    }));
+    
     $newActiveViewElement.bind('webkitTransitionEnd transitionend oTransitionEnd transitionEnd', {
       newActiveView: newActiveView
     }, this.handleEvent);
