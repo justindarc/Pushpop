@@ -13,6 +13,22 @@
 	<script type="text/javascript" src="../externals/scrollkit/scrollkit.js"></script>
 	<script type="text/javascript" src="../pushpop.js"></script>
 	<script type="text/javascript" src="pushpop-tableview.js"></script>
+	<script type="text/javascript">
+	  $(function() {
+	    var $body = $(document.body);
+	    var pushpopEventHandler = function(evt) {
+	      console.log(evt.type + ': ' + evt.view);
+	    };
+	    $body.bind(Pushpop.EventType.WillPushView, pushpopEventHandler);
+	    $body.bind(Pushpop.EventType.DidPushView, pushpopEventHandler);
+	    $body.bind(Pushpop.EventType.WillPopView, pushpopEventHandler);
+	    $body.bind(Pushpop.EventType.DidPopView, pushpopEventHandler);
+	    $body.bind(Pushpop.EventType.WillDismissView, pushpopEventHandler);
+	    $body.bind(Pushpop.EventType.DidDismissView, pushpopEventHandler);
+	    $body.bind(Pushpop.EventType.WillPresentView, pushpopEventHandler);
+	    $body.bind(Pushpop.EventType.DidPresentView, pushpopEventHandler);
+	  });
+	</script>
 </head>
 <body>
   <div class="navbar navbar-fixed-top">
@@ -77,17 +93,28 @@
           </ul>
           <ul class="pp-tableview">
             <li class="header">Picker Table Cells</li>
-            <li class="picker-cell">
-              <input type="hidden" name="color" value="1"/>
+            <li class="pp-tableview-picker-cell" data-name="color" data-value="1" data-text="Red">
               <label>Color</label>
               <ul class="pp-tableview">
                 <li class="header">Select A Color</li>
                 <li data-value="1">Red</li>
-                <li>Yellow</li>
+                <li data-value="2">Yellow</li>
                 <li data-value="3">Orange</li>
-                <li>Green</li>
+                <li data-value="4">Green</li>
                 <li data-value="5">Blue</li>
-                <li>Purple</li>
+                <li data-value="6">Purple</li>
+                <li data-value="7">Red</li>
+                <li data-value="8">Yellow</li>
+                <li data-value="9">Orange</li>
+                <li data-value="10">Green</li>
+                <li data-value="11">Blue</li>
+                <li data-value="12">Purple</li>
+                <li data-value="13">Red</li>
+                <li data-value="14">Yellow</li>
+                <li data-value="15">Orange</li>
+                <li data-value="16">Green</li>
+                <li data-value="17">Blue</li>
+                <li data-value="18">Purple</li>
               </ul>
             </li>
           </ul>
