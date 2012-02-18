@@ -28,6 +28,16 @@ ul.pp-tableview > li {
   font-weight: bold;
 }
 
+ul.pp-tableview > li > div.pp-tableview-accessory-button {
+  width: 1.5em;
+  height: 1.5em;
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  right: 0.4em;
+  margin-top: -0.75em;
+}
+
 ul.pp-tableview > li:first-child, ul.pp-tableview > li:first-child > a,
 ul.pp-tableview > li.header + li, ul.pp-tableview > li.header + li > a {
   -webkit-border-radius: 0.65em 0.65em 0 0;
@@ -254,6 +264,45 @@ ul.pp-tableview > li.picker-adder-cell > span {
   font-weight: normal;
 }
 
+ul.pp-tableview > li.add-button:before {
+  background: #14bd21; /* Old browsers */
+  background: -moz-linear-gradient(top,  #66d46e 0%, #14bd21 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#66d46e), color-stop(100%,#14bd21)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #66d46e 0%,#14bd21 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #66d46e 0%,#14bd21 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #66d46e 0%,#14bd21 100%); /* IE10+ */
+  background: linear-gradient(top,  #66d46e 0%,#14bd21 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#66d46e', endColorstr='#14bd21',GradientType=0 ); /* IE6-9 */
+  border: 0.15em solid #fff;
+  content: '';
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  right: 0.4em;
+  width: 1.2em;
+  height: 1.2em;
+  margin-top: -0.8em;
+  -webkit-border-radius: 1em;
+  -moz-border-radius: 1em;
+  border-radius: 1em;
+  -webkit-box-shadow: 0 0.1em 0.1em rgba(0, 0, 0, 0.8);
+  -moz-box-shadow: 0 0.1em 0.1em rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0.1em 0.1em rgba(0, 0, 0, 0.8);
+}
+
+ul.pp-tableview > li.add-button:after {
+  color: #fff;
+  content: '+';
+  display: inline-block;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 1.45em;
+  font-weight: normal;
+  position: absolute;
+  top: 50%;
+  right: 0.5em;
+  margin-top: -0.55em;
+}
+
 ul.pp-tableview > li.delete-button:before {
   background: #bd1421; /* Old browsers */
   background: -moz-linear-gradient(top,  #d4666e 0%, #bd1421 100%); /* FF3.6+ */
@@ -286,8 +335,8 @@ ul.pp-tableview > li.delete-button:after {
   display: inline-block;
   position: absolute;
   height: 0.2em;
-  width: 0.85em;
+  width: 0.7em;
   top: 50%;
-  right: 0.7em;
+  right: 0.8em;
   margin-top: -0.15em;
 }
