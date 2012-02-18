@@ -20,6 +20,7 @@ if (!window['Pushpop']) window.Pushpop = {};
     var _$activeCellLinkElement = null;
     var _isMouseDown = false;
     var _isAccessoryButtonPressed = false;
+    var _isEditingAccessoryButtonPressed = false;
     
     var $element = this.$element = $(element);
     
@@ -48,24 +49,24 @@ if (!window['Pushpop']) window.Pushpop = {};
       _$activeCellLinkElement = _$activeCellElement.children('a:first');
       _$activeCellLinkElement.unbind('click', activeCellLinkClickHandler);
       
-      var $accessoryButtonElement = $('<div class="pp-tableview-accessory-button"/>');
-      _$activeCellElement.append($accessoryButtonElement);
+      var $editingAccessoryButtonElement = $('<div class="pp-tableview-editing-accessory-button"/>');
+      _$activeCellElement.append($editingAccessoryButtonElement);
       
       var mouseX = (evt.type === 'touchstart') ? evt.originalEvent.targetTouches[0].pageX : evt.pageX;
       var mouseY = (evt.type === 'touchstart') ? evt.originalEvent.targetTouches[0].pageY : evt.pageY;
-      var accessoryOffset = $accessoryButtonElement.offset();
-      var accessoryWidth = $accessoryButtonElement.width();
-      var accessoryHeight = $accessoryButtonElement.height();
+      var editingAccessoryOffset = $editingAccessoryButtonElement.offset();
+      var editingAccessoryWidth = $editingAccessoryButtonElement.width();
+      var editingAccessoryHeight = $editingAccessoryButtonElement.height();
       
-      _isAccessoryButtonPressed = (
-        (mouseX >= accessoryOffset.left && mouseX <= accessoryOffset.left + accessoryWidth) &&
-        (mouseY >= accessoryOffset.top  && mouseY <= accessoryOffset.top  + accessoryHeight)
+      _isEditingAccessoryButtonPressed = (
+        (mouseX >= editingAccessoryOffset.left && mouseX <= editingAccessoryOffset.left + editingAccessoryWidth) &&
+        (mouseY >= editingAccessoryOffset.top  && mouseY <= editingAccessoryOffset.top  + editingAccessoryHeight)
       );
       
-      $accessoryButtonElement.remove();
+      $editingAccessoryButtonElement.remove();
       
       if (_isMouseDown) {
-        if (!_isAccessoryButtonPressed) _$activeCellElement.addClass('active');
+        if (!_isAccessoryButtonPressed && !_isEditingAccessoryButtonPressed) _$activeCellElement.addClass('active');
       } else {      
         _$activeCellLinkElement.bind('click', activeCellLinkClickHandler);
       }
@@ -83,6 +84,7 @@ if (!window['Pushpop']) window.Pushpop = {};
       _$activeCellLinkElement = null;
       _isMouseDown = false;
       _isAccessoryButtonPressed = false;
+      _isEditingAccessoryButtonPressed = false;
     });
     
     _$window.bind('mouseup touchend', function(evt) {
@@ -91,7 +93,7 @@ if (!window['Pushpop']) window.Pushpop = {};
       var index = _$activeCellElement.index();
       var activeCellElement = _$activeCellElement[0];
       
-      if (!_isAccessoryButtonPressed) {
+      if (!_isAccessoryButtonPressed && !_isEditingAccessoryButtonPressed) {
         $element.trigger(jQuery.Event(Pushpop.EventType.WillSelectCell, {
           cellElement: activeCellElement,
           $cellElement: _$activeCellElement,
@@ -104,7 +106,7 @@ if (!window['Pushpop']) window.Pushpop = {};
         _$activeCellLinkElement.trigger('click');
       }
       
-      if (!_isAccessoryButtonPressed) {
+      if (!_isAccessoryButtonPressed && !_isEditingAccessoryButtonPressed) {
         $element.trigger(jQuery.Event(Pushpop.EventType.DidSelectCell, {
           cellElement: activeCellElement,
           $cellElement: _$activeCellElement,
@@ -124,6 +126,7 @@ if (!window['Pushpop']) window.Pushpop = {};
       _$activeCellLinkElement = null;
       _isMouseDown = false;
       _isAccessoryButtonPressed = false;
+      _isEditingAccessoryButtonPressed = false;
     });
     
     $element.bind(Pushpop.EventType.DidSelectCell, function(evt) {
@@ -138,10 +141,16 @@ if (!window['Pushpop']) window.Pushpop = {};
     $element.bind(Pushpop.EventType.AccessoryButtonTapped, function(evt) {
       var $cellElement = evt.$cellElement;
       
-      if ($cellElement.hasClass('delete-button')) {
+      if ($cellElement.hasClass('pp-tableview-editing-accessory-delete')) {
         if ($cellElement.hasClass('pp-tableview-picker-value-cell')) {
+          // TODO: Implement "Delete Confirmation" functionality.
+          $cellElement.addClass('pp-tableview-editing-delete-confirmation');
           var pickerCell = $cellElement.data('pickerCell');
-          if (pickerCell) pickerCell.removeValue($cellElement.data('value'));
+          if (pickerCell) {
+            $cellElement.slideUp(200, function() {
+              pickerCell.removeValue($cellElement.data('value'));
+            });
+          }
         }
       }
     });
@@ -150,14 +159,13 @@ if (!window['Pushpop']) window.Pushpop = {};
   Pushpop.TableView.prototype = {
     element: null,
     $element: null,
+    isEditing: false,
     getView: function() {
       return this.$element.parents('.pp-view:first').data('view');
     }
   };
 
   Pushpop.TableViewPickerCell = function(element) {
-    var _isMouseDown = false;
-    
     var $element = this.$element = $(element);
   
     var pickerCell = $element.data('pickerCell');
@@ -170,7 +178,7 @@ if (!window['Pushpop']) window.Pushpop = {};
     var self = this;
     
     var isMultiple = this.isMultiple = $element.data('multiple') ? true : false;
-    if (isMultiple) $element.addClass('add-button');
+    if (isMultiple) $element.addClass('pp-tableview-editing-cell pp-tableview-editing-accessory-insert');
     
     var viewStack = this.getParentTableView().getView().getViewStack();
     var $viewElement = $('<div class="pp-view sk-scroll-view" id="pp-tableview-picker-view-' + (++_lastPickerViewId) + '"/>');
@@ -195,7 +203,6 @@ if (!window['Pushpop']) window.Pushpop = {};
     }
     
     $tableViewElement.bind(Pushpop.EventType.DidSelectCell, function(evt) {
-      var $oldSelectedCellElements = $tableViewElement.children('.checkmark');
       var $cellElement = evt.$cellElement;
       var value = $cellElement.data('value');
       
@@ -239,17 +246,17 @@ if (!window['Pushpop']) window.Pushpop = {};
         $element.attr('data-value', this._value.join(',')).data('value', this._value);
         this.$selectedTextElement.html(null);
         
-        var $valueCellElement = $('<li class="pp-tableview-picker-value-cell delete-button" data-value="' + value + '">' + text + '</li>');
+        var $valueCellElement = $('<li class="pp-tableview-picker-value-cell pp-tableview-editing-cell pp-tableview-editing-accessory-delete" data-value="' + value + '">' + text + '</li>');
         $valueCellElement.data('pickerCell', this);
         $element.before($valueCellElement);
-        $tableViewElement.children('[data-value="' + value + '"]:first').addClass('checkmark');
+        $tableViewElement.children('[data-value="' + value + '"]:first').addClass('pp-tableview-accessory-checkmark');
       } else {
         this._value = [value];
         $element.attr('data-value', this._value.join(',')).data('value', this._value);
         this.$selectedTextElement.html(text);
         
-        $tableViewElement.children('.checkmark').removeClass('checkmark');
-        $tableViewElement.children('[data-value="' + value + '"]:first').addClass('checkmark');
+        $tableViewElement.children('.pp-tableview-accessory-checkmark').removeClass('pp-tableview-accessory-checkmark');
+        $tableViewElement.children('[data-value="' + value + '"]:first').addClass('pp-tableview-accessory-checkmark');
       }
     },
     removeValue: function(value) {
@@ -271,7 +278,7 @@ if (!window['Pushpop']) window.Pushpop = {};
         this._value.splice(index, 1);
         
         var $tableViewElement = this.tableView.$element;
-        $tableViewElement.children('[data-value="' + value + '"]:first').removeClass('checkmark');
+        $tableViewElement.children('[data-value="' + value + '"]:first').removeClass('pp-tableview-accessory-checkmark');
         $element.prevAll('[data-value="' + value + '"]:first').remove();
       } else {
         this._value = [];
