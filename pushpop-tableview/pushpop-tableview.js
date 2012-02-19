@@ -7,6 +7,7 @@ if (!window['Pushpop']) window.Pushpop = {};
   
   var _$window = $(window['addEventListener'] ? window : document.body);
   var _lastPickerViewId = 0;
+  var _lastTextareaInputViewId = 0;
   
   if (!Pushpop['EventType']) Pushpop.EventType = {};
   $.extend(Pushpop.EventType, {
@@ -33,6 +34,9 @@ if (!window['Pushpop']) window.Pushpop = {};
     
     var $pickerCells = $element.children('.pp-tableview-picker-cell');
     $pickerCells.each(function(index, element) { new Pushpop.TableViewPickerCell(element); });
+    
+    var $textareaInputCells = $element.children('.pp-tableview-textarea-input-cell');
+    $textareaInputCells.each(function(index, element) { new Pushpop.TableViewTextareaInputCell(element); });
     
     var activeCellLinkClickHandler = function(evt) {
       $(this).unbind(evt);
@@ -144,6 +148,11 @@ if (!window['Pushpop']) window.Pushpop = {};
         var pickerCell = $cellElement.data('pickerCell');
         if (pickerCell) pickerCell.show();
       }
+      
+      else if ($cellElement.hasClass('pp-tableview-textarea-input-cell')) {
+        var textareaInputCell = $cellElement.data('textareaInputCell');
+        if (textareaInputCell) textareaInputCell.show();
+      }
     });
     
     $element.bind(Pushpop.EventType.AccessoryButtonTapped, function(evt) {
@@ -151,7 +160,6 @@ if (!window['Pushpop']) window.Pushpop = {};
       
       if ($cellElement.hasClass('pp-tableview-editing-accessory-delete')) {
         if ($cellElement.hasClass('pp-tableview-picker-value-cell')) {
-          // TODO: Implement "Delete Confirmation" functionality.
           $cellElement.addClass('pp-tableview-editing-delete-confirmation');
           var pickerCell = $cellElement.data('pickerCell');
           if (pickerCell) {
@@ -299,6 +307,53 @@ if (!window['Pushpop']) window.Pushpop = {};
       var view = this.view;
       var viewStack = view.getViewStack();
       
+      viewStack.push(view);
+    }
+  };
+  
+  Pushpop.TableViewTextareaInputCell = function(element) {
+    var $element = this.$element = $(element);
+
+    var textareaInputCell = $element.data('textareaInputCell');
+    if (textareaInputCell) return textareaInputCell;
+
+    $element.data('textareaInputCell', this);
+
+    element = this.element = $element[0];
+
+    var viewStack = this.getParentTableView().getView().getViewStack();
+    var $viewElement = $('<div class="pp-view" id="pp-tableview-textarea-input-view-' + (++_lastTextareaInputViewId) + '"/>');
+    viewStack.$element.append($viewElement);
+
+    var view = this.view = new Pushpop.View($viewElement);
+    var $labelElement = $('<label class="pp-tableview-textarea-input-label">' + $element.children('label:first').text() + '</label>');
+    var $textareaElement = $element.children('textarea');
+    $textareaElement.addClass('pp-tableview-textarea-input');
+    $viewElement.append($labelElement).append($textareaElement);
+
+    var $textElement = this.$textElement = $('<span/>').appendTo($element);
+    var $doneButtonElement = this.$doneButtonElement = $('<a class="pp-tableview-textarea-input-done-button" href="#">Done</a>');
+    $viewElement.append($doneButtonElement);
+
+    $doneButtonElement.bind('click', function(evt) {
+      $textElement.html($textareaElement.val());
+      viewStack.pop();
+    });
+  };
+
+  Pushpop.TableViewTextareaInputCell.prototype = {
+    element: null,
+    $element: null,
+    $textElement: null,
+    $doneButtonElement: null,
+    view: null,
+    getParentTableView: function() {
+      return this.$element.parents('.pp-tableview:first').data('tableview');
+    },
+    show: function() {
+      var view = this.view;
+      var viewStack = view.getViewStack();
+
       viewStack.push(view);
     }
   };

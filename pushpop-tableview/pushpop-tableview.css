@@ -179,6 +179,87 @@ ul.pp-tableview > li.pp-tableview-inline-text-input-cell.active > input::-moz-pl
 }
 
 /**
+ * Pushpop TableView Textarea Input Cells
+ */
+ul.pp-tableview > li.pp-tableview-textarea-input-cell > label {
+  display: block;
+  float: left;
+  margin: 0;
+  padding: 0;
+  color: #000;
+  font-size: inherit;
+  font-weight: bold;
+  line-height: inherit;
+  text-align: left;
+  text-shadow: #fff 0 1px 0;
+  width: 30%;
+}
+
+ul.pp-tableview > li.pp-tableview-textarea-input-cell > span {
+  color: #4c566c;
+  display: inline-block;
+  font-weight: normal;
+  width: 70%;
+}
+
+ul.pp-tableview > li.pp-tableview-textarea-input-cell.active > * {
+  color: #fff;
+  text-shadow: none;
+}
+
+label.pp-tableview-textarea-input-label {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: bold;
+  font-size: 16px;
+  background-color: transparent;
+  border: none;
+  color: #4c566c;
+  padding: 0.7em 0.65em 0.5em;
+  position: relative;
+  text-shadow: #fff 0 1px 0;
+}
+
+textarea.pp-tableview-textarea-input {
+  display: block;
+  position: absolute;
+  left: 1em;
+  right: 1em;
+  width: auto;
+  height: 8em;
+  resize: none;
+}
+
+a.pp-tableview-textarea-input-done-button {
+  background: #849cbb; /* Old browsers */
+  background: -moz-linear-gradient(top,  #849cbb 0%, #5877a2 50%, #486a9a 51%, #4a6c9b 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#849cbb), color-stop(50%,#5877a2), color-stop(51%,#486a9a), color-stop(100%,#4a6c9b)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #849cbb 0%,#5877a2 50%,#486a9a 51%,#4a6c9b 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #849cbb 0%,#5877a2 50%,#486a9a 51%,#4a6c9b 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #849cbb 0%,#5877a2 50%,#486a9a 51%,#4a6c9b 100%); /* IE10+ */
+  background: linear-gradient(top,  #849cbb 0%,#5877a2 50%,#486a9a 51%,#4a6c9b 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#849cbb', endColorstr='#4a6c9b',GradientType=0 ); /* IE6-9 */
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  display: inline-block;
+  font-size: 1em;
+  font-weight: bold;
+  position: absolute;
+  top: 12.75em;
+  left: 1em;
+  right: 1em;
+  width: auto;
+  padding: 0.4em;
+  color: #fff;
+  text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.7);
+  text-align: center;
+  text-decoration: none;
+  opacity: 1;
+  outline: none;
+  -webkit-border-radius: 0.4em;
+  -moz-border-radius: 0.4em;
+  border-radius: 0.4em;
+}
+
+/**
  * Pushpop TableView Buttons
  */
 ul.pp-tableview > li > a.pp-tableview-button {
