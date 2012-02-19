@@ -32,9 +32,7 @@ if (!window['Pushpop']) window.Pushpop = {};
     element = this.element = $element[0];
     
     var $pickerCells = $element.children('.pp-tableview-picker-cell');
-    $pickerCells.each(function(index, element) {
-      new Pushpop.TableViewPickerCell(element);
-    });
+    $pickerCells.each(function(index, element) { new Pushpop.TableViewPickerCell(element); });
     
     var activeCellLinkClickHandler = function(evt) {
       $(this).unbind(evt);
@@ -46,6 +44,14 @@ if (!window['Pushpop']) window.Pushpop = {};
       _isMouseDown = (evt.type === 'mousedown' && !Modernizr.touch) || evt.type === 'touchstart';
       
       _$activeCellElement = $(this);
+      
+      if (_$activeCellElement.hasClass('pp-tableview-inline-text-input-cell') &&
+          _$activeCellElement.children('input:first').is(':focus')) {
+        _$activeCellElement = null;
+        isMouseDown = false;
+        return;
+      }
+      
       _$activeCellLinkElement = _$activeCellElement.children('a:first');
       _$activeCellLinkElement.unbind('click', activeCellLinkClickHandler);
       
@@ -112,6 +118,8 @@ if (!window['Pushpop']) window.Pushpop = {};
           $cellElement: _$activeCellElement,
           index: index
         }));
+        
+        if (_$activeCellElement.hasClass('pp-tableview-inline-text-input-cell')) _$activeCellElement.children('input:first').focus();
       } else {
         $element.trigger(jQuery.Event(Pushpop.EventType.AccessoryButtonTapped, {
           cellElement: activeCellElement,

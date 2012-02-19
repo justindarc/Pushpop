@@ -139,6 +139,46 @@ ul.pp-tableview > li.pp-tableview-picker-cell.active > * {
 }
 
 /**
+ * Pushpop TableView Inline Text Input Cells
+ */
+ul.pp-tableview > li.pp-tableview-inline-text-input-cell > label {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  color: #000;
+  font-size: inherit;
+  font-weight: bold;
+  line-height: inherit;
+  text-align: left;
+  text-shadow: #fff 0 1px 0;
+  width: 30%;
+}
+
+ul.pp-tableview > li.pp-tableview-inline-text-input-cell > input {
+  background: none;
+  border: none;
+  color: #4c566c;
+  display: inline-block;
+  position: absolute;
+  left: 30%;
+  right: 1em;
+  width: auto;
+  margin: 0;
+  padding: 0.25em;
+  outline: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+
+ul.pp-tableview > li.pp-tableview-inline-text-input-cell.active > *,
+ul.pp-tableview > li.pp-tableview-inline-text-input-cell.active > input::-webkit-input-placeholder,
+ul.pp-tableview > li.pp-tableview-inline-text-input-cell.active > input::-moz-placeholder {
+  color: #fff;
+  text-shadow: none;
+}
+
+/**
  * Pushpop TableView Buttons
  */
 ul.pp-tableview > li > a.pp-tableview-button {
