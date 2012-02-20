@@ -303,6 +303,12 @@ if (!window['Pushpop']) window.Pushpop = {};
       $element.attr('data-value', this._value.join(',')).data('value', this._value);
       this.$selectedTextElement.html(null);
     },
+    removeAll: function() {
+      var i, values = [];
+      
+      for (i = 0, length = this._value.length; i < length; i++) values.push(this._value[i]);
+      for (i = 0, length = values.length; i < length; i++) this.removeValue(values[i]);
+    },
     show: function() {
       var view = this.view;
       var viewStack = view.getViewStack();
