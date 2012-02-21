@@ -34,12 +34,14 @@ Pushpop.View = function(element) {
   $element.data('view', this);
   
   element = this.element = $element[0];
+  this.title = $element.data('viewTitle');
 };
 
 Pushpop.View.prototype = {
   element: null,
   $element: null,
   transition: null,
+  title: null,
   setTransition: function(value) {
     this.transition = value;
     this.$element.addClass(value);
