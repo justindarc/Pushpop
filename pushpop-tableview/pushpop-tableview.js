@@ -326,14 +326,16 @@ if (!window['Pushpop']) window.Pushpop = {};
     $element.data('textareaInputCell', this);
 
     element = this.element = $element[0];
-
+    
+    var self = this;
     var viewStack = this.getParentTableView().getView().getViewStack();
     var $viewElement = $('<div class="pp-view" id="pp-tableview-textarea-input-view-' + (++_lastTextareaInputViewId) + '"/>');
     viewStack.$element.append($viewElement);
 
     var view = this.view = new Pushpop.View($viewElement);
     var $labelElement = $('<label class="pp-tableview-textarea-input-label">' + $element.children('label:first').text() + '</label>');
-    var $textareaElement = $element.children('textarea');
+    var $textareaElement = this.$textareaElement = $element.children('textarea');
+    var value = this._value = $textareaElement.val();
     $textareaElement.addClass('pp-tableview-textarea-input');
     $viewElement.append($labelElement).append($textareaElement);
 
@@ -342,19 +344,29 @@ if (!window['Pushpop']) window.Pushpop = {};
     $viewElement.append($doneButtonElement);
 
     $doneButtonElement.bind('click', function(evt) {
-      $textElement.html($textareaElement.val());
+      self.setValue($textareaElement.val());
       viewStack.pop();
     });
   };
 
   Pushpop.TableViewTextareaInputCell.prototype = {
+    _value: null,
     element: null,
     $element: null,
     $textElement: null,
+    $textareaElement: null,
     $doneButtonElement: null,
     view: null,
     getParentTableView: function() {
       return this.$element.parents('.pp-tableview:first').data('tableview');
+    },
+    getValue: function() {
+      return this._value;
+    },
+    setValue: function(value) {
+      this.$textareaElement.val(value);
+      this.$textElement.html(value);
+      this._value = value
     },
     show: function() {
       var view = this.view;
