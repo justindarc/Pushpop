@@ -52,7 +52,7 @@ if (!window['Pushpop']) window.Pushpop = {};
       if (_$activeCellElement.hasClass('pp-tableview-inline-text-input-cell') &&
           _$activeCellElement.children('input:first').is(':focus')) {
         _$activeCellElement = null;
-        isMouseDown = false;
+        _isMouseDown = false;
         return;
       }
       
