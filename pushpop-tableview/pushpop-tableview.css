@@ -199,6 +199,7 @@ ul.pp-tableview > li.pp-tableview-textarea-input-cell > span {
   color: #4c566c;
   display: inline-block;
   font-weight: normal;
+  white-space: pre-wrap;
   width: 70%;
 }
 
