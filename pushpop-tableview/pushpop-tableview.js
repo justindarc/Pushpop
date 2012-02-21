@@ -167,7 +167,24 @@ if (!window['Pushpop']) window.Pushpop = {};
           var pickerCell = $cellElement.data('pickerCell');
           if (pickerCell) {
             $cellElement.slideUp(200, function() {
-              pickerCell.removeValue($cellElement.data('value'));
+              var cellElement = $cellElement[0];
+              var value = $cellElement.data('value');
+              var text = pickerCell.getTextByValue(value);
+              
+              pickerCell.removeValue(value);
+              
+              $element.trigger(jQuery.Event(Pushpop.EventType.DidRemoveValue, {
+                cellElement: cellElement,
+                $cellElement: $cellElement,
+                value: value,
+                text: text
+              }));
+              
+              $element.trigger(jQuery.Event(Pushpop.EventType.DidChangeValue, {
+                cellElement: cellElement,
+                $cellElement: $cellElement,
+                value: pickerCell.getValue()
+              }));
             });
           }
         }
@@ -225,12 +242,25 @@ if (!window['Pushpop']) window.Pushpop = {};
     $tableViewElement.bind(Pushpop.EventType.DidSelectCell, function(evt) {
       var $cellElement = evt.$cellElement;
       var value = $cellElement.data('value');
+      var text = self.getTextByValue(value);
       
       if (self.isMultiple) {
         self.setValue(value, true);
+        $element.trigger(jQuery.Event(Pushpop.EventType.DidAddValue, {
+          cellElement: element,
+          $cellElement: $element,
+          value: value,
+          text: text
+        }));
       } else {
         self.setValue(value);
       }
+      
+      $element.trigger(jQuery.Event(Pushpop.EventType.DidChangeValue, {
+        cellElement: element,
+        $cellElement: $element,
+        value: self.getValue()
+      }));
       
       viewStack.pop();
     });
@@ -271,13 +301,6 @@ if (!window['Pushpop']) window.Pushpop = {};
         $valueCellElement.data('pickerCell', this);
         $element.before($valueCellElement);
         $tableViewElement.children('[data-value="' + value + '"]:first').addClass('pp-tableview-accessory-checkmark');
-      
-        $element.trigger(jQuery.Event(Pushpop.EventType.DidAddValue, {
-          cellElement: element,
-          $cellElement: $element,
-          value: value,
-          text: text
-        }));
       } else {
         this._value = [value];
         $element.attr('data-value', this._value.join(',')).data('value', this._value);
@@ -286,12 +309,6 @@ if (!window['Pushpop']) window.Pushpop = {};
         $tableViewElement.children('.pp-tableview-accessory-checkmark').removeClass('pp-tableview-accessory-checkmark');
         $tableViewElement.children('[data-value="' + value + '"]:first').addClass('pp-tableview-accessory-checkmark');
       }
-      
-      $element.trigger(jQuery.Event(Pushpop.EventType.DidChangeValue, {
-        cellElement: element,
-        $cellElement: $element,
-        value: this._value
-      }));
     },
     removeValue: function(value) {
       var element = this.element;
@@ -322,19 +339,6 @@ if (!window['Pushpop']) window.Pushpop = {};
       
       $element.attr('data-value', this._value.join(',')).data('value', this._value);
       this.$selectedTextElement.html(null);
-      
-      $element.trigger(jQuery.Event(Pushpop.EventType.DidRemoveValue, {
-        cellElement: element,
-        $cellElement: $element,
-        value: value,
-        text: text
-      }));
-      
-      $element.trigger(jQuery.Event(Pushpop.EventType.DidChangeValue, {
-        cellElement: element,
-        $cellElement: $element,
-        value: this._value
-      }));
     },
     removeAll: function() {
       var i, length, values = [];
