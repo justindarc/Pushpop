@@ -40,7 +40,8 @@
       
       // Pushpop TableView Picker Events
       var tableViewPickerEventHandler = function(evt) {
-        console.log(evt.type + ': name = ' + evt.$cellElement.data('name') + ', value = ' + evt.value);
+        var cellName = evt.$cellElement.data('name');
+        console.log(evt.type + ': ' + ((cellName) ? 'name = ' + cellName + ', ' : '') + 'value = ' + evt.value);
       };
       $body.bind(Pushpop.EventType.DidAddValue, tableViewPickerEventHandler);
       $body.bind(Pushpop.EventType.DidRemoveValue, tableViewPickerEventHandler);

@@ -167,6 +167,7 @@ if (!window['Pushpop']) window.Pushpop = {};
           var pickerCell = $cellElement.data('pickerCell');
           if (pickerCell) {
             $cellElement.slideUp(200, function() {
+              var $cellElement = pickerCell.$element;
               var cellElement = $cellElement[0];
               var value = $cellElement.data('value');
               var text = pickerCell.getTextByValue(value);
@@ -381,7 +382,18 @@ if (!window['Pushpop']) window.Pushpop = {};
     $viewElement.append($doneButtonElement);
 
     $doneButtonElement.bind('click', function(evt) {
-      self.setValue($textareaElement.val());
+      var value = $textareaElement.val();
+      
+      if (value !== self.getValue()) {
+        self.setValue($textareaElement.val());
+      
+        $element.trigger(jQuery.Event(Pushpop.EventType.DidChangeValue, {
+          cellElement: element,
+          $cellElement: $element,
+          value: value
+        }));
+      }
+      
       viewStack.pop();
     });
   };
@@ -401,6 +413,8 @@ if (!window['Pushpop']) window.Pushpop = {};
       return this._value;
     },
     setValue: function(value) {
+      if (value === this._value) return;
+      
       this.$textareaElement.val(value);
       this.$textElement.html(value);
       this._value = value
