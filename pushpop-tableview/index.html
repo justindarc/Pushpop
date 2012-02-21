@@ -16,6 +16,8 @@
 	<script type="text/javascript">
 	  $(function() {
 	    var $body = $(document.body);
+	    
+	    // Pushpop View Events
       // var pushpopEventHandler = function(evt) {
       //   console.log(evt.type + ': ' + evt.view);
       // };
@@ -27,12 +29,22 @@
       // $body.bind(Pushpop.EventType.DidDismissView, pushpopEventHandler);
       // $body.bind(Pushpop.EventType.WillPresentView, pushpopEventHandler);
       // $body.bind(Pushpop.EventType.DidPresentView, pushpopEventHandler);
-      var tableViewEventHandler = function(evt) {
-        console.log(evt.type + ': Index = ' + evt.index);
+      
+      // Pushpop TableView Events
+      // var tableViewEventHandler = function(evt) {
+      //   console.log(evt.type + ': index = ' + evt.index);
+      // };
+      // $body.bind(Pushpop.EventType.WillSelectCell, tableViewEventHandler);
+      // $body.bind(Pushpop.EventType.DidSelectCell, tableViewEventHandler);
+      // $body.bind(Pushpop.EventType.AccessoryButtonTapped, tableViewEventHandler);
+      
+      // Pushpop TableView Picker Events
+      var tableViewPickerEventHandler = function(evt) {
+        console.log(evt.type + ': name = ' + evt.$cellElement.data('name') + ', value = ' + evt.value);
       };
-      $body.bind(Pushpop.EventType.WillSelectCell, tableViewEventHandler);
-      $body.bind(Pushpop.EventType.DidSelectCell, tableViewEventHandler);
-      $body.bind(Pushpop.EventType.AccessoryButtonTapped, tableViewEventHandler);
+      $body.bind(Pushpop.EventType.DidAddValue, tableViewPickerEventHandler);
+      $body.bind(Pushpop.EventType.DidRemoveValue, tableViewPickerEventHandler);
+      $body.bind(Pushpop.EventType.DidChangeValue, tableViewPickerEventHandler);
 	  });
 	</script>
 </head>

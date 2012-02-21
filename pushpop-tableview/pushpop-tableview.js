@@ -13,6 +13,9 @@ if (!window['Pushpop']) window.Pushpop = {};
   $.extend(Pushpop.EventType, {
     WillSelectCell: 'Pushpop:WillSelectCell',
     DidSelectCell: 'Pushpop:DidSelectCell',
+    DidAddValue: 'Pushpop:DidAddValue',
+    DidRemoveValue: 'Pushpop:DidRemoveValue',
+    DidChangeValue: 'Pushpop:DidChangeValue',
     AccessoryButtonTapped: 'Pushpop:AccessoryButtonTapped'
   });
   
@@ -251,6 +254,7 @@ if (!window['Pushpop']) window.Pushpop = {};
       return this._value;
     },
     setValue: function(value) {
+      var element = this.element;
       var $element = this.$element;
       var $tableViewElement = this.tableView.$element;
       var isMultiple = this.isMultiple;
@@ -267,6 +271,13 @@ if (!window['Pushpop']) window.Pushpop = {};
         $valueCellElement.data('pickerCell', this);
         $element.before($valueCellElement);
         $tableViewElement.children('[data-value="' + value + '"]:first').addClass('pp-tableview-accessory-checkmark');
+      
+        $element.trigger(jQuery.Event(Pushpop.EventType.DidAddValue, {
+          cellElement: element,
+          $cellElement: $element,
+          value: value,
+          text: text
+        }));
       } else {
         this._value = [value];
         $element.attr('data-value', this._value.join(',')).data('value', this._value);
@@ -275,10 +286,18 @@ if (!window['Pushpop']) window.Pushpop = {};
         $tableViewElement.children('.pp-tableview-accessory-checkmark').removeClass('pp-tableview-accessory-checkmark');
         $tableViewElement.children('[data-value="' + value + '"]:first').addClass('pp-tableview-accessory-checkmark');
       }
+      
+      $element.trigger(jQuery.Event(Pushpop.EventType.DidChangeValue, {
+        cellElement: element,
+        $cellElement: $element,
+        value: this._value
+      }));
     },
     removeValue: function(value) {
+      var element = this.element;
       var $element = this.$element;
       var isMultiple = this.isMultiple;
+      var text = this.getTextByValue(value);
       
       if (isMultiple) {
         var index;
@@ -303,6 +322,19 @@ if (!window['Pushpop']) window.Pushpop = {};
       
       $element.attr('data-value', this._value.join(',')).data('value', this._value);
       this.$selectedTextElement.html(null);
+      
+      $element.trigger(jQuery.Event(Pushpop.EventType.DidRemoveValue, {
+        cellElement: element,
+        $cellElement: $element,
+        value: value,
+        text: text
+      }));
+      
+      $element.trigger(jQuery.Event(Pushpop.EventType.DidChangeValue, {
+        cellElement: element,
+        $cellElement: $element,
+        value: this._value
+      }));
     },
     removeAll: function() {
       var i, length, values = [];
