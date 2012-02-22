@@ -121,7 +121,6 @@ ul.pp-tableview > li.pp-tableview-picker-cell > label {
   font-size: inherit;
   font-weight: bold;
   line-height: inherit;
-  float: none;
   text-align: left;
   text-shadow: #fff 0 1px 0;
   width: 50%;
@@ -182,25 +181,28 @@ ul.pp-tableview > li.pp-tableview-inline-text-input-cell.active > input::-moz-pl
  * Pushpop TableView Textarea Input Cells
  */
 ul.pp-tableview > li.pp-tableview-textarea-input-cell > label {
-  display: block;
-  float: left;
+  color: #000;
+  display: inline-block;
   margin: 0;
   padding: 0;
-  color: #000;
   font-size: inherit;
   font-weight: bold;
   line-height: inherit;
   text-align: left;
   text-shadow: #fff 0 1px 0;
   width: 30%;
+  height: 100%;
+  vertical-align: top;
 }
 
 ul.pp-tableview > li.pp-tableview-textarea-input-cell > span {
   color: #4c566c;
   display: inline-block;
+  margin: 0;
+  padding: 0;
   font-weight: normal;
   white-space: pre-wrap;
-  width: 70%;
+  width: 69%;
 }
 
 ul.pp-tableview > li.pp-tableview-textarea-input-cell.active > * {
