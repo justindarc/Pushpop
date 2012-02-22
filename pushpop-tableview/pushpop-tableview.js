@@ -164,13 +164,13 @@ if (!window['Pushpop']) window.Pushpop = {};
       if ($cellElement.hasClass('pp-tableview-editing-accessory-delete')) {
         if ($cellElement.hasClass('pp-tableview-picker-value-cell')) {
           $cellElement.addClass('pp-tableview-editing-delete-confirmation');
+          var value = $cellElement.data('value');
           var pickerCell = $cellElement.data('pickerCell');
           if (pickerCell) {
             $cellElement.slideUp(200, function() {
+              var text = pickerCell.getTextByValue(value);
               var $cellElement = pickerCell.$element;
               var cellElement = $cellElement[0];
-              var value = $cellElement.data('value');
-              var text = pickerCell.getTextByValue(value);
               
               pickerCell.removeValue(value);
               
