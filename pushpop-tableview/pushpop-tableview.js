@@ -434,3 +434,4 @@ $(function() {
     new Pushpop.TableView(element);
   });
 });
+
