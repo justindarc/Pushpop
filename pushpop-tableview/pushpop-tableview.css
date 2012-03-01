@@ -499,3 +499,99 @@ ul.pp-tableview > li.pp-tableview-editing-accessory-delete.pp-tableview-editing-
   -o-transform: rotate(-90deg);
   transform: rotate(-90deg);
 }
+
+ul.pp-tableview > li.pp-tableview-search-bar {
+  background: #d6dde2; /* Old browsers */
+  background: -moz-linear-gradient(top,  #d6dde2 0%, #b3bec5 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#d6dde2), color-stop(100%,#b3bec5)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #d6dde2 0%,#b3bec5 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #d6dde2 0%,#b3bec5 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #d6dde2 0%,#b3bec5 100%); /* IE10+ */
+  background: linear-gradient(top,  #d6dde2 0%,#b3bec5 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d6dde2', endColorstr='#b3bec5',GradientType=0 ); /* IE6-9 */
+  border-radius: 0 !important;
+}
+
+ul.pp-tableview > li.pp-tableview-search-bar span.search-icon:before {
+   
+  border: 0.15em solid #888;
+  content: '';
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  
+  width: .45em;
+  height: .45em;
+  margin-top:-0.45em;
+  border-radius:1em;
+  margin-left:.2em;
+
+}
+
+ul.pp-tableview > li.pp-tableview-search-bar span.search-icon:after {
+  background: #888;
+  content: '';
+  display: inline-block;
+  position: absolute;
+  height: 0.2em;
+  width: 0.4em;
+  top: 50%;
+  margin-top: 0.2em;
+  margin-left:.7em;
+  -webkit-transform:rotate(45deg);
+
+    
+}
+
+
+ul.pp-tableview > li.pp-tableview-search-bar > div {
+  background: #fff;
+  border-radius: 2em;
+  margin: 0;
+  -moz-box-shadow:    inset 0 1px 6px #000;
+  -webkit-box-shadow: inset 0 1px 6px #000;
+  box-shadow:         inset 0 1px 6px #000;
+  
+}
+
+ul.pp-tableview > li.pp-tableview-search-bar input {
+  background: none;
+  border:none;
+  width: 49em;
+  height:1em;
+  padding-left: 1.8em;
+  margin: 0.4em 0 0;
+  -webkit-border-radius: 0.65em 0.65em 0.65em 0.65em;
+  -moz-border-radius-topleft: 0.65em;
+  -moz-border-radius-topright: 0.65em;
+  -moz-border-radius-bottomright: 0.65em;
+  -moz-border-radius-bottomleft: 0.65em;
+  border-radius: 0.65em 0.65em .65em 0.65em;
+  -moz-box-shadow:    none;
+  -webkit-box-shadow: none;
+  box-shadow:         none;
+  
+}
+
+ul.pp-tableview > li.pp-tableview-index {
+  background: none;
+  border: none;
+  width: 0;
+  height: 0;
+  padding: 0;
+  margin: 0;
+  position: static;
+}
+
+ul.pp-tableview > li.pp-tableview-index ul {
+ position: absolute;
+ width: 1em;
+ top: 0;
+ right: 0;
+ bottom: 0;
+ list-style: none;
+}
+
+ul.pp-tableview > li.pp-tableview-index li{
+  height: 22px;
+}
