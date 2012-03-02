@@ -2,15 +2,9 @@ ul.pp-tableview {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   list-style: none;
   font-size: 16px;
-  margin: 0 1em;
+  margin: 0 1em 1em;
   padding: 0;
   -webkit-touch-callout: none;
-}
-
-ul.pp-tableview:after {
-  content: '';
-  display: block;
-  height: 1em;
 }
 
 ul.pp-tableview > li > ul.pp-tableview {
@@ -500,7 +494,9 @@ ul.pp-tableview > li.pp-tableview-editing-accessory-delete.pp-tableview-editing-
   transform: rotate(-90deg);
 }
 
-/* SearchBar */
+/**
+ * TableView Search Bar
+ */
 ul.pp-tableview > li.pp-tableview-search-bar {
   background: #d6dde2; /* Old browsers */
   background: -moz-linear-gradient(top,  #d6dde2 0%, #b3bec5 100%); /* FF3.6+ */
@@ -523,23 +519,34 @@ ul.pp-tableview > li.pp-tableview-search-bar {
 }
 
 ul.pp-tableview > li.pp-tableview-search-bar > input {
-  border: 1px solid rgba(126, 142, 160, 0.6);
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(126, 142, 160, 0.5) rgba(126, 142, 160, 0.6) rgba(126, 142, 160, 0.7);
   font-size: 0.85em;
   line-height: 0.85em;
   margin: 0;
   padding: 0.4em 0.4em 0.4em 2.2em !important;
   position: absolute;
-  top: 0.5em;
+  top: 0.3em;
   right: 0.5em;
   left: 0.5em;
   width: auto;
+  height: 1.5em;
   z-index: 1;
   -webkit-border-radius: 1.2em;
   -moz-border-radius: 1.2em;
   border-radius: 1.2em;
-  -webkit-box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.55);
-  -moz-box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.55);
-  box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.55);
+  -webkit-box-shadow: inset 0 2px 3px 0 rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: inset 0 2px 3px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: inset 0 2px 3px 0 rgba(0, 0, 0, 0.5);
+}
+
+ul.pp-tableview > li.pp-tableview-search-bar > input::-webkit-input-placeholder {
+  color: #bbb;
+}
+
+ul.pp-tableview > li.pp-tableview-search-bar > input:-moz-input-placeholder {
+  color: #bbb;
 }
 
 ul.pp-tableview > li.pp-tableview-search-bar > span.pp-tableview-search-bar-icon {
@@ -573,25 +580,30 @@ ul.pp-tableview > li.pp-tableview-search-bar > span.pp-tableview-search-bar-icon
   transform: rotate(-45deg);
 }
 
-ul.pp-tableview > li.pp-tableview-index {
-  background: none;
-  border: none;
-  width: 0;
-  height: 0;
-  padding: 0;
-  margin: 0;
-  position: static;
+/**
+ * TableView Index
+ */
+div.pp-tableview-index {
+  color: #555;
+  font-weight: bold;
+  font-size: 1em;
+  line-height: 1em;
+  position: fixed;
+  top: 0;
+  right: 0.1em;
+  width: 1em;
+  height: 100%;
+  z-index: 999999;
 }
 
-ul.pp-tableview > li.pp-tableview-index ul {
- position: absolute;
- width: 1em;
- top: 0;
- right: 0;
- bottom: 0;
- list-style: none;
-}
-
-ul.pp-tableview > li.pp-tableview-index li{
-  height: 22px;
+div.pp-tableview-index:after {
+  content: '?\00000aA\00000aB\00000aC\00000aD\00000aE\00000aF\00000aG\00000aH\00000aI\00000aJ\00000aK\00000aL\00000aM\00000aN\00000aO\00000aP\00000aQ\00000aR\00000aS\00000aT\00000aU\00000aV\00000aW\00000aX\00000aY\00000aZ\00000a#';
+  display: block;
+  position: absolute;
+  text-align: center;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  white-space: pre;
 }

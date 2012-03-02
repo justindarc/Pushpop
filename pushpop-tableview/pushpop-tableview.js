@@ -426,12 +426,59 @@ if (!window['Pushpop']) window.Pushpop = {};
       viewStack.push(view);
     }
   };
+  
+  Pushpop.TableViewIndex = function(element) {
+    var $element = this.$element = $(element);
+
+    var tableviewIndex = $element.data('tableviewIndex');
+    if (tableviewIndex) return tableviewIndex;
+
+    $element.data('tableviewIndex', this);
+
+    element = this.element = $element[0];
+    
+    // Move the TableViewIndex outside of the ScrollView.
+    var $parent = $element.parent();
+    if ($parent.hasClass('sk-scroll-content')) $parent.parent().append($element);
+    
+    var self = this;
+    
+    $(window).bind('resize', function() {
+      self.draw();
+    });
+    
+    this.draw();
+  };
+  
+  Pushpop.TableViewIndex.prototype = {
+    element: null,
+    $element: null,
+    draw: function() {
+      var $element = this.$element;
+      var height = $element.height();
+      var lineHeight = height / 28;
+      var lineHeightInteger = Math.floor(lineHeight);
+      var lineHeightPixels = lineHeightInteger + 'px';
+      var lineHeightRemainder = (lineHeight - lineHeightInteger) * 28;
+
+      $element.css({
+        'margin-top': (lineHeightRemainder / 2) + 'px',
+        'font-size': lineHeightPixels,
+        'line-height': lineHeightPixels
+      });
+    }
+  };
 })();
 
 $(function() {
   var $tableviews = $('.pp-tableview');
   $tableviews.each(function(index, element) {
     new Pushpop.TableView(element);
+  });
+  
+  var $tableviewIndexes = $('.pp-tableview-index');
+  $tableviewIndexes.each(function(index, element) {
+    new Pushpop.TableViewIndex(element);
   });
 });
 
