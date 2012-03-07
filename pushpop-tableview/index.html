@@ -9,6 +9,7 @@
 	<link rel="stylesheet" type="text/css" href="../externals/scrollkit/scrollkit.css"/>
 	<link rel="stylesheet" type="text/css" href="../pushpop.css"/>
 	<link rel="stylesheet" type="text/css" href="pushpop-tableview.css"/>
+	<script type="text/javascript" src="sample-data/sample-data.js"></script>
 	<script type="text/javascript" src="../jquery-1.7.1.js"></script>
 	<script type="text/javascript" src="../externals/scrollkit/scrollkit.js"></script>
 	<script type="text/javascript" src="../pushpop.js"></script>
@@ -46,6 +47,12 @@
       $body.bind(Pushpop.EventType.DidAddValue, tableViewPickerEventHandler);
       $body.bind(Pushpop.EventType.DidRemoveValue, tableViewPickerEventHandler);
       $body.bind(Pushpop.EventType.DidChangeValue, tableViewPickerEventHandler);
+      
+      // Set the datasource of one of the pickerCells with some sample data, and preselect a couple values
+      var pickerCell = $('#letter-picker-cell').data('pickerCell');
+      pickerCell.setDataSource(sampleData);
+      pickerCell.setValue('1-1-1');
+      pickerCell.setValue('26');
 	  });
 	</script>
 </head>
@@ -211,6 +218,16 @@
               </ul>
             </li>
           </ul>  
+        	<ul class="pp-tableview">
+            <li class="header">Multi-Picker Table Cells With Data Source</li>
+            <li id="letter-picker-cell" class="pp-tableview-picker-cell" data-multiple="true" data-name="letters">
+              <label>Add Letter</label>
+              <ul class="pp-tableview">
+                <li class="header">Select A Letter</li>
+              </ul>
+            </li>
+          </ul>  
+          
         	<ul class="pp-tableview">
         		<li class="header">Inline Text Input Cells</li>
         		<li class="pp-tableview-inline-text-input-cell">
