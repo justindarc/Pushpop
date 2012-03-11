@@ -123,12 +123,17 @@ Pushpop.ViewStack.prototype = {
         $oldActiveViewElement.removeClass('active transition push pop ' + newActiveView.transition);
         
         viewStack.isTransitioning = false;
+
+				if (viewStack.callback) {
+					viewStack.callback();
+					viewStack.callback = null;
+				}
         break;
       default:
         break;
     }
   },
-  push: function(view, transition) {
+  push: function(view, transitionOrCallback, callback) {
     if (this.isTransitioning) return;
     this.isTransitioning = true;
     
@@ -156,6 +161,16 @@ Pushpop.ViewStack.prototype = {
       newActiveView: newActiveView
     }, this.handleEvent);
     
+		var transition;
+		if (transitionOrCallback) {
+			if (typeof transitionOrCallback === 'function') {
+				this.callback = transitionOrCallback;
+			} else {
+				transition = transitionOrCallback;
+				this.callback = callback;
+			}
+		}
+
     transition = newActiveView.transition = transition || newActiveView.transition || Pushpop.defaultTransition;
     
     $oldActiveViewElement.addClass('push ' + transition);
@@ -167,7 +182,7 @@ Pushpop.ViewStack.prototype = {
     $oldActiveViewElement.addClass('transition');
     $newActiveViewElement.addClass('transition');
   },
-  pop: function(viewOrTransition, transition) {
+  pop: function(viewOrTransition, transitionOrCallback, callback) {
     if (this.isTransitioning) return;
     this.isTransitioning = true;
     
@@ -177,6 +192,7 @@ Pushpop.ViewStack.prototype = {
     var oldActiveView = this.getActiveView();
     var newActiveView;
     
+		var transition;
     if (viewOrTransition && typeof viewOrTransition !== 'string') {
       newActiveView = viewOrTransition;
       
@@ -191,6 +207,15 @@ Pushpop.ViewStack.prototype = {
       views.pop();
       newActiveView = this.getActiveView();
     }
+
+		if (transitionOrCallback) {
+			if (typeof transitionOrCallback === 'function') {
+				this.callback = transitionOrCallback;
+			} else {
+				transition = transitionOrCallback;
+				this.callback = callback;
+			}
+		}
     
     var $element = this.$element;
     

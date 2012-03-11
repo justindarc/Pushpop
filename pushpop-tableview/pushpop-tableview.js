@@ -204,7 +204,7 @@ if (!window['Pushpop']) window.Pushpop = {};
 
   Pushpop.TableViewPickerCell = function(element) {
     var $element = this.$element = $(element);
-  
+		
     var pickerCell = $element.data('pickerCell');
     if (pickerCell) return pickerCell;
   
@@ -239,48 +239,146 @@ if (!window['Pushpop']) window.Pushpop = {};
     } else {
       if (values.length > 0) this.setValue(values[0]);
     }
-    
-    $tableViewElement.bind(Pushpop.EventType.DidSelectCell, function(evt) {
+
+		// This string is used to store the value of each item that is selected as the user
+		//   is drilling down through the layers of the tableview data.
+		var valueHierarchy = '';
+
+		var callbackForDidSelectCell = function(evt) {
       var $cellElement = evt.$cellElement;
       var value = $cellElement.data('value');
-      var text = self.getTextByValue(value);
+			// Is value an array?
+			if ($.isArray(value)) {
+				// Add the id of the item to the value hierarchy
+				valueHierarchy += (valueHierarchy.length > 0 ? self.valuesDelimiter : '') + $cellElement.data('id');
+				// Create a new pp-tableview with the choices being the values in this array
+				var $viewElement = $('<div class="pp-view sk-scroll-view temp-view" id="pp-tableview-picker-view-' + (++_lastPickerViewId) + '"/>');
+				// Append the new tableview to the viewstack
+		    viewStack.$element.append($viewElement);
+				// Give the new tableview a scrollview
+				var scrollView = new SKScrollView($viewElement);
+		    var $scrollViewContentElement = scrollView.content.$element;
+				var view = new Pushpop.View($viewElement);
+				// Make a new ul for the items
+				var $ul = $('<ul class="pp-tableview" />');
+				// Add the header item.  Give it the same text as the previous view
+				$ul.append('<li class="header">' + $cellElement.siblings(':first').html() + '</li>')
+				// Add the root level items. Note: we only add the root level items 
+				// so we don't load the dom with too many elements
+				for (var i = 0, length = value.length; i < length; i++) {
+					// Create a new list item for this item
+					var $li = $('<li data-id="' + value[i].id + '">' + value[i].title + '</li>');
+					
+					// If this value is not an array, check to see if it is already selected
+					if (!$.isArray(value[i].value) && (self._value.indexOf(valueHierarchy + self.valuesDelimiter + value[i].value) > -1)) {
+						$li.addClass('pp-tableview-accessory-checkmark');
+					}
+					
+					$li.data('value', value[i].value);
+					
+					// Append the list item to the list
+					$ul.append($li);
+				}
+				
+				var tableView = new Pushpop.TableView($ul);
+		
+				// Append the list to the scrollViewContentElement
+				$scrollViewContentElement.append($ul);
+				
+				// Bind the DidSelectCell event for this tableViewElement
+				$ul.bind(Pushpop.EventType.DidSelectCell, callbackForDidSelectCell);
+				
+				// Push the table view
+				viewStack.push(view);
+			} else {
+				// Add this value to the value hierarchy
+				valueHierarchy += (valueHierarchy.length > 0 ? self.valuesDelimiter : '') + value;
+				
+      	var text = self.getTextByValue(valueHierarchy);
       
-      if (self.isMultiple) {
-        self.setValue(value, true);
-        $element.trigger(jQuery.Event(Pushpop.EventType.DidAddValue, {
-          cellElement: element,
-          $cellElement: $element,
-          value: value,
-          text: text
-        }));
-      } else {
-        self.setValue(value);
-      }
+	      if (self.isMultiple) {
+	        self.setValue(valueHierarchy, true);
+	        $element.trigger(jQuery.Event(Pushpop.EventType.DidAddValue, {
+	          cellElement: element,
+	          $cellElement: $element,
+	          value: valueHierarchy,
+	          text: text
+	        }));
+	      } else {
+	        self.setValue(valueHierarchy);
+	      }
       
-      $element.trigger(jQuery.Event(Pushpop.EventType.DidChangeValue, {
-        cellElement: element,
-        $cellElement: $element,
-        value: self.getValue()
-      }));
+	      $element.trigger(jQuery.Event(Pushpop.EventType.DidChangeValue, {
+	        cellElement: element,
+	        $cellElement: $element,
+	        value: self.getValue()
+	      }));
+	
+				// Clear the value hierarchy for next time
+				valueHierarchy = ''
       
-      viewStack.pop();
-    });
+				// After popping the parent view, remove all temporary views from the dom
+	      viewStack.pop(self.getParentTableView().getView(), function() { $('.temp-view').remove(); });
+			}
+    };
+    
+    $tableViewElement.bind(Pushpop.EventType.DidSelectCell, callbackForDidSelectCell);
   };
 
   Pushpop.TableViewPickerCell.prototype = {
     _value: null,
+		_dataSource: null,
     element: null,
     $element: null,
     $selectedTextElement: null,
     view: null,
     tableView: null,
     isMultiple: false,
+		valuesDelimiter: '-',
+		textPropertyOfItemsInDataSource: 'title',
     getParentTableView: function() {
       return this.$element.parents('.pp-tableview:first').data('tableview');
     },
     getTextByValue: function(value) {
-      return this.tableView.$element.children('[data-value="' + value + '"]:first').text();
+			// Does the value contain a delimeter? If so, we need to drill down through the data.
+			if (('' + value).indexOf(this.valuesDelimiter) > -1) {
+				var dataSource = this.getDataSource();
+				if (dataSource) {
+					return this.getTextByValuesArray(value.split(this.valuesDelimiter), dataSource);
+				}
+			} else {
+				// There's no need to drill down through the data
+      	return this.tableView.$element.children('[data-value="' + value + '"]:first').text();
+			}
     },
+		// Recursive method to drill down through the data (if necessary), and return the value
+		getTextByValuesArray: function(valuesArray, arrayOfItems) {
+			// Get the first value in the array. Then remove it from the list
+			var valueToSearchFor = valuesArray[0];
+			valuesArray.splice(0, 1);
+			
+			var propertyToSearch;
+			// If this is not the last level, then we are need to search on the id property of the item,
+			//   otherwise, we need to search on the value property of the item.
+			if (valuesArray.length > 0) {
+				propertyToSearch = 'id';
+			} else {
+				propertyToSearch = 'value'
+			}
+			// Loop through arrayOfItems and find the item with the right value
+			for(var i = 0, length = arrayOfItems.length; i < length; i++) {
+				if (arrayOfItems[i][propertyToSearch] == valueToSearchFor) {
+					// Are there more levels to drill down to?
+					if (valuesArray.length > 0) {
+						// Recursively call this function. The arrayOfItems to search through is the values property of this item
+						return this.getTextByValuesArray(valuesArray, arrayOfItems[i].value);
+					} else {
+						// This is the last level, so return the text
+						return arrayOfItems[i][this.textPropertyOfItemsInDataSource];
+					}
+				}
+			}
+		},
     getValue: function() {
       return this._value;
     },
@@ -311,7 +409,37 @@ if (!window['Pushpop']) window.Pushpop = {};
         $tableViewElement.children('[data-value="' + value + '"]:first').addClass('pp-tableview-accessory-checkmark');
       }
     },
-    removeValue: function(value) {
+    getDataSource: function() {
+			return this._dataSource;
+		},
+		setDataSource: function(value) {
+			this._dataSource = value;
+			
+			// Get the existing tableview that holds the available choices
+			var $ul = this.view.$element.find('ul.pp-tableview');
+			
+			// Clear any existing items (except the header)
+			$ul.children('not(:first)').remove();
+			
+			// Add the root level items. Note: we only add the root level items 
+			// so we don't load the dom with too many elements
+			for (var i = 0, length = value.length; i < length; i++) {
+				// Create a new list item for this item
+				var $li = $('<li data-id="' + value[i].id + '">' + value[i].title + '</li>');
+				// Set the items value.  This could be a simple type (int or string) or an array of objects.
+				if ($.isArray(value[i].value)) {
+					$li.data('value', value[i].value);
+				} else {
+					// Set the "data-value" attribute, because there is some code looking at this attribute to 
+					//   get the text and to add the checkmark to the item, rather than using the .data() method.
+					$li.attr('data-value', value[i].value);
+				}
+				
+				// Append the list item to the list
+				$ul.append($li);
+			}			
+		},
+		removeValue: function(value) {
       var element = this.element;
       var $element = this.$element;
       var isMultiple = this.isMultiple;
