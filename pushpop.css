@@ -8,6 +8,49 @@ body {
   background: #333 url('background.png');
 }
 
+a:hover {
+	text-decoration:none;
+}
+
+a.pp-button {
+	background: #849CBB;
+	background: -moz-linear-gradient(top, #849CBB 0%, #5877A2 50%, #486A9A 51%, #4A6C9B 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#849CBB), color-stop(50%,#5877A2), color-stop(51%,#486A9A), color-stop(100%,#4A6C9B));
+	background: -webkit-linear-gradient(top, #849CBB 0%,#5877A2 50%,#486A9A 51%,#4A6C9B 100%);
+	background: -o-linear-gradient(top, #849CBB 0%,#5877A2 50%,#486A9A 51%,#4A6C9B 100%);
+	background: -ms-linear-gradient(top, #849CBB 0%,#5877A2 50%,#486A9A 51%,#4A6C9B 100%);
+	background: linear-gradient(top, #849CBB 0%,#5877A2 50%,#486A9A 51%,#4A6C9B 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#849cbb', endColorstr='#4a6c9b',GradientType=0 );
+	border: 1px solid rgba(0, 0, 0, 0.3);
+	display: inline-block;
+	font-size: 1em;
+	min-width: 3.5em;
+	padding: 0.4em;
+	color: white;
+	text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.7);
+	text-align: center;
+	opacity: 1;
+	outline: none;
+	-webkit-border-radius: 0.4em;
+	-moz-border-radius: 0.4em;
+	border-radius: 0.4em;
+	-webkit-transition: opacity 0.2s ease;
+	-moz-transition: opacity 0.2s ease;
+	-o-transition: opacity 0.2s ease;
+	transition: opacity 0.2s ease;
+}
+
+a.pp-delete-button {
+	background: #CD6B74;
+	background: -moz-linear-gradient(top, #CD6B74 0%, #B9343F 50%, #B01825 51%, #B01825 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#CD6B74), color-stop(50%,#B9343F), color-stop(51%,#B01825), color-stop(100%,#B01825));
+	background: -webkit-linear-gradient(top, #CD6B74 0%,#B9343F 50%,#B01825 51%,#B01825 100%);
+	background: -o-linear-gradient(top, #CD6B74 0%,#B9343F 50%,#B01825 51%,#B01825 100%);
+	background: -ms-linear-gradient(top, #CD6B74 0%,#B9343F 50%,#B01825 51%,#B01825 100%);
+	background: linear-gradient(top, #CD6B74 0%,#B9343F 50%,#B01825 51%,#B01825 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cd6b74', endColorstr='#b01825',GradientType=0 );
+}
+
 /* NOTE: Use of .topbar has been removed in Bootstrap 2.x. */
 .navbar .container > .btn, .topbar .container > .btn {
   background-color: #333;
