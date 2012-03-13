@@ -14,8 +14,11 @@ Pushpop.NavigationBar = function(element) {
   
   var self = this;
   var viewStack = this.viewStack = $element.parents('.pp-view-stack:first').data('viewStack');
-  var $backButtonElement = this.$backButtonElement = $('<a class="pp-barbutton pp-barbutton-align-left pp-barbutton-style-back" href="#">Back</a>').appendTo($element);
+	var $backButtonElement = this.$backButtonElement = $('<a class="pp-barbutton pp-barbutton-align-left pp-barbutton-style-back" href="#">Back</a>').appendTo($element);
   
+	var dataBackButtonVisible = $element.data('backButtonVisible');
+	this.backButtonVisible = dataBackButtonVisible || dataBackButtonVisible === undefined;
+
   this.setTitle(viewStack.getActiveView().title);
   
   viewStack.$element.bind(Pushpop.EventType.WillPresentView, function(evt) {
@@ -23,11 +26,11 @@ Pushpop.NavigationBar = function(element) {
   });
   
   viewStack.$element.bind(Pushpop.EventType.WillPushView, function(evt) {
-    $backButtonElement.addClass('pop active');
+		if (self.backButtonVisible) $backButtonElement.addClass('pop active');
   });
   
   viewStack.$element.bind(Pushpop.EventType.WillPopView, function(evt) {
-    if (viewStack.views.length < 2) $backButtonElement.removeClass('pop active');
+    if (viewStack.views.length < 2 && self.backButtonVisible) $backButtonElement.removeClass('pop active');
   });
 };
 
@@ -42,7 +45,10 @@ Pushpop.NavigationBar.prototype = {
     if ($titleElement) $titleElement.remove();
     
     this.$titleElement = $('<h1 class="pp-navigationbar-title">' + ((value) ? value : '') + '</h1>').appendTo(this.$element);
-  }
+  },
+	setBackButtonVisible: function(visible) {
+		this.backButtonVisible = visible;
+	}
 };
 
 $(function() {
