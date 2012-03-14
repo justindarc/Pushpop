@@ -319,6 +319,10 @@ ul.pp-tableview > li.pp-tableview-accessory-disclosure-indicator:after {
   transform: rotate(-45deg);
 }
 
+ul.pp-tableview > li.pp-tableview-accessory-disclosure-indicator.active:before {
+  background: #fff;
+}
+
 ul.pp-tableview > li.pp-tableview-accessory-detail-disclosure-button:before {
   background: #2972d9; /* Old browsers */
   background: -moz-linear-gradient(top, #6a9de5 0%, #2972d9 100%); /* FF3.6+ */
