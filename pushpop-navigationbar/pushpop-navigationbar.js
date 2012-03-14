@@ -14,23 +14,27 @@ Pushpop.NavigationBar = function(element) {
   
   var self = this;
   var viewStack = this.viewStack = $element.parents('.pp-view-stack:first').data('viewStack');
+
 	var $backButtonElement = this.$backButtonElement = $('<a class="pp-barbutton pp-barbutton-align-left pp-barbutton-style-back" href="#">Back</a>').appendTo($element);
   
-	var dataBackButtonVisible = $element.data('backButtonVisible');
-	this.backButtonVisible = dataBackButtonVisible || dataBackButtonVisible === undefined;
-
-  this.setTitle(viewStack.getActiveView().title);
+  var activeView = viewStack.getActiveView();
+  this.setTitle(activeView.title);
+  this.loadNavbarButtons(activeView);
   
   viewStack.$element.bind(Pushpop.EventType.WillPresentView, function(evt) {
-    self.setTitle(evt.view.title);
+    var view = evt.view;
+    self.setTitle(view.title);
+    self.loadNavbarButtons(view)
   });
   
   viewStack.$element.bind(Pushpop.EventType.WillPushView, function(evt) {
-		if (self.backButtonVisible) $backButtonElement.addClass('pop active');
+		if (!evt.view.hideNavBackButton) {
+		  $backButtonElement.addClass('pop active');
+		}
   });
   
   viewStack.$element.bind(Pushpop.EventType.WillPopView, function(evt) {
-    if (viewStack.views.length < 2 && self.backButtonVisible) $backButtonElement.removeClass('pop active');
+    if (viewStack.views.length < 2) $backButtonElement.removeClass('pop active');
   });
 };
 
@@ -38,6 +42,7 @@ Pushpop.NavigationBar.prototype = {
   element: null,
   $element: null,
   $backButtonElement: null,
+  $otherNavButtonElements: null,
   $titleElement: null,
   viewStack: null,
   setTitle: function(value) {
@@ -46,8 +51,18 @@ Pushpop.NavigationBar.prototype = {
     
     this.$titleElement = $('<h1 class="pp-navigationbar-title">' + ((value) ? value : '') + '</h1>').appendTo(this.$element);
   },
-	setBackButtonVisible: function(visible) {
-		this.backButtonVisible = visible;
+	loadNavbarButtons: function(view) {
+	  // Clear any nav buttons currently in the navbar (other than the back button)
+	  if (this.$otherNavButtons) this.$otherNavButtons.remove();
+    
+  	var $element = this.$element;
+    // Does this view have navbar buttons?
+    var $navbarButtons = view.$navbarButtons;
+    if ($navbarButtons.length > 0) {
+      // Append buttons for this view
+      $element.append($navbarButtons);
+    }
+    this.$otherNavButtons = $navbarButtons;
 	}
 };
 

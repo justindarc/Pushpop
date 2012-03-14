@@ -120,6 +120,10 @@ a.pp-cancel-button {
   display: block;
 }
 
+div.pp-navigationbar-buttons {
+  display: none;
+}
+
 .pp-view-stack {
   position: absolute;
   width: 100%;
