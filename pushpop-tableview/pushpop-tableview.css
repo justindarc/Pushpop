@@ -105,6 +105,54 @@ ul.pp-tableview > li.header, ul.pp-tableview > li.header > a {
 }
 
 /**
+ * Pushpop TableView Split Cells
+ */
+ul.pp-tableview > li.pp-tableview-split-cell > label {
+  display: inline-block;
+  position: absolute;
+  margin: 0.1em 0 0;
+  padding: 0;
+  color: #000;
+  font-size: inherit;
+  font-weight: bold;
+  line-height: inherit;
+  text-align: left;
+  text-shadow: #fff 0 1px 0;
+  vertical-align: top;
+  width: 30%;
+}
+
+ul.pp-tableview > li.pp-tableview-split-cell > span {
+  background: none;
+  border: none;
+  color: #4c566c;
+  display: inline-block;
+  position: relative;
+  left: 34%;
+  width: 65%;
+  margin: 0.1em 0 0;
+  padding: 0;
+  font-weight: normal;
+  vertical-align: top;
+}
+
+ul.pp-tableview > li.pp-tableview-split-cell > span > a {
+  color: #4c566c;
+  display: inline-block;
+  width: 100%;
+  overflow: hidden;
+  text-decoration: underline;
+  text-overflow: ellipsis;
+}
+
+ul.pp-tableview > li.pp-tableview-split-cell.active > *,
+ul.pp-tableview > li.pp-tableview-split-cell.active > input::-webkit-input-placeholder,
+ul.pp-tableview > li.pp-tableview-split-cell.active > input::-moz-placeholder {
+  color: #fff;
+  text-shadow: none;
+}
+
+/**
  * Pushpop TableView Picker Cells
  */
 ul.pp-tableview > li.pp-tableview-picker-cell > label {
