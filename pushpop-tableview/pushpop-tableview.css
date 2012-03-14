@@ -2,7 +2,7 @@ ul.pp-tableview {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   list-style: none;
   font-size: 16px;
-  margin: 0 1em 1em;
+  margin: 1em;
   padding: 0;
   -webkit-touch-callout: none;
 }
@@ -285,7 +285,7 @@ ul.pp-tableview > li > div.pp-tableview-accessory-button {
   margin-top: -0.75em;
 }
 
-ul.pp-tableview > li.pp-tableview-accessory-disclosure-indicator:before {
+/*ul.pp-tableview > li.pp-tableview-accessory-disclosure-indicator:before {
   border: 0.45em solid transparent;
   border-left-color: #666;
   content: '';
@@ -298,6 +298,40 @@ ul.pp-tableview > li.pp-tableview-accessory-disclosure-indicator:before {
 
 ul.pp-tableview > li.pp-tableview-accessory-disclosure-indicator.active:before {
   border-left-color: #fff;
+}*/
+
+ul.pp-tableview > li.pp-tableview-accessory-disclosure-indicator:before {
+  background: #888;
+  content: '';
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  right: 0.5em;
+  margin: -0.3em 0.2em 0 0;
+  width: 0.6em;
+  height: 0.6em;
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+}
+
+ul.pp-tableview > li.pp-tableview-accessory-disclosure-indicator:after {
+  background: inherit;
+  content: '';
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  right: 0.5em;
+  margin: -0.3em 0.45em 0 0;
+  width: 0.6em;
+  height: 0.6em;
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  transform: rotate(-45deg);
 }
 
 ul.pp-tableview > li.pp-tableview-accessory-detail-disclosure-button:before {
