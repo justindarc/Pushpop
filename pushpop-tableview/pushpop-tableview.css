@@ -285,21 +285,6 @@ ul.pp-tableview > li > div.pp-tableview-accessory-button {
   margin-top: -0.75em;
 }
 
-/*ul.pp-tableview > li.pp-tableview-accessory-disclosure-indicator:before {
-  border: 0.45em solid transparent;
-  border-left-color: #666;
-  content: '';
-  display: inline-block;
-  position: absolute;
-  top: 50%;
-  right: 0.2em;
-  margin-top: -0.45em;
-}
-
-ul.pp-tableview > li.pp-tableview-accessory-disclosure-indicator.active:before {
-  border-left-color: #fff;
-}*/
-
 ul.pp-tableview > li.pp-tableview-accessory-disclosure-indicator:before {
   background: #888;
   content: '';
