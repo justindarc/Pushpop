@@ -34,12 +34,12 @@ Pushpop.View = function(element) {
   
   element.view = this;
   
-  this.title = $element.data('viewTitle');
+  this.title = $element.attr('data-view-title');
   var $navbarButtonsContainer = $element.find('.pp-navigationbar-buttons');
   var $navbarButtons = $navbarButtonsContainer.find('.pp-barbutton');
   this.$navbarButtons = $navbarButtons;
   // Hide the back button if data-hide-back-button="true" or if there is a left navigation bar
-  this.hideNavBackButton = ($navbarButtonsContainer.data('hideBackButton') === true || $navbarButtons.filter('.pp-barbutton-align-left').length > 0);
+  this.hideNavBackButton = ($navbarButtonsContainer.attr('data-hide-back-button') === true || $navbarButtons.filter('.pp-barbutton-align-left').length > 0);
 };
 
 Pushpop.View.prototype = {
@@ -294,7 +294,7 @@ $(function() {
     if (view) view = view.view || new Pushpop.View($viewElement);
     
     var viewStack = view.getViewStack();
-    if (viewStack) viewStack.push(view, $this.data('transition'));
+    if (viewStack) viewStack.push(view, $this.attr('data-transition'));
     
     evt.preventDefault();
   });
@@ -307,7 +307,7 @@ $(function() {
     if (href === '#') {
       viewStack = $this.parents('.pp-view-stack')[0];
       viewStack = (viewStack) ? viewStack.viewStack : null;
-      if (viewStack) viewStack.pop($this.data('transition'));
+      if (viewStack) viewStack.pop($this.attr('data-transition'));
     } else {
       var $viewElement = $(href);
     
@@ -315,7 +315,7 @@ $(function() {
       if (view) view = view.view || new Pushpop.View($viewElement);
       
       viewStack = view.getViewStack();
-      if (viewStack) viewStack.pop(view, $this.data('transition'));
+      if (viewStack) viewStack.pop(view, $this.attr('data-transition'));
     }
     
     evt.preventDefault();
