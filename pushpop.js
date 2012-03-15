@@ -35,6 +35,11 @@ Pushpop.View = function(element) {
   element.view = this;
   
   this.title = $element.data('viewTitle');
+  var $navbarButtonsContainer = $element.find('.pp-navigationbar-buttons');
+  var $navbarButtons = $navbarButtonsContainer.find('.pp-barbutton');
+  this.$navbarButtons = $navbarButtons;
+  // Hide the back button if data-hide-back-button="true" or if there is a left navigation bar
+  this.hideNavBackButton = ($navbarButtonsContainer.data('hideBackButton') === true || $navbarButtons.filter('.pp-barbutton-align-left').length > 0);
 };
 
 Pushpop.View.prototype = {
@@ -42,6 +47,8 @@ Pushpop.View.prototype = {
   $element: null,
   transition: null,
   title: null,
+  $navbarButtons: null,
+  hideNavBackButton: false,
   setTransition: function(value) {
     this.transition = value;
     this.$element.addClass(value);
@@ -52,7 +59,10 @@ Pushpop.View.prototype = {
   },
   forceReflow: function() {
     this.element.offsetWidth;
-  }
+  },
+	setBackButtonVisible: function(visible) {
+	  if (this.$navbarButtons.filter('.pp-barbutton-align-left').length === 0) this.hideNavBackButton = !visible;
+	},
 };
 
 Pushpop.ViewStack = function(element) {

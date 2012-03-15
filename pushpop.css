@@ -8,10 +8,6 @@ body {
   background: #333 url('background.png');
 }
 
-a:hover {
-	text-decoration:none;
-}
-
 a.pp-button {
 	background: #849CBB;
 	background: -moz-linear-gradient(top, #849CBB 0%, #5877A2 50%, #486A9A 51%, #4A6C9B 100%);
@@ -40,6 +36,10 @@ a.pp-button {
 	transition: opacity 0.2s ease;
 }
 
+a.pp-button:hover {
+	text-decoration:none;
+}
+
 a.pp-delete-button {
 	background: #CD6B74;
 	background: -moz-linear-gradient(top, #CD6B74 0%, #B9343F 50%, #B01825 51%, #B01825 100%);
@@ -49,6 +49,17 @@ a.pp-delete-button {
 	background: -ms-linear-gradient(top, #CD6B74 0%,#B9343F 50%,#B01825 51%,#B01825 100%);
 	background: linear-gradient(top, #CD6B74 0%,#B9343F 50%,#B01825 51%,#B01825 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cd6b74', endColorstr='#b01825',GradientType=0 );
+}
+
+a.pp-cancel-button {
+	background: #000; /* Old browsers */
+  background: -moz-linear-gradient(top,  #636363 0%, #202020 50%, #000 51%, #000 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#636363), color-stop(50%,#202020), color-stop(51%,#000), color-stop(100%,#000)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #636363 0%,#202020 50%,#000 51%,#000 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #636363 0%,#202020 50%,#000 51%,#000 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #636363 0%,#202020 50%,#000 51%,#000 100%); /* IE10+ */
+  background: linear-gradient(top,  #636363 0%,#202020 50%,#000 51%,#000 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#636363', endColorstr='#000',GradientType=0 ); /* IE6-9 */
 }
 
 /* NOTE: Use of .topbar has been removed in Bootstrap 2.x. */
@@ -107,6 +118,10 @@ a.pp-delete-button {
 
 .pp-view.active, .pp-view.push, .pp-view.pop {
   display: block;
+}
+
+div.pp-navigationbar-buttons {
+  display: none;
 }
 
 .pp-view-stack {

@@ -12,20 +12,26 @@ Pushpop.NavigationBar = function(element) {
   element.navigationBar = this;
   
   var self = this;
-  var viewStack = $element.parents('.pp-view-stack')[0];
-  
+
+  var viewStack = $element.parents('.pp-view-stack')[0];  
   if (viewStack) viewStack = this.viewStack = viewStack.viewStack;
   
   var $backButtonElement = this.$backButtonElement = $('<a class="pp-barbutton pp-barbutton-align-left pp-barbutton-style-back" href="#">Back</a>').appendTo($element);
   
-  this.setTitle(viewStack.getActiveView().title);
+  var activeView = viewStack.getActiveView();
+  this.setTitle(activeView.title);
+  this.loadNavbarButtons(activeView);
   
   viewStack.$element.bind(Pushpop.EventType.WillPresentView, function(evt) {
-    self.setTitle(evt.view.title);
+    var view = evt.view;
+    self.setTitle(view.title);
+    self.loadNavbarButtons(view)
   });
   
   viewStack.$element.bind(Pushpop.EventType.WillPushView, function(evt) {
-    $backButtonElement.addClass('pop active');
+		if (!evt.view.hideNavBackButton) {
+		  $backButtonElement.addClass('pop active');
+		}
   });
   
   viewStack.$element.bind(Pushpop.EventType.WillPopView, function(evt) {
@@ -37,6 +43,7 @@ Pushpop.NavigationBar.prototype = {
   element: null,
   $element: null,
   $backButtonElement: null,
+  $otherNavButtonElements: null,
   $titleElement: null,
   viewStack: null,
   setTitle: function(value) {
@@ -44,7 +51,20 @@ Pushpop.NavigationBar.prototype = {
     if ($titleElement) $titleElement.remove();
     
     this.$titleElement = $('<h1 class="pp-navigationbar-title">' + ((value) ? value : '') + '</h1>').appendTo(this.$element);
-  }
+  },
+	loadNavbarButtons: function(view) {
+	  // Clear any nav buttons currently in the navbar (other than the back button)
+	  if (this.$otherNavButtons) this.$otherNavButtons.remove();
+    
+  	var $element = this.$element;
+    // Does this view have navbar buttons?
+    var $navbarButtons = view.$navbarButtons;
+    if ($navbarButtons.length > 0) {
+      // Append buttons for this view
+      $element.append($navbarButtons);
+    }
+    this.$otherNavButtons = $navbarButtons;
+	}
 };
 
 $(function() {

@@ -92,6 +92,7 @@
 }
 
 .pp-navigationbar > .pp-barbutton.pp-barbutton-align-left.pp-barbutton-style-back {
+  position: absolute;
   margin-left: 1.5em;
   padding-left: 0.25em;
   border-left: none;

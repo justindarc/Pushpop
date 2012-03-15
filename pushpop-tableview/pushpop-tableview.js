@@ -335,7 +335,7 @@ if (!window['Pushpop']) window.Pushpop = {};
     tableView: null,
     isMultiple: false,
 		valuesDelimiter: '-',
-		textPropertyOfItemsInDataSource: 'title',
+		displayTextProperty: 'title',
     getParentTableView: function() {
       return this.$element.parents('.pp-tableview').first().data('tableview');
     },
@@ -343,13 +343,10 @@ if (!window['Pushpop']) window.Pushpop = {};
 			// Does the value contain a delimeter? If so, we need to drill down through the data.
 			if (('' + value).indexOf(this.valuesDelimiter) > -1) {
 				var dataSource = this.getDataSource();
-				if (dataSource) {
-					return this.getTextByValuesArray(value.split(this.valuesDelimiter), dataSource);
-				}
-			} else {
-				// There's no need to drill down through the data
-      	return this.tableView.$element.children('[data-value="' + value + '"]:first-child').text();
-			}
+				if (dataSource) return this.getTextByValuesArray(value.split(this.valuesDelimiter), dataSource);
+			} 
+			// There's no need to drill down through the data
+			else return this.tableView.$element.children('[data-value="' + value + '"]:first-child').text();
     },
 		// Recursive method to drill down through the data (if necessary), and return the value
 		getTextByValuesArray: function(valuesArray, arrayOfItems) {
@@ -357,25 +354,17 @@ if (!window['Pushpop']) window.Pushpop = {};
 			var valueToSearchFor = valuesArray[0];
 			valuesArray.splice(0, 1);
 			
-			var propertyToSearch;
 			// If this is not the last level, then we are need to search on the id property of the item,
 			//   otherwise, we need to search on the value property of the item.
-			if (valuesArray.length > 0) {
-				propertyToSearch = 'id';
-			} else {
-				propertyToSearch = 'value'
-			}
+			var propertyToSearch = (valuesArray.length > 0 ? 'id' : 'value');
+
 			// Loop through arrayOfItems and find the item with the right value
 			for(var i = 0, length = arrayOfItems.length; i < length; i++) {
 				if (arrayOfItems[i][propertyToSearch] == valueToSearchFor) {
 					// Are there more levels to drill down to?
-					if (valuesArray.length > 0) {
-						// Recursively call this function. The arrayOfItems to search through is the values property of this item
-						return this.getTextByValuesArray(valuesArray, arrayOfItems[i].value);
-					} else {
-						// This is the last level, so return the text
-						return arrayOfItems[i][this.textPropertyOfItemsInDataSource];
-					}
+					if (valuesArray.length > 0) return this.getTextByValuesArray(valuesArray, arrayOfItems[i].value);
+					// This is the last level, so return the text
+					else return arrayOfItems[i][this.displayTextProperty];
 				}
 			}
 		},
@@ -416,7 +405,7 @@ if (!window['Pushpop']) window.Pushpop = {};
 			this._dataSource = value;
 			
 			// Get the existing tableview that holds the available choices
-			var $ul = this.view.$element.find('ul.pp-tableview');
+			var $ul = this.tableView.$element;
 			
 			// Clear any existing items (except the header)
 			$ul.children('not(:first-child)').remove();
@@ -506,8 +495,11 @@ if (!window['Pushpop']) window.Pushpop = {};
     $viewElement.append($labelElement).append($textareaElement);
 
     var $textElement = this.$textElement = $('<span/>').appendTo($element);
-    var $doneButtonElement = this.$doneButtonElement = $('<a class="pp-tableview-textarea-input-done-button" href="#">Done</a>');
-    $viewElement.append($doneButtonElement);
+    var $doneButtonElement = this.$doneButtonElement = $('<a class="pp-button" href="#">Done</a>');
+    var $cancelButtonElement = this.$cancelButtonElement = $('<a class="pp-button pp-cancel-button" href="#">Cancel</a>');
+		var $buttonContainer = $('<div class="pp-tableview-textarea-input-buttons" />');
+		$buttonContainer.append($doneButtonElement).append($cancelButtonElement);
+		$viewElement.append($buttonContainer);
 
     $doneButtonElement.bind('click', function(evt) {
       var value = $textareaElement.val();
@@ -523,6 +515,15 @@ if (!window['Pushpop']) window.Pushpop = {};
       }
       
       viewStack.pop();
+			evt.preventDefault();
+    });
+
+		$cancelButtonElement.bind('click', function(evt) {
+			// Set text back to the original value
+			$textareaElement.val(self.getValue());
+			
+      viewStack.pop();
+			evt.preventDefault();
     });
   };
 
