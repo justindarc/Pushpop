@@ -53,13 +53,13 @@ if (!window['Pushpop']) window.Pushpop = {};
       _$activeCellElement = $(this);
       
       if (_$activeCellElement.hasClass('pp-tableview-inline-text-input-cell') &&
-          _$activeCellElement.children('input:first').is(':focus')) {
+          _$activeCellElement.children('input:first-child').is(':focus')) {
         _$activeCellElement = null;
         _isMouseDown = false;
         return;
       }
       
-      _$activeCellLinkElement = _$activeCellElement.children('a:first');
+      _$activeCellLinkElement = _$activeCellElement.children('a:first-child');
       _$activeCellLinkElement.unbind('click', activeCellLinkClickHandler);
       
       var $editingAccessoryButtonElement = $('<div class="pp-tableview-editing-accessory-button"/>');
@@ -107,7 +107,7 @@ if (!window['Pushpop']) window.Pushpop = {};
       var activeCellElement = _$activeCellElement[0];
       
       if (!_isAccessoryButtonPressed && !_isEditingAccessoryButtonPressed) {
-        $element.trigger(jQuery.Event(Pushpop.EventType.WillSelectCell, {
+        $element.trigger($.Event(Pushpop.EventType.WillSelectCell, {
           cellElement: activeCellElement,
           $cellElement: _$activeCellElement,
           index: index
@@ -120,15 +120,15 @@ if (!window['Pushpop']) window.Pushpop = {};
       }
       
       if (!_isAccessoryButtonPressed && !_isEditingAccessoryButtonPressed) {
-        $element.trigger(jQuery.Event(Pushpop.EventType.DidSelectCell, {
+        $element.trigger($.Event(Pushpop.EventType.DidSelectCell, {
           cellElement: activeCellElement,
           $cellElement: _$activeCellElement,
           index: index
         }));
         
-        if (_$activeCellElement.hasClass('pp-tableview-inline-text-input-cell')) _$activeCellElement.children('input:first').focus();
+        if (_$activeCellElement.hasClass('pp-tableview-inline-text-input-cell')) _$activeCellElement.children('input:first-child').focus();
       } else {
-        $element.trigger(jQuery.Event(Pushpop.EventType.AccessoryButtonTapped, {
+        $element.trigger($.Event(Pushpop.EventType.AccessoryButtonTapped, {
           cellElement: activeCellElement,
           $cellElement: _$activeCellElement,
           index: index
@@ -174,14 +174,14 @@ if (!window['Pushpop']) window.Pushpop = {};
               
               pickerCell.removeValue(value);
               
-              $element.trigger(jQuery.Event(Pushpop.EventType.DidRemoveValue, {
+              $element.trigger($.Event(Pushpop.EventType.DidRemoveValue, {
                 cellElement: cellElement,
                 $cellElement: $cellElement,
                 value: value,
                 text: text
               }));
               
-              $element.trigger(jQuery.Event(Pushpop.EventType.DidChangeValue, {
+              $element.trigger($.Event(Pushpop.EventType.DidChangeValue, {
                 cellElement: cellElement,
                 $cellElement: $cellElement,
                 value: pickerCell.getValue()
@@ -198,7 +198,7 @@ if (!window['Pushpop']) window.Pushpop = {};
     $element: null,
     isEditing: false,
     getView: function() {
-      return this.$element.parents('.pp-view:first').data('view');
+      return this.$element.parents('.pp-view').first().data('view');
     }
   };
 
@@ -262,7 +262,7 @@ if (!window['Pushpop']) window.Pushpop = {};
 				// Make a new ul for the items
 				var $ul = $('<ul class="pp-tableview" />');
 				// Add the header item.  Give it the same text as the previous view
-				$ul.append('<li class="header">' + $cellElement.siblings(':first').html() + '</li>')
+				$ul.append('<li class="header">' + $cellElement.siblings(':first-child').html() + '</li>')
 				// Add the root level items. Note: we only add the root level items 
 				// so we don't load the dom with too many elements
 				for (var i = 0, length = value.length; i < length; i++) {
@@ -298,7 +298,7 @@ if (!window['Pushpop']) window.Pushpop = {};
       
 	      if (self.isMultiple) {
 	        self.setValue(valueHierarchy, true);
-	        $element.trigger(jQuery.Event(Pushpop.EventType.DidAddValue, {
+	        $element.trigger($.Event(Pushpop.EventType.DidAddValue, {
 	          cellElement: element,
 	          $cellElement: $element,
 	          value: valueHierarchy,
@@ -308,7 +308,7 @@ if (!window['Pushpop']) window.Pushpop = {};
 	        self.setValue(valueHierarchy);
 	      }
       
-	      $element.trigger(jQuery.Event(Pushpop.EventType.DidChangeValue, {
+	      $element.trigger($.Event(Pushpop.EventType.DidChangeValue, {
 	        cellElement: element,
 	        $cellElement: $element,
 	        value: self.getValue()
@@ -337,7 +337,7 @@ if (!window['Pushpop']) window.Pushpop = {};
 		valuesDelimiter: '-',
 		textPropertyOfItemsInDataSource: 'title',
     getParentTableView: function() {
-      return this.$element.parents('.pp-tableview:first').data('tableview');
+      return this.$element.parents('.pp-tableview').first().data('tableview');
     },
     getTextByValue: function(value) {
 			// Does the value contain a delimeter? If so, we need to drill down through the data.
@@ -348,7 +348,7 @@ if (!window['Pushpop']) window.Pushpop = {};
 				}
 			} else {
 				// There's no need to drill down through the data
-      	return this.tableView.$element.children('[data-value="' + value + '"]:first').text();
+      	return this.tableView.$element.children('[data-value="' + value + '"]:first-child').text();
 			}
     },
 		// Recursive method to drill down through the data (if necessary), and return the value
@@ -399,14 +399,14 @@ if (!window['Pushpop']) window.Pushpop = {};
         var $valueCellElement = $('<li class="pp-tableview-picker-value-cell pp-tableview-editing-cell pp-tableview-editing-accessory-delete" data-value="' + value + '">' + text + '</li>');
         $valueCellElement.data('pickerCell', this);
         $element.before($valueCellElement);
-        $tableViewElement.children('[data-value="' + value + '"]:first').addClass('pp-tableview-accessory-checkmark');
+        $tableViewElement.children('[data-value="' + value + '"]:first-child').addClass('pp-tableview-accessory-checkmark');
       } else {
         this._value = [value];
         $element.attr('data-value', this._value.join(',')).data('value', this._value);
         this.$selectedTextElement.html(text);
         
         $tableViewElement.children('.pp-tableview-accessory-checkmark').removeClass('pp-tableview-accessory-checkmark');
-        $tableViewElement.children('[data-value="' + value + '"]:first').addClass('pp-tableview-accessory-checkmark');
+        $tableViewElement.children('[data-value="' + value + '"]:first-child').addClass('pp-tableview-accessory-checkmark');
       }
     },
     getDataSource: function() {
@@ -419,7 +419,7 @@ if (!window['Pushpop']) window.Pushpop = {};
 			var $ul = this.view.$element.find('ul.pp-tableview');
 			
 			// Clear any existing items (except the header)
-			$ul.children('not(:first)').remove();
+			$ul.children('not(:first-child)').remove();
 			
 			// Add the root level items. Note: we only add the root level items 
 			// so we don't load the dom with too many elements
@@ -460,8 +460,8 @@ if (!window['Pushpop']) window.Pushpop = {};
         this._value.splice(index, 1);
         
         var $tableViewElement = this.tableView.$element;
-        $tableViewElement.children('[data-value="' + value + '"]:first').removeClass('pp-tableview-accessory-checkmark');
-        $element.prevAll('[data-value="' + value + '"]:first').remove();
+        $tableViewElement.children('[data-value="' + value + '"]:first-child').removeClass('pp-tableview-accessory-checkmark');
+        $element.prevAll('[data-value="' + value + '"]:first-child').remove();
       } else {
         this._value = [];
       }
@@ -499,7 +499,7 @@ if (!window['Pushpop']) window.Pushpop = {};
     viewStack.$element.append($viewElement);
 
     var view = this.view = new Pushpop.View($viewElement);
-    var $labelElement = $('<label class="pp-tableview-textarea-input-label">' + $element.children('label:first').text() + '</label>');
+    var $labelElement = $('<label class="pp-tableview-textarea-input-label">' + $element.children('label:first-child').text() + '</label>');
     var $textareaElement = this.$textareaElement = $element.children('textarea');
     var value = this._value = $textareaElement.val();
     $textareaElement.addClass('pp-tableview-textarea-input');
@@ -515,7 +515,7 @@ if (!window['Pushpop']) window.Pushpop = {};
       if (value !== self.getValue()) {
         self.setValue($textareaElement.val());
       
-        $element.trigger(jQuery.Event(Pushpop.EventType.DidChangeValue, {
+        $element.trigger($.Event(Pushpop.EventType.DidChangeValue, {
           cellElement: element,
           $cellElement: $element,
           value: value
@@ -535,7 +535,7 @@ if (!window['Pushpop']) window.Pushpop = {};
     $doneButtonElement: null,
     view: null,
     getParentTableView: function() {
-      return this.$element.parents('.pp-tableview:first').data('tableview');
+      return this.$element.parents('.pp-tableview').first().data('tableview');
     },
     getValue: function() {
       return this._value;

@@ -4,16 +4,18 @@ if (!window['Pushpop']) window.Pushpop = {};
 
 Pushpop.NavigationBar = function(element) {    
   var $element = this.$element = $(element);
-  
-  var navigationBar = $element.data('navigationBar');
-  if (navigationBar) return navigationBar;
-  
-  $element.data('navigationBar', this);
-  
   element = this.element = $element[0];
   
+  var navigationBar = element.navigationBar;
+  if (navigationBar) return navigationBar;
+  
+  element.navigationBar = this;
+  
   var self = this;
-  var viewStack = this.viewStack = $element.parents('.pp-view-stack:first').data('viewStack');
+  var viewStack = $element.parents('.pp-view-stack')[0];
+  
+  if (viewStack) viewStack = this.viewStack = viewStack.viewStack;
+  
   var $backButtonElement = this.$backButtonElement = $('<a class="pp-barbutton pp-barbutton-align-left pp-barbutton-style-back" href="#">Back</a>').appendTo($element);
   
   this.setTitle(viewStack.getActiveView().title);
