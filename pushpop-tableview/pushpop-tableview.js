@@ -65,8 +65,18 @@ if (!window['Pushpop']) window.Pushpop = {};
       var $editingAccessoryButtonElement = $('<div class="pp-tableview-editing-accessory-button"/>');
       _$activeCellElement.append($editingAccessoryButtonElement);
       
-      var mouseX = (evt.type === 'touchstart') ? evt.originalEvent.targetTouches[0].pageX : evt.pageX;
-      var mouseY = (evt.type === 'touchstart') ? evt.originalEvent.targetTouches[0].pageY : evt.pageY;
+      var mouseX, mouseY;
+      
+      if (evt.type === 'touchstart') {
+        var targetTouches = evt.targetTouches || evt.originalEvent.targetTouches;
+        
+        mouseX = targetTouches[0].pageX;
+        mouseY = targetTouches[0].pageY;
+      } else {
+        mouseX = evt.pageX;
+        mouseY = evt.pageY;
+      }
+      
       var editingAccessoryOffset = $editingAccessoryButtonElement.offset();
       var editingAccessoryWidth = $editingAccessoryButtonElement.width();
       var editingAccessoryHeight = $editingAccessoryButtonElement.height();
