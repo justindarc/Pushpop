@@ -320,41 +320,26 @@ ul.pp-tableview > li > div.pp-tableview-accessory-button {
 }
 
 ul.pp-tableview > li.pp-tableview-accessory-disclosure-indicator:before {
-  background: #888;
+  border-top: 1px solid #777;
+  border-right: 1px solid #777;
   content: '';
   display: inline-block;
   position: absolute;
   top: 50%;
   right: 0.5em;
-  margin: -0.3em 0.2em 0 0;
-  width: 0.6em;
-  height: 0.6em;
-  -webkit-transform: rotate(-45deg);
-  -moz-transform: rotate(-45deg);
-  -ms-transform: rotate(-45deg);
-  -o-transform: rotate(-45deg);
-  transform: rotate(-45deg);
-}
-
-ul.pp-tableview > li.pp-tableview-accessory-disclosure-indicator:after {
-  background: inherit;
-  content: '';
-  display: inline-block;
-  position: absolute;
-  top: 50%;
-  right: 0.5em;
-  margin: -0.3em 0.45em 0 0;
-  width: 0.6em;
-  height: 0.6em;
-  -webkit-transform: rotate(-45deg);
-  -moz-transform: rotate(-45deg);
-  -ms-transform: rotate(-45deg);
-  -o-transform: rotate(-45deg);
-  transform: rotate(-45deg);
+  margin: -0.1em 0.5em 0 0;
+  width: 0.15em;
+  height: 0.15em;
+  -webkit-transform: scale(3) rotate(45deg);
+  -moz-transform: scale(2) rotate(45deg);
+  -ms-transform: scale(2) rotate(45deg);
+  -o-transform: scale(2) rotate(45deg);
+  transform: scale(2) rotate(45deg);
 }
 
 ul.pp-tableview > li.pp-tableview-accessory-disclosure-indicator.active:before {
-  background: #fff;
+  border-top: 1px solid #fff;
+  border-right: 1px solid #fff;
 }
 
 ul.pp-tableview > li.pp-tableview-accessory-detail-disclosure-button:before {
@@ -371,27 +356,34 @@ ul.pp-tableview > li.pp-tableview-accessory-detail-disclosure-button:before {
   display: inline-block;
   position: absolute;
   top: 50%;
-  right: 0.4em;
+  right: 0.5em;
   width: 1.2em;
   height: 1.2em;
-  margin-top: -0.8em;
-  -webkit-border-radius: 1em;
-  -moz-border-radius: 1em;
-  border-radius: 1em;
-  -webkit-box-shadow: 0 0.1em 0.1em rgba(0, 0, 0, 0.8);
-  -moz-box-shadow: 0 0.1em 0.1em rgba(0, 0, 0, 0.8);
-  box-shadow: 0 0.1em 0.1em rgba(0, 0, 0, 0.8);
+  margin: -0.75em 0 0 0;
+  -webkit-border-radius: 1.2em;
+  -moz-border-radius: 1.2em;
+  border-radius: 1.2em;
+  -webkit-box-shadow: 0 0.1em 0.1em 0.1em rgba(0, 0, 0, 0.45);
+  -moz-box-shadow: 0 0.1em 0.1em 0.1em rgba(0, 0, 0, 0.45);
+  box-shadow: 0 0.1em 0.1em 0.1em rgba(0, 0, 0, 0.45);
 }
 
 ul.pp-tableview > li.pp-tableview-accessory-detail-disclosure-button:after {
-  border: 0.35em solid transparent;
-  border-left-color: #f6f6f6;
+  border-top: 1px solid #fff;
+  border-right: 1px solid #fff;
   content: '';
   display: inline-block;
   position: absolute;
   top: 50%;
-  right: 0.6em;
-  margin-top: -0.35em;
+  right: 0.5em;
+  margin: -0.15em 0.7em 0 0;
+  width: 0.15em;
+  height: 0.15em;
+  -webkit-transform: scale(3) rotate(45deg);
+  -moz-transform: scale(2) rotate(45deg);
+  -ms-transform: scale(2) rotate(45deg);
+  -o-transform: scale(2) rotate(45deg);
+  transform: scale(2) rotate(45deg);
 }
 
 ul.pp-tableview > li.pp-tableview-accessory-checkmark:before {
