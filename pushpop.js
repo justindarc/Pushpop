@@ -39,7 +39,8 @@ Pushpop.View = function(element) {
   var $navbarButtons = $navbarButtonsContainer.find('.pp-barbutton');
   this.$navbarButtons = $navbarButtons;
   // Hide the back button if data-hide-back-button="true" or if there is a left navigation bar
-  this.hideNavBackButton = ($navbarButtonsContainer.attr('data-hide-back-button') === true || $navbarButtons.filter('.pp-barbutton-align-left').length > 0);
+  var dataHideBackButton = $navbarButtonsContainer.attr('data-hide-back-button');
+  this.hideNavBackButton = ((dataHideBackButton && dataHideBackButton !== 'false') || $navbarButtons.filter('.pp-barbutton-align-left').length > 0);
 };
 
 Pushpop.View.prototype = {

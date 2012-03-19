@@ -208,7 +208,8 @@ if (!window['Pushpop']) window.Pushpop = {};
     $element: null,
     isEditing: false,
     getView: function() {
-      return this.$element.parents('.pp-view').first().data('view');
+      var parent = this.$element.parents('.pp-view').first()[0];
+      return (parent ? parent.view : null);
     }
   };
 
@@ -356,7 +357,7 @@ if (!window['Pushpop']) window.Pushpop = {};
 				if (dataSource) return this.getTextByValuesArray(value.split(this.valuesDelimiter), dataSource);
 			} 
 			// There's no need to drill down through the data
-			else return this.tableView.$element.children('[data-value="' + value + '"]:first-child').text();
+			else return this.tableView.$element.children('[data-value="' + value + '"]').first().text();
     },
 		// Recursive method to drill down through the data (if necessary), and return the value
 		getTextByValuesArray: function(valuesArray, arrayOfItems) {
