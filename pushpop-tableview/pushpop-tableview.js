@@ -209,7 +209,7 @@ if (!window['Pushpop']) window.Pushpop = {};
     isEditing: false,
     getView: function() {
       var parent = this.$element.parents('.pp-view').first()[0];
-      return (parent ? parent.view : undefined);
+      return (parent ? parent.view : null);
     }
   };
 
