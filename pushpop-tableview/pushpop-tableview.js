@@ -53,7 +53,7 @@ if (!window['Pushpop']) window.Pushpop = {};
       _$activeCellElement = $(this);
       
       if (_$activeCellElement.hasClass('pp-tableview-inline-text-input-cell') &&
-          _$activeCellElement.children('input:first-child').is(':focus')) {
+          _$activeCellElement.children('input').first().is(':focus')) {
         _$activeCellElement = null;
         _isMouseDown = false;
         return;
@@ -136,7 +136,7 @@ if (!window['Pushpop']) window.Pushpop = {};
           index: index
         }));
         
-        if (_$activeCellElement.hasClass('pp-tableview-inline-text-input-cell')) _$activeCellElement.children('input:first-child').focus();
+        if (_$activeCellElement.hasClass('pp-tableview-inline-text-input-cell')) _$activeCellElement.children('input').first().focus();
       } else {
         $element.trigger($.Event(Pushpop.EventType.AccessoryButtonTapped, {
           cellElement: activeCellElement,
@@ -399,14 +399,14 @@ if (!window['Pushpop']) window.Pushpop = {};
         var $valueCellElement = $('<li class="pp-tableview-picker-value-cell pp-tableview-editing-cell pp-tableview-editing-accessory-delete" data-value="' + value + '">' + text + '</li>');
         $valueCellElement.data('pickerCell', this);
         $element.before($valueCellElement);
-        $tableViewElement.children('[data-value="' + value + '"]:first-child').addClass('pp-tableview-accessory-checkmark');
+        $tableViewElement.children('[data-value="' + value + '"]').first().addClass('pp-tableview-accessory-checkmark');
       } else {
         this._value = [value];
         $element.attr('data-value', this._value.join(',')).data('value', this._value);
         this.$selectedTextElement.html(text);
         
         $tableViewElement.children('.pp-tableview-accessory-checkmark').removeClass('pp-tableview-accessory-checkmark');
-        $tableViewElement.children('[data-value="' + value + '"]:first-child').addClass('pp-tableview-accessory-checkmark');
+        $tableViewElement.children('[data-value="' + value + '"]').first().addClass('pp-tableview-accessory-checkmark');
       }
     },
     getDataSource: function() {
@@ -460,8 +460,8 @@ if (!window['Pushpop']) window.Pushpop = {};
         this._value.splice(index, 1);
         
         var $tableViewElement = this.tableView.$element;
-        $tableViewElement.children('[data-value="' + value + '"]:first-child').removeClass('pp-tableview-accessory-checkmark');
-        $element.prevAll('[data-value="' + value + '"]:first-child').remove();
+        $tableViewElement.children('[data-value="' + value + '"]').first().removeClass('pp-tableview-accessory-checkmark');
+        $element.prevAll('[data-value="' + value + '"]').first().remove();
       } else {
         this._value = [];
       }
