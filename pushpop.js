@@ -117,22 +117,27 @@ Pushpop.ViewStack.prototype = {
         
         var $newActiveViewElement = newActiveView.$element;
         var $oldActiveViewElement = oldActiveView.$element;
+        var action;
         
         if ($newActiveViewElement.hasClass('push')) {
           $newActiveViewElement.trigger($.Event(Pushpop.EventType.DidPushView, {
             view: newActiveView
           }));
+          action = 'push';
         } else {
           $oldActiveViewElement.trigger($.Event(Pushpop.EventType.DidPopView, {
             view: oldActiveView
           }));
+          action = 'pop';
         }
         
         $oldActiveViewElement.trigger($.Event(Pushpop.EventType.DidDismissView, {
-          view: oldActiveView
+          view: oldActiveView,
+          action: action
         }));        
         $newActiveViewElement.trigger($.Event(Pushpop.EventType.DidPresentView, {
-          view: newActiveView
+          view: newActiveView,
+          action: action
         }));
         
         $newActiveViewElement.addClass('active');
@@ -164,10 +169,12 @@ Pushpop.ViewStack.prototype = {
       view: newActiveView
     }));
     $oldActiveViewElement.trigger($.Event(Pushpop.EventType.WillDismissView, {
-      view: oldActiveView
+      view: oldActiveView,
+      action: 'push'
     }));
     $newActiveViewElement.trigger($.Event(Pushpop.EventType.WillPresentView, {
-      view: newActiveView
+      view: newActiveView,
+      action: 'push'
     }));
     
     this.views.push(newActiveView);
@@ -239,10 +246,12 @@ Pushpop.ViewStack.prototype = {
       view: oldActiveView
     }));
     $oldActiveViewElement.trigger($.Event(Pushpop.EventType.WillDismissView, {
-      view: oldActiveView
+      view: oldActiveView,
+      action: 'pop'
     }));
     $newActiveViewElement.trigger($.Event(Pushpop.EventType.WillPresentView, {
-      view: newActiveView
+      view: newActiveView,
+      action: 'pop'
     }));
     
     $newActiveViewElement.bind('webkitTransitionEnd transitionend oTransitionEnd transitionEnd', this.handleEvent);

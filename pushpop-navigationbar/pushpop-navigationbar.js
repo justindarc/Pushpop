@@ -25,17 +25,7 @@ Pushpop.NavigationBar = function(element) {
   viewStack.$element.bind(Pushpop.EventType.WillPresentView, function(evt) {
     var view = evt.view;
     self.setTitle(view.title);
-    self.loadNavbarButtons(view)
-  });
-  
-  viewStack.$element.bind(Pushpop.EventType.WillPushView, function(evt) {
-		if (!evt.view.hideNavBackButton) {
-		  $backButtonElement.addClass('pop active');
-		}
-  });
-  
-  viewStack.$element.bind(Pushpop.EventType.WillPopView, function(evt) {
-    if (viewStack.views.length < 2) $backButtonElement.removeClass('pop active');
+    self.loadNavbarButtons(view, evt.action)
   });
 };
 
@@ -43,7 +33,7 @@ Pushpop.NavigationBar.prototype = {
   element: null,
   $element: null,
   $backButtonElement: null,
-  $otherNavButtonElements: null,
+  $viewSpecificNavButtons: null,
   $titleElement: null,
   viewStack: null,
   setTitle: function(value) {
@@ -52,9 +42,9 @@ Pushpop.NavigationBar.prototype = {
     
     this.$titleElement = $('<h1 class="pp-navigationbar-title">' + ((value) ? value : '') + '</h1>').appendTo(this.$element);
   },
-	loadNavbarButtons: function(view) {
+	loadNavbarButtons: function(view, action) {
 	  // Clear any nav buttons currently in the navbar (other than the back button)
-	  if (this.$otherNavButtons) this.$otherNavButtons.remove();
+	  if (this.$viewSpecificNavButtons) this.$viewSpecificNavButtons.remove();
     
   	var $element = this.$element;
     // Does this view have navbar buttons?
@@ -63,7 +53,21 @@ Pushpop.NavigationBar.prototype = {
       // Append buttons for this view
       $element.append($navbarButtons);
     }
-    this.$otherNavButtons = $navbarButtons;
+    // Store the view specific nav buttons, so we can remove them easily when another view is presented
+    this.$viewSpecificNavButtons = $navbarButtons;
+    
+    // Show/Hide the back button
+    switch (action) {
+      case 'push':
+        if (!view.hideNavBackButton) this.$backButtonElement.addClass('pop active');
+        break;
+      case 'pop':
+        if (this.viewStack.views.length > 1 && !view.hideNavBackButton) {
+          this.$backButtonElement.addClass('pop active');
+        } else {
+          this.$backButtonElement.removeClass('pop active');
+        }
+    }
 	}
 };
 
