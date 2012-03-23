@@ -187,16 +187,11 @@ if (!window['Pushpop']) window.Pushpop = {};
             // Add a delete button on the right side
             $deleteButtonContainer = $('<div class="delete-button-container"><a class="pp-button pp-delete-button">Delete</a></div>');
             $cellElement.append($deleteButtonContainer);
-            // We apparently have to give the browser a small amount of time before we
-            // add the 'show-delete-button' class in order for the transition to occur.
-            setTimeout(function() {
-              // Show the delete button
-              $deleteButtonContainer.addClass('show-delete-button');
-            }, 100);
-          } else {
-            // Show the delete button
-            $deleteButtonContainer.addClass('show-delete-button');
+            // Force a reflow before adding the 'show-delete-button' class below so the transition will always occur
+            $cellElement[0].offsetWidth;
           }
+          
+          $deleteButtonContainer.addClass('show-delete-button');
           
           // Bind to the mousedown of the delete button
           $deleteButtonContainer.children('a.pp-delete-button').one('mousedown touchstart', function(evt) {
