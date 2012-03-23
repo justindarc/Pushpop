@@ -293,7 +293,8 @@ div.pp-tableview-textarea-input-buttons a.pp-button:last-child {
 /**
  * Pushpop TableView Buttons
  */
-ul.pp-tableview > li > a.pp-button {
+ul.pp-tableview > li > a.pp-button, 
+ul.pp-tableview > li > div.delete-button-container > a.pp-button {
 	font-size: 0.8em;
   position: absolute;
 	top: 50%;
@@ -304,6 +305,24 @@ ul.pp-tableview > li > a.pp-button {
   -webkit-border-radius: 0.4em;
   -moz-border-radius: 0.4em;
   border-radius: 0.4em;
+}
+
+ul.pp-tableview > li > div.delete-button-container {
+  position: absolute;
+  right: -8px;
+  top: 0;
+  bottom: 0;
+  overflow: hidden;
+  width: 0;
+  -webkit-transition: width 0.5s ease;
+  -moz-transition: width 0.5s ease;
+  -ms-transition: width 0.5s ease;
+  -o-transition: width 0.5s ease;
+  transition: width 0.5s ease;
+}
+
+ul.pp-tableview > li > div.delete-button-container.show-delete-button {
+  width: 72px;
 }
 
 /**

@@ -171,33 +171,72 @@ if (!window['Pushpop']) window.Pushpop = {};
     $element.bind(Pushpop.EventType.AccessoryButtonTapped, function(evt) {
       var $cellElement = evt.$cellElement;
       
-      if ($cellElement.hasClass('pp-tableview-editing-accessory-delete')) {
+      if ($cellElement.hasClass('pp-tableview-editing-accessory-insert')) {
+        if ($cellElement.hasClass('pp-tableview-picker-cell')) {
+          var pickerCell = $cellElement.data('pickerCell');
+          if (pickerCell) pickerCell.show();
+        }
+      } else if ($cellElement.hasClass('pp-tableview-editing-accessory-delete')) {
         if ($cellElement.hasClass('pp-tableview-picker-value-cell')) {
           $cellElement.addClass('pp-tableview-editing-delete-confirmation');
-          var value = $cellElement.data('value');
-          var pickerCell = $cellElement.data('pickerCell');
-          if (pickerCell) {
-            $cellElement.slideUp(200, function() {
-              var text = pickerCell.getTextByValue(value);
-              var $cellElement = pickerCell.$element;
-              var cellElement = $cellElement[0];
-              
-              pickerCell.removeValue(value);
-              
-              $element.trigger($.Event(Pushpop.EventType.DidRemoveValue, {
-                cellElement: cellElement,
-                $cellElement: $cellElement,
-                value: value,
-                text: text
-              }));
-              
-              $element.trigger($.Event(Pushpop.EventType.DidChangeValue, {
-                cellElement: cellElement,
-                $cellElement: $cellElement,
-                value: pickerCell.getValue()
-              }));
-            });
+          
+          var $deleteButtonContainer = $cellElement.children('div.delete-button-container');
+          
+          // Do we need to add a delete button to this li element?
+          if ($deleteButtonContainer.length === 0) {
+            // Add a delete button on the right side
+            $deleteButtonContainer = $('<div class="delete-button-container"><a class="pp-button pp-delete-button">Delete</a></div>');
+            $cellElement.append($deleteButtonContainer);
+            // We apparently have to give the browser a small amount of time before we
+            // add the 'show-delete-button' class in order for the transition to occur.
+            setTimeout(function() {
+              // Show the delete button
+              $deleteButtonContainer.addClass('show-delete-button');
+            }, 100);
+          } else {
+            // Show the delete button
+            $deleteButtonContainer.addClass('show-delete-button');
           }
+          
+          // Bind to the mousedown of the delete button
+          $deleteButtonContainer.children('a.pp-delete-button').one('mousedown touchstart', function(evt) {
+            var value = $cellElement.data('value');
+            var pickerCell = $cellElement.data('pickerCell');
+            if (pickerCell) {
+              $cellElement.slideUp(200, function() {
+                var text = pickerCell.getTextByValue(value);
+                var $cellElement = pickerCell.$element;
+                var cellElement = $cellElement[0];
+
+                pickerCell.removeValue(value);
+
+                $element.trigger($.Event(Pushpop.EventType.DidRemoveValue, {
+                  cellElement: cellElement,
+                  $cellElement: $cellElement,
+                  value: value,
+                  text: text
+                }));
+
+                $element.trigger($.Event(Pushpop.EventType.DidChangeValue, {
+                  cellElement: cellElement,
+                  $cellElement: $cellElement,
+                  value: pickerCell.getValue()
+                }));
+              });
+            }
+            
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
+          });
+          
+          // Bind to the body's mousedown event to hide the delete button
+          $('body').one('mousedown touchstart', function(evt) {
+            // Hide the delete button on right and rotate the delete icon on 
+            // left back to its original state
+            $deleteButtonContainer.removeClass('show-delete-button');
+            $cellElement.removeClass('pp-tableview-editing-delete-confirmation');
+          });
+          
         }
       }
     });
