@@ -178,6 +178,8 @@ if (!window['Pushpop']) window.Pushpop = {};
         }
       } else if ($cellElement.hasClass('pp-tableview-editing-accessory-delete')) {
         if ($cellElement.hasClass('pp-tableview-picker-value-cell')) {
+          if ($cellElement.hasClass('pp-tableview-editing-delete-confirmation')) return;
+          
           $cellElement.addClass('pp-tableview-editing-delete-confirmation');
           
           var $deleteButtonContainer = $cellElement.children('div.delete-button-container');
@@ -225,11 +227,14 @@ if (!window['Pushpop']) window.Pushpop = {};
           });
           
           // Bind to the body's mousedown event to hide the delete button
-          $('body').one('mousedown touchstart', function(evt) {
-            // Hide the delete button on right and rotate the delete icon on 
-            // left back to its original state
-            $deleteButtonContainer.removeClass('show-delete-button');
-            $cellElement.removeClass('pp-tableview-editing-delete-confirmation');
+          $('body').bind('mousedown.cancelDelete touchstart.cancelDelete', function(evt) {
+            if (evt.target !== $cellElement[0]) {
+              $(this).unbind('mousedown.cancelDelete touchstart.cancelDelete');
+              // Hide the delete button on right and rotate the delete icon on 
+              // left back to its original state
+              $deleteButtonContainer.removeClass('show-delete-button');
+              $cellElement.removeClass('pp-tableview-editing-delete-confirmation');
+            }
           });
           
         }
