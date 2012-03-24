@@ -229,7 +229,7 @@ if (!window['Pushpop']) window.Pushpop = {};
           // Bind to the body's mousedown event to hide the delete button
           $('body').bind('mousedown.cancelDelete touchstart.cancelDelete', function(evt) {
             if (evt.target !== $cellElement[0]) {
-              $(this).unbind('mousedown.cancelDelete touchstart.cancelDelete');
+              $(this).unbind(evt);
               // Hide the delete button on right and rotate the delete icon on 
               // left back to its original state
               $deleteButtonContainer.removeClass('show-delete-button');
