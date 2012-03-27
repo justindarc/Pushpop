@@ -47,6 +47,10 @@ if (!window['Pushpop']) window.Pushpop = {};
       evt.preventDefault();
     };
     
+    $element.delegate('li > a.pp-tableview-accessory-detail-disclosure-button, li > a.pp-button', 'mousedown touchstart', function(evt) {
+      evt.stopPropagation();
+    });
+    
     $element.delegate('li', 'mousedown touchstart', function(evt) {
       _isMouseDown = (evt.type === 'mousedown' && !Modernizr.touch) || evt.type === 'touchstart';
       
