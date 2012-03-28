@@ -361,7 +361,17 @@ ul.pp-tableview > li.pp-tableview-accessory-disclosure-indicator.active:before {
   border-right: 1px solid #fff;
 }
 
-ul.pp-tableview > li.pp-tableview-accessory-detail-disclosure-button:before {
+ul.pp-tableview > li > a.pp-tableview-accessory-detail-disclosure-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 0;
+  width: 40px;
+}
+
+ul.pp-tableview > li > a.pp-tableview-accessory-detail-disclosure-button:before {
   background: #2972d9; /* Old browsers */
   background: -moz-linear-gradient(top, #6a9de5 0%, #2972d9 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #6a9de5), color-stop(100%, #2972d9)); /* Chrome,Safari4+ */
@@ -387,7 +397,7 @@ ul.pp-tableview > li.pp-tableview-accessory-detail-disclosure-button:before {
   box-shadow: 0 0.1em 0.1em 0.1em rgba(0, 0, 0, 0.45);
 }
 
-ul.pp-tableview > li.pp-tableview-accessory-detail-disclosure-button:after {
+ul.pp-tableview > li > a.pp-tableview-accessory-detail-disclosure-button:after {
   border-top: 1px solid #fff;
   border-right: 1px solid #fff;
   content: '';
