@@ -419,6 +419,16 @@ ul.pp-tableview > li > a.pp-tableview-accessory-detail-disclosure-button:after {
   transform: scale(2) rotate(45deg);
 }
 
+ul.pp-tableview > li.pp-tableview-accessory-checkmark {
+  padding-right: 1.9em;
+}
+
+ul.pp-tableview > li.pp-tableview-cell-disabled,
+ul.pp-tableview > li.pp-tableview-cell-dimmed {
+  color: #888;
+  font-weight: normal;
+}
+
 ul.pp-tableview > li.pp-tableview-accessory-checkmark:before {
   border: 0.25em solid transparent;
   border-left-color: #324f85;
