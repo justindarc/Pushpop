@@ -300,6 +300,9 @@ if (!window['Pushpop']) window.Pushpop = {};
 
 		var callbackForDidSelectCell = function(evt) {
       var $cellElement = evt.$cellElement;
+		  // Check if the cell was disabled.  If so, return.
+		  if ($cellElement.hasClass('pp-tableview-cell-disabled')) return;
+		  
       var value = $cellElement.data('value');
 			// Is value an array?
 			if ($.isArray(value)) {
@@ -325,7 +328,7 @@ if (!window['Pushpop']) window.Pushpop = {};
 					
 					// If this value is not an array, check to see if it is already selected
 					if (!$.isArray(value[i].value) && (self._value.indexOf(valueHierarchy + self.valuesDelimiter + value[i].value) > -1)) {
-						$li.addClass('pp-tableview-accessory-checkmark');
+						$li.addClass('pp-tableview-accessory-checkmark pp-tableview-cell-disabled');
 					}
 					
 					$li.data('value', value[i].value);
@@ -442,14 +445,14 @@ if (!window['Pushpop']) window.Pushpop = {};
         var $valueCellElement = $('<li class="pp-tableview-picker-value-cell pp-tableview-editing-cell pp-tableview-editing-accessory-delete" data-value="' + value + '">' + text + '</li>');
         $valueCellElement.data('pickerCell', this);
         $element.before($valueCellElement);
-        $tableViewElement.children('[data-value="' + value + '"]').first().addClass('pp-tableview-accessory-checkmark');
+        $tableViewElement.children('[data-value="' + value + '"]').first().addClass('pp-tableview-accessory-checkmark pp-tableview-cell-disabled');
       } else {
         this._value = [value];
         $element.attr('data-value', this._value.join(',')).data('value', this._value);
         this.$selectedTextElement.html(text);
         
-        $tableViewElement.children('.pp-tableview-accessory-checkmark').removeClass('pp-tableview-accessory-checkmark');
-        $tableViewElement.children('[data-value="' + value + '"]').first().addClass('pp-tableview-accessory-checkmark');
+        $tableViewElement.children('.pp-tableview-accessory-checkmark').removeClass('pp-tableview-accessory-checkmark pp-tableview-cell-disabled');
+        $tableViewElement.children('[data-value="' + value + '"]').first().addClass('pp-tableview-accessory-checkmark pp-tableview-cell-disabled');
       }
     },
     getDataSource: function() {
@@ -503,7 +506,7 @@ if (!window['Pushpop']) window.Pushpop = {};
         this._value.splice(index, 1);
         
         var $tableViewElement = this.tableView.$element;
-        $tableViewElement.children('[data-value="' + value + '"]').first().removeClass('pp-tableview-accessory-checkmark');
+        $tableViewElement.children('[data-value="' + value + '"]').first().removeClass('pp-tableview-accessory-checkmark pp-tableview-cell-disabled');
         $element.prevAll('[data-value="' + value + '"]').first().remove();
       } else {
         this._value = [];
