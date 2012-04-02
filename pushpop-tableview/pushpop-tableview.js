@@ -397,16 +397,27 @@ if (!window['Pushpop']) window.Pushpop = {};
       return this.$element.parents('.pp-tableview').first().data('tableview');
     },
     getTextByValue: function(value) {
-			// Does the value contain a delimeter? If so, we need to drill down through the data.
-			if (('' + value).indexOf(this.valuesDelimiter) > -1) {
-				var dataSource = this.getDataSource();
-				if (dataSource) return this.getTextByValuesArray(value.split(this.valuesDelimiter), dataSource);
+      // Does this picker cell have a datasource?
+			if (this.getDataSource()) {
+			  var item = this.getDataSourceItemByValue(value);
+			  return (item ? item[this.displayTextProperty] : '');
 			} 
 			// There's no need to drill down through the data
 			else return this.tableView.$element.children('[data-value="' + value + '"]').first().text();
     },
-		// Recursive method to drill down through the data (if necessary), and return the value
-		getTextByValuesArray: function(valuesArray, arrayOfItems) {
+    getDataSourceItemByValue: function(value) {
+      var valuesArray = [value];
+      // Do we need to drill down?
+      if (('' + value).indexOf(this.valuesDelimiter) > -1) {
+        valuesArray = value.split(this.valuesDelimiter);
+      }
+			  
+			return this.getDataSourceItemByValueRecursively(valuesArray, this.getDataSource());
+	    
+    },
+		// Recursive method to drill down through the data (if necessary), 
+		// and return the object with the specified value
+		getDataSourceItemByValueRecursively: function(valuesArray, arrayOfItems) {
 			// Get the first value in the array. Then remove it from the list
 			var valueToSearchFor = valuesArray[0];
 			valuesArray.splice(0, 1);
@@ -419,9 +430,9 @@ if (!window['Pushpop']) window.Pushpop = {};
 			for(var i = 0, length = arrayOfItems.length; i < length; i++) {
 				if (arrayOfItems[i][propertyToSearch] == valueToSearchFor) {
 					// Are there more levels to drill down to?
-					if (valuesArray.length > 0) return this.getTextByValuesArray(valuesArray, arrayOfItems[i].value);
+					if (valuesArray.length > 0) return this.getDataSourceItemByValueRecursively(valuesArray, arrayOfItems[i].value);
 					// This is the last level, so return the text
-					else return arrayOfItems[i][this.displayTextProperty];
+					else return arrayOfItems[i];
 				}
 			}
 		},
