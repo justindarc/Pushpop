@@ -27,6 +27,9 @@ Pushpop.NavigationBar = function(element) {
     self.setTitle(view.title);
     self.loadNavbarButtons(view, evt.action)
   });
+  
+  // Prevent dragging of the Navigation Bar.
+  $element.bind('touchstart', function(evt) { evt.preventDefault(); });
 };
 
 Pushpop.NavigationBar.prototype = {
