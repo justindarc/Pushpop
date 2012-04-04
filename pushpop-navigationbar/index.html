@@ -15,6 +15,16 @@
 	<script type="text/javascript" src="../pushpop.js"></script>
 	<script type="text/javascript" src="../pushpop-tableview/pushpop-tableview.js"></script>
 	<script type="text/javascript" src="pushpop-navigationbar.js"></script>
+	<script type="text/javascript" src="../pushpop-tableview/sample-data/sample-data.js"></script>
+	<script type="text/javascript">
+	  $(function() {
+	    // Set the datasource of one of the pickerCells with some sample data, and preselect a couple values
+      var pickerCell = $('#letter-picker-cell').data('pickerCell');
+      pickerCell.setDataSource(sampleData);
+      pickerCell.setValue('1-1-1');
+      pickerCell.setValue('26');
+    });
+	</script>
 </head>
 <body>
   <div class="navbar navbar-fixed-top">
@@ -149,6 +159,15 @@
                 <li data-value="16">Green</li>
                 <li data-value="17">Blue</li>
                 <li data-value="18">Purple</li>
+              </ul>
+            </li>
+          </ul>  
+        	<ul class="pp-tableview">
+            <li class="header">Multi-Picker Table Cells With Data Source</li>
+            <li id="letter-picker-cell" class="pp-tableview-picker-cell" data-multiple="true" data-name="letters">
+              <label>Add Letter</label>
+              <ul class="pp-tableview">
+                <li class="header">Select A Letter</li>
               </ul>
             </li>
           </ul>

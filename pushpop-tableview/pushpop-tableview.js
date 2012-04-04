@@ -312,6 +312,8 @@ if (!window['Pushpop']) window.Pushpop = {};
 				var $viewElement = $('<div class="pp-view sk-scroll-view temp-view" id="pp-tableview-picker-view-' + (++_lastPickerViewId) + '"/>');
 				// Append the new tableview to the viewstack
 		    viewStack.$element.append($viewElement);
+		    // Bind the DidPopView event on the view element
+		    $viewElement.bind(Pushpop.EventType.DidPopView, callbackForDidPopView);
 				// Give the new tableview a scrollview
 				var scrollView = new SKScrollView($viewElement);
 		    var $scrollViewContentElement = scrollView.content.$element;
@@ -344,7 +346,8 @@ if (!window['Pushpop']) window.Pushpop = {};
 				
 				// Bind the DidSelectCell event for this tableViewElement
 				$ul.bind(Pushpop.EventType.DidSelectCell, callbackForDidSelectCell);
-				
+				// Bind the DidPopView event for this tableViewElement
+				$ul.bind(Pushpop.EventType.DidPopView, callbackForDidPopView);
 				// Push the table view
 				viewStack.push(view);
 			} else {
@@ -377,6 +380,12 @@ if (!window['Pushpop']) window.Pushpop = {};
 				// After popping the parent view, remove all temporary views from the dom
 	      viewStack.pop(self.getParentTableView().getView(), function() { $('.temp-view').remove(); });
 			}
+    };
+    
+    var callbackForDidPopView = function(evt) {
+      // Remove the last value off the valueHierarchry
+      var lastIndexOfDelimiter = valueHierarchy.lastIndexOf(self.valuesDelimiter);
+      valueHierarchy =  ((lastIndexOfDelimiter > 0) ? valueHierarchy.substring(0, lastIndexOfDelimiter) : '');
     };
     
     $tableViewElement.bind(Pushpop.EventType.DidSelectCell, callbackForDidSelectCell);
