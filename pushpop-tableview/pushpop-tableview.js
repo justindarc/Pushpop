@@ -389,7 +389,6 @@ if (!window['Pushpop']) window.Pushpop = {};
     };
     
     $tableViewElement.bind(Pushpop.EventType.DidSelectCell, callbackForDidSelectCell);
-    $tableViewElement.bind(Pushpop.EventType.DidPopView, callbackForDidPopView);
   };
 
   Pushpop.TableViewPickerCell.prototype = {
