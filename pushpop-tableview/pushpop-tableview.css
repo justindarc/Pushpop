@@ -4,7 +4,6 @@ ul.pp-tableview {
   font-size: 16px;
   margin: 1em;
   padding: 0;
-  -webkit-touch-callout: none;
 }
 
 ul.pp-tableview > li > ul.pp-tableview {
@@ -16,8 +15,7 @@ ul.pp-tableview > li {
   border: 1px solid #cacaca;
   border-top: 1px solid #fdfdfd;
   color: #000;
-  padding: 0.7em 2.5em 0.85em 0.65em;
-  padding-right: 40px;
+  padding: 0.7em 0.65em 0.85em;
   position: relative;
   text-shadow: #fff 0 1px 0;
   font-weight: bold;
@@ -372,7 +370,6 @@ ul.pp-tableview > li > a.pp-tableview-accessory-detail-disclosure-button {
   width: 40px;
 }
 
-ul.pp-tableview > li.pp-tableview-accessory-detail-disclosure-button:before,
 ul.pp-tableview > li > a.pp-tableview-accessory-detail-disclosure-button:before {
   background: #2972d9; /* Old browsers */
   background: -moz-linear-gradient(top, #6a9de5 0%, #2972d9 100%); /* FF3.6+ */
@@ -399,7 +396,10 @@ ul.pp-tableview > li > a.pp-tableview-accessory-detail-disclosure-button:before 
   box-shadow: 0 0.1em 0.1em 0.1em rgba(0, 0, 0, 0.45);
 }
 
-ul.pp-tableview > li.pp-tableview-accessory-detail-disclosure-button:after,
+ul.pp-tableview > li.pp-tableview-accessory-detail-disclosure {
+  padding-right: 40px;
+}
+
 ul.pp-tableview > li > a.pp-tableview-accessory-detail-disclosure-button:after {
   border-top: 1px solid #fff;
   border-right: 1px solid #fff;
@@ -416,16 +416,6 @@ ul.pp-tableview > li > a.pp-tableview-accessory-detail-disclosure-button:after {
   -ms-transform: scale(2) rotate(45deg);
   -o-transform: scale(2) rotate(45deg);
   transform: scale(2) rotate(45deg);
-}
-
-ul.pp-tableview > li.pp-tableview-accessory-checkmark {
-  padding-right: 1.9em;
-}
-
-ul.pp-tableview > li.pp-tableview-cell-disabled,
-ul.pp-tableview > li.pp-tableview-cell-dimmed {
-  color: #888;
-  font-weight: normal;
 }
 
 ul.pp-tableview > li.pp-tableview-accessory-checkmark:before {
