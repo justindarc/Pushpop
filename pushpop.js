@@ -117,22 +117,20 @@ Pushpop.ViewStack.prototype = {
         
         var $newActiveViewElement = newActiveView.$element;
         var $oldActiveViewElement = oldActiveView.$element;
-        var action;
-        
+        var action = ($newActiveViewElement.hasClass('push') ? 'push' : 'pop');
+
         $newActiveViewElement.addClass('active');
         $newActiveViewElement.removeClass('transition push pop ' + newActiveView.transition);
         $oldActiveViewElement.removeClass('active transition push pop ' + newActiveView.transition);
         
-        if ($newActiveViewElement.hasClass('push')) {
+        if (action === 'push') {
           $newActiveViewElement.trigger($.Event(Pushpop.EventType.DidPushView, {
             view: newActiveView
           }));
-          action = 'push';
         } else {
           $oldActiveViewElement.trigger($.Event(Pushpop.EventType.DidPopView, {
             view: oldActiveView
           }));
-          action = 'pop';
         }
         
         $oldActiveViewElement.trigger($.Event(Pushpop.EventType.DidDismissView, {
