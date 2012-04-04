@@ -485,7 +485,7 @@ if (!window['Pushpop']) window.Pushpop = {};
 			var $ul = this.tableView.$element;
 			
 			// Clear any existing items (except the header)
-			$ul.children('not(:first-child)').remove();
+			$ul.children(':not(:first-child)').remove();
 			
 			// Add the root level items. Note: we only add the root level items 
 			// so we don't load the dom with too many elements
