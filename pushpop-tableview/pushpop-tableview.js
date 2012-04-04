@@ -304,6 +304,8 @@ if (!window['Pushpop']) window.Pushpop = {};
 		  if ($cellElement.hasClass('pp-tableview-cell-disabled') || $cellElement.hasClass('header')) return;
 		  
       var value = $cellElement.data('value');
+      if (!value) return;
+      
 			// Is value an array?
 			if ($.isArray(value)) {
 				// Add the id of the item to the value hierarchy
