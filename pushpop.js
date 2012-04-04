@@ -119,6 +119,10 @@ Pushpop.ViewStack.prototype = {
         var $oldActiveViewElement = oldActiveView.$element;
         var action;
         
+        $newActiveViewElement.addClass('active');
+        $newActiveViewElement.removeClass('transition push pop ' + newActiveView.transition);
+        $oldActiveViewElement.removeClass('active transition push pop ' + newActiveView.transition);
+        
         if ($newActiveViewElement.hasClass('push')) {
           $newActiveViewElement.trigger($.Event(Pushpop.EventType.DidPushView, {
             view: newActiveView
@@ -139,10 +143,6 @@ Pushpop.ViewStack.prototype = {
           view: newActiveView,
           action: action
         }));
-        
-        $newActiveViewElement.addClass('active');
-        $newActiveViewElement.removeClass('transition push pop ' + newActiveView.transition);
-        $oldActiveViewElement.removeClass('active transition push pop ' + newActiveView.transition);
 
 				if (!viewStack.callback) return;
 

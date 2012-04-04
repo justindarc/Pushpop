@@ -8,7 +8,7 @@
   background: linear-gradient(top,  #636363 0%,#202020 50%,#000 51%,#000 100%); /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#636363', endColorstr='#000',GradientType=0 ); /* IE6-9 */
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 0.825em;
+  font-size: 1em;
   border-top: 1px solid rgba(255, 255, 255, 0.6);
   border-bottom: 1px solid #000;
   position: fixed;
