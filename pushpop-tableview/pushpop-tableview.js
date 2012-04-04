@@ -300,8 +300,8 @@ if (!window['Pushpop']) window.Pushpop = {};
 
 		var callbackForDidSelectCell = function(evt) {
       var $cellElement = evt.$cellElement;
-		  // Check if the cell was disabled.  If so, return.
-		  if ($cellElement.hasClass('pp-tableview-cell-disabled')) return;
+		  // Check if the cell was disabled or a header cell.  If so, return.
+		  if ($cellElement.hasClass('pp-tableview-cell-disabled') || $cellElement.hasClass('header')) return;
 		  
       var value = $cellElement.data('value');
 			// Is value an array?
@@ -346,8 +346,7 @@ if (!window['Pushpop']) window.Pushpop = {};
 				
 				// Bind the DidSelectCell event for this tableViewElement
 				$ul.bind(Pushpop.EventType.DidSelectCell, callbackForDidSelectCell);
-				// Bind the DidPopView event for this tableViewElement
-				$ul.bind(Pushpop.EventType.DidPopView, callbackForDidPopView);
+
 				// Push the table view
 				viewStack.push(view);
 			} else {
@@ -386,6 +385,7 @@ if (!window['Pushpop']) window.Pushpop = {};
       // Remove the last value off the valueHierarchry
       var lastIndexOfDelimiter = valueHierarchy.lastIndexOf(self.valuesDelimiter);
       valueHierarchy =  ((lastIndexOfDelimiter > 0) ? valueHierarchy.substring(0, lastIndexOfDelimiter) : '');
+      evt.view.$element.remove();
     };
     
     $tableViewElement.bind(Pushpop.EventType.DidSelectCell, callbackForDidSelectCell);
