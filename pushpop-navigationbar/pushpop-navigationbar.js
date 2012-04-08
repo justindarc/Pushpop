@@ -41,9 +41,9 @@ Pushpop.NavigationBar.prototype = {
   viewStack: null,
   setTitle: function(value) {
     var $titleElement = this.$titleElement;
-    if ($titleElement) $titleElement.remove();
+    if (!$titleElement) $titleElement = this.$titleElement = $('<h1 class="pp-navigationbar-title"/>').appendTo(this.$element);
     
-    this.$titleElement = $('<h1 class="pp-navigationbar-title">' + ((value) ? value : '') + '</h1>').appendTo(this.$element);
+    $titleElement.html(value || '');
   },
 	loadNavbarButtons: function(view, action) {
 	  // Clear any nav buttons currently in the navbar (other than the back button)
