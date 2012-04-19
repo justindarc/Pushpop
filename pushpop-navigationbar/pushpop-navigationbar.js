@@ -29,7 +29,8 @@ Pushpop.NavigationBar = function(element) {
   });
   
   // Prevent dragging of the Navigation Bar.
-  $element.bind('touchstart', function(evt) { evt.preventDefault(); });
+  // Commenting this out because it breaks the navbar buttons.
+  //$element.bind('touchstart', function(evt) { evt.preventDefault(); });
 };
 
 Pushpop.NavigationBar.prototype = {
