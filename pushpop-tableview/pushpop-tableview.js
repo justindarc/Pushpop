@@ -563,7 +563,10 @@ if (!window['Pushpop']) window.Pushpop = {};
     
     var self = this;
     var viewStack = this.getParentTableView().getView().getViewStack();
-    var $viewElement = $('<div class="pp-view pp-tableview-textarea-input-view" id="pp-tableview-textarea-input-view-' + (++_lastTextareaInputViewId) + '"/>');
+    var $viewElement = $('<div class="pp-view sk-scroll-view pp-tableview-textarea-input-view" id="pp-tableview-textarea-input-view-' + (++_lastTextareaInputViewId) + '" data-always-bounce-horizontal="false" data-always-bounce-vertical="true"/>');
+    
+    var scrollView = new SKScrollView($viewElement);
+    var $scrollViewContentEl = scrollView.content.$element;
     viewStack.$element.append($viewElement);
 
     var view = this.view = new Pushpop.View($viewElement);
@@ -571,14 +574,14 @@ if (!window['Pushpop']) window.Pushpop = {};
     var $textareaElement = this.$textareaElement = $element.children('textarea');
     var value = this._value = $textareaElement.val();
     $textareaElement.addClass('pp-tableview-textarea-input');
-    $viewElement.append($labelElement).append($textareaElement);
+    $scrollViewContentEl.append($labelElement).append($textareaElement);
 
     var $textElement = this.$textElement = $('<span/>').appendTo($element);
     var $doneButtonElement = this.$doneButtonElement = $('<a class="pp-button" href="#">Done</a>');
     var $cancelButtonElement = this.$cancelButtonElement = $('<a class="pp-button pp-cancel-button" href="#">Cancel</a>');
 		var $buttonContainer = $('<div class="pp-tableview-textarea-input-buttons" />');
 		$buttonContainer.append($doneButtonElement).append($cancelButtonElement);
-		$viewElement.append($buttonContainer);
+		$scrollViewContentEl.append($buttonContainer);
 
     $doneButtonElement.bind('click', function(evt) {
       var value = $textareaElement.val();
