@@ -54,6 +54,10 @@ Pushpop.View.prototype = {
     this.transition = value;
     this.$element.addClass(value);
   },
+  setTitle: function(value) {
+    this.title = value;
+    this.$element.attr('data-view-title', value);
+  },
   getViewStack: function() {
     var viewStack = this.$element.parents('.pp-view-stack')[0];
     return (viewStack) ? viewStack.viewStack : null;
