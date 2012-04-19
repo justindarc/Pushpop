@@ -272,7 +272,7 @@ if (!window['Pushpop']) window.Pushpop = {};
     if (isMultiple) $element.addClass('pp-tableview-editing-cell pp-tableview-editing-accessory-insert');
     
     var viewStack = this.getParentTableView().getView().getViewStack();
-    var $viewElement = $('<div class="pp-view sk-scroll-view" id="pp-tableview-picker-view-' + (++_lastPickerViewId) + '"/>');
+    var $viewElement = $('<div class="pp-view sk-scroll-view pp-tableview-picker-view" id="pp-tableview-picker-view-' + (++_lastPickerViewId) + '"/>');
     viewStack.$element.append($viewElement);
     
     var scrollView = new SKScrollView($viewElement);
@@ -311,7 +311,7 @@ if (!window['Pushpop']) window.Pushpop = {};
 				// Add the id of the item to the value hierarchy
 				valueHierarchy += (valueHierarchy.length > 0 ? self.valuesDelimiter : '') + $cellElement.data('id');
 				// Create a new pp-tableview with the choices being the values in this array
-				var $viewElement = $('<div class="pp-view sk-scroll-view temp-view" id="pp-tableview-picker-view-' + (++_lastPickerViewId) + '"/>');
+				var $viewElement = $('<div class="pp-view sk-scroll-view temp-view pp-tableview-picker-view" id="pp-tableview-picker-view-' + (++_lastPickerViewId) + '"/>');
 				// Append the new tableview to the viewstack
 		    viewStack.$element.append($viewElement);
 		    // Bind the DidPopView event on the view element
@@ -563,7 +563,7 @@ if (!window['Pushpop']) window.Pushpop = {};
     
     var self = this;
     var viewStack = this.getParentTableView().getView().getViewStack();
-    var $viewElement = $('<div class="pp-view" id="pp-tableview-textarea-input-view-' + (++_lastTextareaInputViewId) + '"/>');
+    var $viewElement = $('<div class="pp-view pp-tableview-textarea-input-view" id="pp-tableview-textarea-input-view-' + (++_lastTextareaInputViewId) + '"/>');
     viewStack.$element.append($viewElement);
 
     var view = this.view = new Pushpop.View($viewElement);
