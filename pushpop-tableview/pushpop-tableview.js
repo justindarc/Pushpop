@@ -301,15 +301,15 @@ if (!window['Pushpop']) window.Pushpop = {};
 		var callbackForDidSelectCell = function(evt) {
       var $cellElement = evt.$cellElement;
       
+		  // Check if the cell was disabled or a header cell.  If so, return.
+		  if ($cellElement.hasClass('pp-tableview-cell-disabled') || $cellElement.hasClass('header')) return;
+		  
       // Ensure that the list is selectable. Once an item is selected, the list is marked as unselectable
       // until the next time its view is presented
       var parentList = $cellElement.parent();
       if (parentList.hasClass('pp-tableview-unselectable')) return;
       
       parentList.addClass('pp-tableview-unselectable');
-      
-		  // Check if the cell was disabled or a header cell.  If so, return.
-		  if ($cellElement.hasClass('pp-tableview-cell-disabled') || $cellElement.hasClass('header')) return;
 		  		  
       var value = $cellElement.data('value');
       if (!value) return;
