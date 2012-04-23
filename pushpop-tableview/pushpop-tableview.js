@@ -63,7 +63,7 @@ if (!window['Pushpop']) window.Pushpop = {};
         return;
       }
       
-      _$activeCellLinkElement = _$activeCellElement.children('a:first-child');
+      _$activeCellLinkElement = _$activeCellElement.children('a:first-child:not(.pp-tableview-accessory-detail-disclosure-button)');
       _$activeCellLinkElement.unbind('click', activeCellLinkClickHandler);
       
       var $editingAccessoryButtonElement = $('<div class="pp-tableview-editing-accessory-button"/>');
@@ -297,12 +297,20 @@ if (!window['Pushpop']) window.Pushpop = {};
 		// This string is used to store the value of each item that is selected as the user
 		//   is drilling down through the layers of the tableview data.
 		var valueHierarchy = '';
-
+    
 		var callbackForDidSelectCell = function(evt) {
       var $cellElement = evt.$cellElement;
+      
 		  // Check if the cell was disabled or a header cell.  If so, return.
 		  if ($cellElement.hasClass('pp-tableview-cell-disabled') || $cellElement.hasClass('header')) return;
 		  
+      // Ensure that the list is selectable. Once an item is selected, the list is marked as unselectable
+      // until the next time its view is presented
+      var parentList = $cellElement.parent();
+      if (parentList.hasClass('pp-tableview-unselectable')) return;
+      
+      parentList.addClass('pp-tableview-unselectable');
+		  		  
       var value = $cellElement.data('value');
       if (!value) return;
       
@@ -321,7 +329,7 @@ if (!window['Pushpop']) window.Pushpop = {};
 		    var $scrollViewContentElement = scrollView.content.$element;
 				var view = new Pushpop.View($viewElement);
 				// Make a new ul for the items
-				var $ul = $('<ul class="pp-tableview" />');
+				var $ul = $('<ul class="pp-tableview pp-tableview-unselectable" />');
 				// Add the header item.  Give it the same text as the previous view
 				$ul.append('<li class="header">' + $cellElement.siblings(':first-child').html() + '</li>')
 				// Add the root level items. Note: we only add the root level items 
@@ -348,13 +356,13 @@ if (!window['Pushpop']) window.Pushpop = {};
 				
 				// Bind the DidSelectCell event for this tableViewElement
 				$ul.bind(Pushpop.EventType.DidSelectCell, callbackForDidSelectCell);
+        $viewElement.bind(Pushpop.EventType.DidPresentView, callbackForDidPresentView);
 
 				// Push the table view
 				viewStack.push(view);
 			} else {
 				// Add this value to the value hierarchy
 				valueHierarchy += (valueHierarchy.length > 0 ? self.valuesDelimiter : '') + value;
-				
       	var text = self.getTextByValue(valueHierarchy);
       
 	      if (self.isMultiple) {
@@ -376,7 +384,7 @@ if (!window['Pushpop']) window.Pushpop = {};
 	      }));
 	
 				// Clear the value hierarchy for next time
-				valueHierarchy = ''
+				valueHierarchy = '';
       
 				// After popping the parent view, remove all temporary views from the dom
 	      viewStack.pop(self.getParentTableView().getView(), function() { $('.temp-view').remove(); });
@@ -390,7 +398,15 @@ if (!window['Pushpop']) window.Pushpop = {};
       evt.view.$element.remove();
     };
     
+    var callbackForDidPresentView = function(evt) {
+      // Remove the pp-tableview-unselectable class from the unordered list, so its items can be selected.
+      // This is necessary because we temporarily "disable" selecting the items from both the current view 
+      // and the new view between the time an item is selected and the time the new view has finished being pushed.
+      evt.view.$element.find('ul.pp-tableview-unselectable').removeClass('pp-tableview-unselectable');
+    };
+    
     $tableViewElement.bind(Pushpop.EventType.DidSelectCell, callbackForDidSelectCell);
+    $viewElement.bind(Pushpop.EventType.DidPresentView, callbackForDidPresentView);
   };
 
   Pushpop.TableViewPickerCell.prototype = {
