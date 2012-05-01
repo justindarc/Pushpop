@@ -366,7 +366,7 @@ if (!window['Pushpop']) window.Pushpop = {};
       	var text = self.getTextByValue(valueHierarchy);
       
 	      if (self.isMultiple) {
-	        self.setValue(valueHierarchy, true);
+	        self.setValue(valueHierarchy);
 	        $element.trigger($.Event(Pushpop.EventType.DidAddValue, {
 	          cellElement: element,
 	          $cellElement: $element,
@@ -466,12 +466,12 @@ if (!window['Pushpop']) window.Pushpop = {};
     getValue: function() {
       return this._value;
     },
-    setValue: function(value) {
+    setValue: function(value, text) {
       var element = this.element;
       var $element = this.$element;
       var $tableViewElement = this.tableView.$element;
       var isMultiple = this.isMultiple;
-      var text = this.getTextByValue(value);
+      text = text || this.getTextByValue(value);
       
       if (isMultiple) {
         for (var i = 0, length = this._value.length; i < length; i++) if (this._value[i] == value) return;
