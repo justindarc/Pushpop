@@ -62,7 +62,11 @@ Pushpop.NavigationBar.prototype = {
     // Show/Hide the back button
     switch (action) {
       case 'push':
-        if (!view.hideNavBackButton) this.$backButtonElement.addClass('pop active');
+        if (!view.hideNavBackButton) {
+          this.$backButtonElement.addClass('pop active');
+        } else {
+          this.$backButtonElement.removeClass('pop active');
+        }
         break;
       case 'pop':
         if (this.viewStack.views.length > 1 && !view.hideNavBackButton) {
