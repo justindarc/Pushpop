@@ -156,7 +156,16 @@ Pushpop.ViewStack.prototype = {
     }
   },
   push: function(view, transitionOrCallback, callback) {
-    if (this.isTransitioning) return;
+    if (this.isTransitioning) {
+      // Manually kick off transitionEnd event.  Chances are it should have fired, but didn't.
+      var activeView = this.getActiveView();
+      if (activeView) {
+        activeView.$element.trigger('transitionend');
+      } else {
+        return;
+      }
+    }
+    
     this.isTransitioning = true;
     
     var oldActiveView = this.getActiveView();
@@ -205,7 +214,16 @@ Pushpop.ViewStack.prototype = {
     $newActiveViewElement.addClass('transition');
   },
   pop: function(viewOrTransition, transitionOrCallback, callback) {
-    if (this.isTransitioning) return;
+    if (this.isTransitioning) {
+      // Manually kick off transitionEnd event.  Chances are it should have fired, but didn't.
+      var activeView = this.getActiveView();
+      if (activeView) {
+        activeView.$element.trigger('transitionend');
+      } else {
+        return;
+      }
+    }
+    
     this.isTransitioning = true;
     
     var views = this.views;
