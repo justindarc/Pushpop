@@ -27,14 +27,20 @@ $.extend(Pushpop.EventType, {
 
 Pushpop.View = function(element) {
   var $element = this.$element = $(element);
+  element = this.element = $element[0];
   
-  var view = $element.data('view');
+  var view = element.view;
   if (view) return view;
   
-  $element.data('view', this);
+  element.view = this;
   
-  element = this.element = $element[0];
-  this.title = $element.data('viewTitle');
+  this.title = $element.attr('data-view-title');
+  var $navbarButtonsContainer = $element.find('.pp-navigationbar-buttons');
+  var $navbarButtons = $navbarButtonsContainer.find('.pp-barbutton');
+  this.$navbarButtons = $navbarButtons;
+  // Hide the back button if data-hide-back-button="true" or if there is a left navigation bar
+  var dataHideBackButton = $navbarButtonsContainer.attr('data-hide-back-button');
+  this.hideNavBackButton = ((dataHideBackButton && dataHideBackButton !== 'false') || $navbarButtons.filter('.pp-barbutton-align-left').length > 0);
 };
 
 Pushpop.View.prototype = {
@@ -42,34 +48,45 @@ Pushpop.View.prototype = {
   $element: null,
   transition: null,
   title: null,
+  $navbarButtons: null,
+  hideNavBackButton: false,
   setTransition: function(value) {
     this.transition = value;
     this.$element.addClass(value);
   },
+  setTitle: function(value) {
+    this.title = value;
+    this.$element.attr('data-view-title', value);
+  },
   getViewStack: function() {
-    return this.$element.parents('.pp-view-stack:first').data('viewStack');
+    var viewStack = this.$element.parents('.pp-view-stack')[0];
+    return (viewStack) ? viewStack.viewStack : null;
   },
   forceReflow: function() {
     this.element.offsetWidth;
-  }
+  },
+	setBackButtonVisible: function(visible) {
+	  if (this.$navbarButtons.filter('.pp-barbutton-align-left').length === 0) this.hideNavBackButton = !visible;
+	},
 };
 
 Pushpop.ViewStack = function(element) {
   var $element = this.$element = $(element);
+  element = this.element = $element[0];
   
-  var viewStack = $element.data('viewStack');
+  var viewStack = element.viewStack;
   if (viewStack) return viewStack;
   
-  $element.data('viewStack', this);
-  
-  element = this.element = $element[0];
+  element.viewStack = this;
   
   var views = this.views = [];
   
-  var $rootViewElement = $element.children('.pp-view.root,.pp-view:first').first().addClass('active');
-  var rootView = this.rootView = $rootViewElement.data('view') ||
-    new Pushpop.View($rootViewElement.addClass('root'));
+  var $rootViewElement = $element.children('.pp-view.root, .pp-view').first().addClass('active');
+  var rootViewElement = $rootViewElement[0];
   
+  if (!rootViewElement) return;
+  
+  var rootView = this.rootView = rootViewElement.view || new Pushpop.View($rootViewElement.addClass('root'));
   views.push(rootView);
 };
 
@@ -85,56 +102,70 @@ Pushpop.ViewStack.prototype = {
       case 'transitionend':
       case 'oTransitionEnd':
       case 'transitionEnd':
-        var eventData = evt.data;
-        if (!eventData) return;
+        var target = evt.target;
+        if (!target.view || $(target).hasClass('active')) return;
         
-        var newActiveView = eventData.newActiveView;
-        if (!newActiveView || evt.target !== newActiveView.element) return;
+        var newActiveView = target;
+        newActiveView = (newActiveView) ? newActiveView.view : null;
+        if (!newActiveView) return;
         
         var viewStack = newActiveView.getViewStack();
-        var oldActiveView = viewStack.$element.children('.pp-view.active').data('view');
+        if (!viewStack || !viewStack.isTransitioning) return;
+        
+        var oldActiveView = viewStack.$element.children('.pp-view.active')[0];
+        oldActiveView = (oldActiveView) ? oldActiveView.view : null;
         if (!oldActiveView) return;
+        
+        viewStack.isTransitioning = false;
+        $(target).unbind(evt);
         
         var $newActiveViewElement = newActiveView.$element;
         var $oldActiveViewElement = oldActiveView.$element;
-        
-        var $element = viewStack.$element;
-        
-        if ($newActiveViewElement.hasClass('push')) {
-          $newActiveViewElement.trigger(jQuery.Event(Pushpop.EventType.DidPushView, {
-            view: newActiveView
-          }));
-        } else {
-          $oldActiveViewElement.trigger(jQuery.Event(Pushpop.EventType.DidPopView, {
-            view: oldActiveView
-          }));
-        }
+        var action = ($newActiveViewElement.hasClass('push') ? 'push' : 'pop');
 
-        $oldActiveViewElement.trigger(jQuery.Event(Pushpop.EventType.DidDismissView, {
-          view: oldActiveView
-        }));        
-        $newActiveViewElement.trigger(jQuery.Event(Pushpop.EventType.DidPresentView, {
-          view: newActiveView
-        }));
-        
-        $newActiveViewElement.unbind(evt);
         $newActiveViewElement.addClass('active');
         $newActiveViewElement.removeClass('transition push pop ' + newActiveView.transition);
         $oldActiveViewElement.removeClass('active transition push pop ' + newActiveView.transition);
         
-        viewStack.isTransitioning = false;
+        if (action === 'push') {
+          $newActiveViewElement.trigger($.Event(Pushpop.EventType.DidPushView, {
+            view: newActiveView
+          }));
+        } else {
+          $oldActiveViewElement.trigger($.Event(Pushpop.EventType.DidPopView, {
+            view: oldActiveView
+          }));
+        }
+        
+        $oldActiveViewElement.trigger($.Event(Pushpop.EventType.DidDismissView, {
+          view: oldActiveView,
+          action: action
+        }));        
+        $newActiveViewElement.trigger($.Event(Pushpop.EventType.DidPresentView, {
+          view: newActiveView,
+          action: action
+        }));
 
-				if (viewStack.callback) {
-					viewStack.callback();
-					viewStack.callback = null;
-				}
+				if (!viewStack.callback) return;
+
+				viewStack.callback();
+				viewStack.callback = null;
         break;
       default:
         break;
     }
   },
   push: function(view, transitionOrCallback, callback) {
-    if (this.isTransitioning) return;
+    if (this.isTransitioning) {
+      // Manually kick off transitionEnd event.  Chances are it should have fired, but didn't.
+      var activeView = this.getActiveView();
+      if (activeView) {
+        activeView.$element.trigger('transitionend');
+      } else {
+        return;
+      }
+    }
+    
     this.isTransitioning = true;
     
     var oldActiveView = this.getActiveView();
@@ -145,21 +176,21 @@ Pushpop.ViewStack.prototype = {
     var $oldActiveViewElement = oldActiveView.$element;
     var $newActiveViewElement = newActiveView.$element;
     
-    $newActiveViewElement.trigger(jQuery.Event(Pushpop.EventType.WillPushView, {
+    $newActiveViewElement.trigger($.Event(Pushpop.EventType.WillPushView, {
       view: newActiveView
     }));
-    $oldActiveViewElement.trigger(jQuery.Event(Pushpop.EventType.WillDismissView, {
-      view: oldActiveView
+    $oldActiveViewElement.trigger($.Event(Pushpop.EventType.WillDismissView, {
+      view: oldActiveView,
+      action: 'push'
     }));
-    $newActiveViewElement.trigger(jQuery.Event(Pushpop.EventType.WillPresentView, {
-      view: newActiveView
+    $newActiveViewElement.trigger($.Event(Pushpop.EventType.WillPresentView, {
+      view: newActiveView,
+      action: 'push'
     }));
     
     this.views.push(newActiveView);
 
-    $newActiveViewElement.bind('webkitTransitionEnd transitionend oTransitionEnd transitionEnd', {
-      newActiveView: newActiveView
-    }, this.handleEvent);
+    $newActiveViewElement.bind('webkitTransitionEnd transitionend oTransitionEnd transitionEnd', this.handleEvent);
     
 		var transition;
 		if (transitionOrCallback) {
@@ -183,7 +214,16 @@ Pushpop.ViewStack.prototype = {
     $newActiveViewElement.addClass('transition');
   },
   pop: function(viewOrTransition, transitionOrCallback, callback) {
-    if (this.isTransitioning) return;
+    if (this.isTransitioning) {
+      // Manually kick off transitionEnd event.  Chances are it should have fired, but didn't.
+      var activeView = this.getActiveView();
+      if (activeView) {
+        activeView.$element.trigger('transitionend');
+      } else {
+        return;
+      }
+    }
+    
     this.isTransitioning = true;
     
     var views = this.views;
@@ -222,19 +262,19 @@ Pushpop.ViewStack.prototype = {
     var $oldActiveViewElement = oldActiveView.$element;
     var $newActiveViewElement = newActiveView.$element;
     
-    $oldActiveViewElement.trigger(jQuery.Event(Pushpop.EventType.WillPopView, {
+    $oldActiveViewElement.trigger($.Event(Pushpop.EventType.WillPopView, {
       view: oldActiveView
     }));
-    $oldActiveViewElement.trigger(jQuery.Event(Pushpop.EventType.WillDismissView, {
-      view: oldActiveView
+    $oldActiveViewElement.trigger($.Event(Pushpop.EventType.WillDismissView, {
+      view: oldActiveView,
+      action: 'pop'
     }));
-    $newActiveViewElement.trigger(jQuery.Event(Pushpop.EventType.WillPresentView, {
-      view: newActiveView
+    $newActiveViewElement.trigger($.Event(Pushpop.EventType.WillPresentView, {
+      view: newActiveView,
+      action: 'pop'
     }));
     
-    $newActiveViewElement.bind('webkitTransitionEnd transitionend oTransitionEnd transitionEnd', {
-      newActiveView: newActiveView
-    }, this.handleEvent);
+    $newActiveViewElement.bind('webkitTransitionEnd transitionend oTransitionEnd transitionEnd', this.handleEvent);
     
     transition = newActiveView.transition = transition || oldActiveView.transition || Pushpop.defaultTransition;
     
@@ -280,9 +320,11 @@ $(function() {
     var href = $this.attr('href');
     var $viewElement = $(href);
     
-    var view = $viewElement.data('view') || new Pushpop.View($viewElement);
+    var view = $viewElement[0];
+    if (view) view = view.view || new Pushpop.View($viewElement);
+    
     var viewStack = view.getViewStack();
-    if (viewStack) viewStack.push(view, $this.data('transition'));
+    if (viewStack) viewStack.push(view, $this.attr('data-transition'));
     
     evt.preventDefault();
   });
@@ -293,14 +335,17 @@ $(function() {
     var viewStack;
     
     if (href === '#') {
-      viewStack = $this.parents('.pp-view-stack:first').data('viewStack');
-      if (viewStack) viewStack.pop($this.data('transition'));
+      viewStack = $this.parents('.pp-view-stack')[0];
+      viewStack = (viewStack) ? viewStack.viewStack : null;
+      if (viewStack) viewStack.pop($this.attr('data-transition'));
     } else {
       var $viewElement = $(href);
     
-      var view = $viewElement.data('view') || new Pushpop.View($viewElement);
+      var view = $viewElement[0];
+      if (view) view = view.view || new Pushpop.View($viewElement);
+      
       viewStack = view.getViewStack();
-      if (viewStack) viewStack.pop(view, $this.data('transition'));
+      if (viewStack) viewStack.pop(view, $this.attr('data-transition'));
     }
     
     evt.preventDefault();

@@ -7,6 +7,8 @@
   background: -ms-linear-gradient(top,  #636363 0%,#202020 50%,#000 51%,#000 100%); /* IE10+ */
   background: linear-gradient(top,  #636363 0%,#202020 50%,#000 51%,#000 100%); /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#636363', endColorstr='#000',GradientType=0 ); /* IE6-9 */
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 1em;
   border-top: 1px solid rgba(255, 255, 255, 0.6);
   border-bottom: 1px solid #000;
   position: fixed;
@@ -18,6 +20,11 @@
   -webkit-box-shadow: inset 0 -1px 0 0 rgba(255, 255, 255, 0.2);
   -moz-box-shadow: inset 0 -1px 0 0 rgba(255, 255, 255, 0.2);
   box-shadow: inset 0 -1px 0 0 rgba(255, 255, 255, 0.2);
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
 }
 
 .pp-navigationbar ~ .pp-view {
@@ -34,11 +41,16 @@
   right: 3em;
   font-size: 1.6em;
   font-weight: bold;
+  line-height: 1.7em;
   margin: 0;
   padding: 0;
   color: #fff;
+  overflow: hidden;
   text-align: center;
+  text-overflow: ellipsis;
+  text-rendering: optimizelegibility;
   text-shadow: 0 -1px 1px #000;
+  white-space: nowrap;
 }
 
 .pp-navigationbar > .pp-barbutton {
@@ -55,8 +67,9 @@
   position: relative;
   font-size: 1em;
   font-weight: bold;
-  padding: 0.35em 0.65em 0.4em;
+  padding: 0.5em 0.65em;
   margin: 0.5em;
+  line-height: 1.25em;
   color: #fff;
   text-shadow: 0 -1px 1px #000;
   text-align: center;
@@ -67,11 +80,23 @@
   -webkit-border-radius: 0.5em;
   -moz-border-radius: 0.5em;
   border-radius: 0.5em;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   -webkit-transition: opacity 0.5s ease;
   -moz-transition: opacity 0.5s ease;
   -ms-transition: opacity 0.5s ease;
   -o-transition: opacity 0.5s ease;
   transition: opacity 0.5s ease;
+}
+
+.pp-navigationbar > .pp-barbutton:active {
+  background: #5e5e5e; /* Old browsers */
+  background: -moz-linear-gradient(top,  #5e5e5e 0%, #202020 50%, #0d0d0d 51%, #070707 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#5e5e5e), color-stop(50%,#202020), color-stop(51%,#0d0d0d), color-stop(100%,#070707)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #5e5e5e 0%,#202020 50%,#0d0d0d 51%,#070707 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #5e5e5e 0%,#202020 50%,#0d0d0d 51%,#070707 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #5e5e5e 0%,#202020 50%,#0d0d0d 51%,#070707 100%); /* IE10+ */
+  background: linear-gradient(top,  #5e5e5e 0%,#202020 50%,#0d0d0d 51%,#070707 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#5e5e5e', endColorstr='#070707',GradientType=0 ); /* IE6-9 */
 }
 
 .pp-navigationbar > .pp-barbutton.active {
@@ -88,6 +113,7 @@
 }
 
 .pp-navigationbar > .pp-barbutton.pp-barbutton-align-left.pp-barbutton-style-back {
+  position: absolute;
   margin-left: 1.5em;
   padding-left: 0.25em;
   border-left: none;
@@ -99,7 +125,7 @@
   border-bottom-left-radius: 0;
 }
 
-.pp-navigationbar > .pp-barbutton.pp-barbutton-align-left.pp-barbutton-style-back:before {
+.pp-navigationbar > .pp-barbutton.pp-barbutton-align-left.pp-barbutton-style-back-old::before {
   background: #7e7e7e; /* Old browsers */
   background: -moz-linear-gradient(-45deg,  #7e7e7e 0%, #404040 50%, #2d2d2d 51%, #272727 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#7e7e7e), color-stop(50%,#404040), color-stop(51%,#2d2d2d), color-stop(100%,#272727)); /* Chrome,Safari4+ */
@@ -124,4 +150,41 @@
   -ms-transform: scaleX(0.8) rotate(45deg);
   -o-transform: scaleX(0.8) rotate(45deg);
   transform: scaleX(0.8) rotate(45deg);
+}
+
+.pp-navigationbar > .pp-barbutton.pp-barbutton-align-left.pp-barbutton-style-back-old:active::before {
+  background: #5e5e5e; /* Old browsers */
+  background: -moz-linear-gradient(-45deg,  #5e5e5e 0%, #202020 50%, #0d0d0d 51%, #070707 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#5e5e5e), color-stop(50%,#202020), color-stop(51%,#0d0d0d), color-stop(100%,#070707)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(-45deg,  #5e5e5e 0%,#202020 50%,#0d0d0d 51%,#070707 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(-45deg,  #5e5e5e 0%,#202020 50%,#0d0d0d 51%,#070707 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(-45deg,  #5e5e5e 0%,#202020 50%,#0d0d0d 51%,#070707 100%); /* IE10+ */
+  background: linear-gradient(-45deg,  #5e5e5e 0%,#202020 50%,#0d0d0d 51%,#070707 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#5e5e5e', endColorstr='#070707',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+}
+
+.pp-navigationbar > .pp-barbutton.pp-barbutton-align-left.pp-barbutton-style-back::before {
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAAeCAYAAAD3qZRJAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYxIDY0LjE0MDk0OSwgMjAxMC8xMi8wNy0xMDo1NzowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNS4xIE1hY2ludG9zaCIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo3MTg1MkRFNTgyN0ExMUUxOUVEMkRENDA1NzAxNzVDNCIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo3MTg1MkRFNjgyN0ExMUUxOUVEMkRENDA1NzAxNzVDNCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjcxODUyREUzODI3QTExRTE5RUQyREQ0MDU3MDE3NUM0IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjcxODUyREU0ODI3QTExRTE5RUQyREQ0MDU3MDE3NUM0Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+yQ3X+QAAAjBJREFUeNpi/P//P4OKigoDkSAEiOtYGIgHFYKCgu3y8vIMYE0g2wiAfDExsXYtLS0GISEhojR5AHGvqqoqg4CAAFiAkCY5RkbGlXp6esxApzH8+/cPjPFpYgaCJbKysnySkpIMf//+BWO8NjExMVUC3W+rrKwMlv/z5w9cDqwJZCUaMAMqrAOFFEju169fKJLYbOIB2rJEQUGBlZ2dHcUGnJqAGvqAzlIVFxdH8QeGJiTn+XFxcaXKycnBQwobQLZJAmjLPBERETD/9+/fOCMOrgkYvAuBcSHMz8+P1UnYnJfPw8PjBvIHPmfBNQGdowWM9W5hYWGM+MCpydTUlPHs2bPf379/z/rjxw+ikjvz7du3P9+7d+/b6dOnXYEhB7SUkaAmRmjICTk4OPQADUgEJUyiNPHx8TF8+vRJAZj8l3///t0ClgVwASZYkPPy8j6YPXt2ETB+nn7+/BkshgszwVIECAOdeDovL6/s3bt3P/EFCkraAwbEn2/fvm28cOFC14EDB2rZ2NgYsAUMRoLl5OT8CvTXVCMjI62nT58Gg+IPq59gzoNhYJZ4uWrVqlpgWrwMdCp2P2HzLLAsvNnf318EdO4bUMAQyoRgwMrK+g8YkodOnTpVNXXq1GnABM0C9DPh0oiFheUXMC2ufPPmjciKFSuaJCQkWLi5uSEagG7Hi4FqRJKSkkqAhvyQlpaGuB8UrIQwUJ1QVlZWAdCmJ4wwm4gBwJAFJUw1gAADACpDVP6P+Cz/AAAAAElFTkSuQmCC);
+  background-repeat: none;
+  content: '';
+  display: block;
+  position: absolute;
+  width: 13px;
+  height: 30px;
+  top: -1px;
+  left: -13px;
+  z-index: -1;
+}
+
+.pp-navigationbar > .pp-barbutton.pp-barbutton-align-left.pp-barbutton-style-back:active::before {
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAAeCAYAAAD3qZRJAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYxIDY0LjE0MDk0OSwgMjAxMC8xMi8wNy0xMDo1NzowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNS4xIE1hY2ludG9zaCIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpDQkQyQkU0NzgyN0IxMUUxQkQ1RUMwMTdDNTdBNkU4OSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpDQkQyQkU0ODgyN0IxMUUxQkQ1RUMwMTdDNTdBNkU4OSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkNCRDJCRTQ1ODI3QjExRTFCRDVFQzAxN0M1N0E2RTg5IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkNCRDJCRTQ2ODI3QjExRTFCRDVFQzAxN0M1N0E2RTg5Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+NtdpYQAAAeZJREFUeNqMlL1Lw0AYxnNp0q+0UhupoYM4NIJuHSouQgcVJ6esHSx06dBaEbFLB5cu6j9QEAQhCP4n0iIOXQrFQaHgVsEP+hGfS4y2adLkhYekd/fL895775VomsakUinGYyhQjWO8x1k4HK6LosjoEHVziXI0Gq0nk0kmEol4gvahy0QiwcBJX+sGrRBC7uDgC4VCzGg00gfnQT7E7YIROuAKsSxbDQQC23Tjk8AfNB6PrcwmPlSLxWL6Yuu8nVMELjQtHk9mOBzOZDEDYeGV3++XaaXsALv0DgAV6FlY9+HkJAG4xuZt92ELobw3HMeJPM87OljTK8NlD3txBWgQnMMGTv0xGAzy1MVLcJlMhjSbzc9+v897aFyjVTqdznu32/1ot9u7SI14gcjv1+PZbPai1WodzqvaFEQbEumtyrKs9nq9Lbc0WbPkuGTPjUbjGJ3wao45iTU7ggopPpRKpVNU83uuFSXpBTOF34KiKOd415ykQzijKWFsOZ1O3+PdGaKdYBWOYl2SpCf0okbhSekQ7QSrMM6qqrqDAr1ZQePfheNshTl/pVIpwHkwCZod7ijML+RyuSrcB4D/IXqt5wlrlvL5/AncvwAbEM7FVVgXLxaLR4IgvBDTyUugARbxWPsRYADcCSawlPao8wAAAABJRU5ErkJggg==);
+  background-repeat: none;
+  content: '';
+  display: block;
+  position: absolute;
+  width: 13px;
+  height: 30px;
+  top: -1px;
+  left: -13px;
+  z-index: -1;
 }

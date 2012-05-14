@@ -2,9 +2,8 @@ ul.pp-tableview {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   list-style: none;
   font-size: 16px;
-  margin: 0 1em 1em;
+  margin: 1em;
   padding: 0;
-  -webkit-touch-callout: none;
 }
 
 ul.pp-tableview > li > ul.pp-tableview {
@@ -105,6 +104,54 @@ ul.pp-tableview > li.header, ul.pp-tableview > li.header > a {
 }
 
 /**
+ * Pushpop TableView Split Cells
+ */
+ul.pp-tableview > li.pp-tableview-split-cell > label {
+  display: inline-block;
+  position: absolute;
+  margin: 0.1em 0 0;
+  padding: 0;
+  color: #000;
+  font-size: inherit;
+  font-weight: bold;
+  line-height: inherit;
+  text-align: left;
+  text-shadow: #fff 0 1px 0;
+  vertical-align: top;
+  width: 30%;
+}
+
+ul.pp-tableview > li.pp-tableview-split-cell > span {
+  background: none;
+  border: none;
+  color: #4c566c;
+  display: inline-block;
+  position: relative;
+  left: 34%;
+  width: 65%;
+  margin: 0.1em 0 0;
+  padding: 0;
+  font-weight: normal;
+  vertical-align: top;
+}
+
+ul.pp-tableview > li.pp-tableview-split-cell > span > a {
+  color: #4c566c;
+  display: inline-block;
+  width: 100%;
+  overflow: hidden;
+  text-decoration: underline;
+  text-overflow: ellipsis;
+}
+
+ul.pp-tableview > li.pp-tableview-split-cell.active > *,
+ul.pp-tableview > li.pp-tableview-split-cell.active > input::-webkit-input-placeholder,
+ul.pp-tableview > li.pp-tableview-split-cell.active > input::-moz-placeholder {
+  color: #fff;
+  text-shadow: none;
+}
+
+/**
  * Pushpop TableView Picker Cells
  */
 ul.pp-tableview > li.pp-tableview-picker-cell > label {
@@ -196,7 +243,7 @@ ul.pp-tableview > li.pp-tableview-textarea-input-cell > span {
   padding: 0;
   font-weight: normal;
   white-space: pre-wrap;
-  width: 69%;
+  width: 68%;
 }
 
 ul.pp-tableview > li.pp-tableview-textarea-input-cell.active > * {
@@ -226,40 +273,27 @@ textarea.pp-tableview-textarea-input {
   resize: none;
 }
 
-a.pp-tableview-textarea-input-done-button {
-  background: #849cbb; /* Old browsers */
-  background: -moz-linear-gradient(top,  #849cbb 0%, #5877a2 50%, #486a9a 51%, #4a6c9b 100%); /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#849cbb), color-stop(50%,#5877a2), color-stop(51%,#486a9a), color-stop(100%,#4a6c9b)); /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(top,  #849cbb 0%,#5877a2 50%,#486a9a 51%,#4a6c9b 100%); /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(top,  #849cbb 0%,#5877a2 50%,#486a9a 51%,#4a6c9b 100%); /* Opera 11.10+ */
-  background: -ms-linear-gradient(top,  #849cbb 0%,#5877a2 50%,#486a9a 51%,#4a6c9b 100%); /* IE10+ */
-  background: linear-gradient(top,  #849cbb 0%,#5877a2 50%,#486a9a 51%,#4a6c9b 100%); /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#849cbb', endColorstr='#4a6c9b',GradientType=0 ); /* IE6-9 */
-  border: 1px solid rgba(0, 0, 0, 0.3);
-  display: inline-block;
-  font-size: 1em;
-  font-weight: bold;
-  position: absolute;
+div.pp-tableview-textarea-input-buttons {
+	position: absolute;
   top: 12.75em;
-  left: 1em;
-  right: 1em;
-  width: auto;
-  padding: 0.4em;
-  color: #fff;
-  text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.7);
-  text-align: center;
-  text-decoration: none;
-  opacity: 1;
-  outline: none;
-  -webkit-border-radius: 0.4em;
-  -moz-border-radius: 0.4em;
-  border-radius: 0.4em;
+	width: 100%;
+}
+
+div.pp-tableview-textarea-input-buttons a.pp-button {
+	margin: 0 1em 0.5em 1em;
+	display: block;
+	font-weight: bold;
+}
+
+div.pp-tableview-textarea-input-buttons a.pp-button:last-child {
+	margin-bottom: 0;
 }
 
 /**
  * Pushpop TableView Buttons
  */
-ul.pp-tableview > li > a.pp-button {
+ul.pp-tableview > li > a.pp-button, 
+ul.pp-tableview > li > div.delete-button-container > a.pp-button {
 	font-size: 0.8em;
   position: absolute;
 	top: 50%;
@@ -270,6 +304,24 @@ ul.pp-tableview > li > a.pp-button {
   -webkit-border-radius: 0.4em;
   -moz-border-radius: 0.4em;
   border-radius: 0.4em;
+}
+
+ul.pp-tableview > li > div.delete-button-container {
+  position: absolute;
+  right: -8px;
+  top: 0;
+  bottom: 0;
+  overflow: hidden;
+  width: 0;
+  -webkit-transition: width 0.5s ease;
+  -moz-transition: width 0.5s ease;
+  -ms-transition: width 0.5s ease;
+  -o-transition: width 0.5s ease;
+  transition: width 0.5s ease;
+}
+
+ul.pp-tableview > li > div.delete-button-container.show-delete-button {
+  width: 72px;
 }
 
 /**
@@ -286,21 +338,40 @@ ul.pp-tableview > li > div.pp-tableview-accessory-button {
 }
 
 ul.pp-tableview > li.pp-tableview-accessory-disclosure-indicator:before {
-  border: 0.45em solid transparent;
-  border-left-color: #666;
+  border-top: 1px solid #777;
+  border-right: 1px solid #777;
   content: '';
   display: inline-block;
   position: absolute;
   top: 50%;
-  right: 0.2em;
-  margin-top: -0.45em;
+  right: 0.5em;
+  margin: -0.1em 0.5em 0 0;
+  width: 0.15em;
+  height: 0.15em;
+  -webkit-transform: scale(3) rotate(45deg);
+  -moz-transform: scale(2) rotate(45deg);
+  -ms-transform: scale(2) rotate(45deg);
+  -o-transform: scale(2) rotate(45deg);
+  transform: scale(2) rotate(45deg);
 }
 
 ul.pp-tableview > li.pp-tableview-accessory-disclosure-indicator.active:before {
-  border-left-color: #fff;
+  border-top: 1px solid #fff;
+  border-right: 1px solid #fff;
 }
 
-ul.pp-tableview > li.pp-tableview-accessory-detail-disclosure-button:before {
+ul.pp-tableview > li > a.pp-tableview-accessory-detail-disclosure-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 0;
+  width: 40px;
+}
+
+ul.pp-tableview > li.pp-tableview-accessory-detail-disclosure-button:before,
+ul.pp-tableview > li > a.pp-tableview-accessory-detail-disclosure-button:before {
   background: #2972d9; /* Old browsers */
   background: -moz-linear-gradient(top, #6a9de5 0%, #2972d9 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #6a9de5), color-stop(100%, #2972d9)); /* Chrome,Safari4+ */
@@ -314,27 +385,35 @@ ul.pp-tableview > li.pp-tableview-accessory-detail-disclosure-button:before {
   display: inline-block;
   position: absolute;
   top: 50%;
-  right: 0.4em;
+  right: 0.5em;
   width: 1.2em;
   height: 1.2em;
-  margin-top: -0.8em;
-  -webkit-border-radius: 1em;
-  -moz-border-radius: 1em;
-  border-radius: 1em;
-  -webkit-box-shadow: 0 0.1em 0.1em rgba(0, 0, 0, 0.8);
-  -moz-box-shadow: 0 0.1em 0.1em rgba(0, 0, 0, 0.8);
-  box-shadow: 0 0.1em 0.1em rgba(0, 0, 0, 0.8);
+  margin: -0.75em 0 0 0;
+  -webkit-border-radius: 1.2em;
+  -moz-border-radius: 1.2em;
+  border-radius: 1.2em;
+  -webkit-box-shadow: 0 0.1em 0.1em 0.1em rgba(0, 0, 0, 0.45);
+  -moz-box-shadow: 0 0.1em 0.1em 0.1em rgba(0, 0, 0, 0.45);
+  box-shadow: 0 0.1em 0.1em 0.1em rgba(0, 0, 0, 0.45);
 }
 
-ul.pp-tableview > li.pp-tableview-accessory-detail-disclosure-button:after {
-  border: 0.35em solid transparent;
-  border-left-color: #f6f6f6;
+ul.pp-tableview > li.pp-tableview-accessory-detail-disclosure-button:after,
+ul.pp-tableview > li > a.pp-tableview-accessory-detail-disclosure-button:after {
+  border-top: 1px solid #fff;
+  border-right: 1px solid #fff;
   content: '';
   display: inline-block;
   position: absolute;
   top: 50%;
-  right: 0.6em;
-  margin-top: -0.35em;
+  right: 0.5em;
+  margin: -0.15em 0.7em 0 0;
+  width: 0.15em;
+  height: 0.15em;
+  -webkit-transform: scale(3) rotate(45deg);
+  -moz-transform: scale(2) rotate(45deg);
+  -ms-transform: scale(2) rotate(45deg);
+  -o-transform: scale(2) rotate(45deg);
+  transform: scale(2) rotate(45deg);
 }
 
 ul.pp-tableview > li.pp-tableview-accessory-checkmark:before {

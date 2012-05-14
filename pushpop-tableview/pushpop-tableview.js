@@ -47,26 +47,40 @@ if (!window['Pushpop']) window.Pushpop = {};
       evt.preventDefault();
     };
     
+    $element.delegate('li > a.pp-tableview-accessory-detail-disclosure-button, li > a.pp-button', 'mousedown touchstart', function(evt) {
+      evt.stopPropagation();
+    });
+    
     $element.delegate('li', 'mousedown touchstart', function(evt) {
       _isMouseDown = (evt.type === 'mousedown' && !Modernizr.touch) || evt.type === 'touchstart';
       
       _$activeCellElement = $(this);
       
       if (_$activeCellElement.hasClass('pp-tableview-inline-text-input-cell') &&
-          _$activeCellElement.children('input:first').is(':focus')) {
+          _$activeCellElement.children('input').first().is(':focus')) {
         _$activeCellElement = null;
         _isMouseDown = false;
         return;
       }
       
-      _$activeCellLinkElement = _$activeCellElement.children('a:first');
+      _$activeCellLinkElement = _$activeCellElement.children('a:first-child:not(.pp-tableview-accessory-detail-disclosure-button)');
       _$activeCellLinkElement.unbind('click', activeCellLinkClickHandler);
       
       var $editingAccessoryButtonElement = $('<div class="pp-tableview-editing-accessory-button"/>');
       _$activeCellElement.append($editingAccessoryButtonElement);
       
-      var mouseX = (evt.type === 'touchstart') ? evt.originalEvent.targetTouches[0].pageX : evt.pageX;
-      var mouseY = (evt.type === 'touchstart') ? evt.originalEvent.targetTouches[0].pageY : evt.pageY;
+      var mouseX, mouseY;
+      
+      if (evt.type === 'touchstart') {
+        var targetTouches = evt.targetTouches || evt.originalEvent.targetTouches;
+        
+        mouseX = targetTouches[0].pageX;
+        mouseY = targetTouches[0].pageY;
+      } else {
+        mouseX = evt.pageX;
+        mouseY = evt.pageY;
+      }
+      
       var editingAccessoryOffset = $editingAccessoryButtonElement.offset();
       var editingAccessoryWidth = $editingAccessoryButtonElement.width();
       var editingAccessoryHeight = $editingAccessoryButtonElement.height();
@@ -107,7 +121,7 @@ if (!window['Pushpop']) window.Pushpop = {};
       var activeCellElement = _$activeCellElement[0];
       
       if (!_isAccessoryButtonPressed && !_isEditingAccessoryButtonPressed) {
-        $element.trigger(jQuery.Event(Pushpop.EventType.WillSelectCell, {
+        $element.trigger($.Event(Pushpop.EventType.WillSelectCell, {
           cellElement: activeCellElement,
           $cellElement: _$activeCellElement,
           index: index
@@ -120,15 +134,15 @@ if (!window['Pushpop']) window.Pushpop = {};
       }
       
       if (!_isAccessoryButtonPressed && !_isEditingAccessoryButtonPressed) {
-        $element.trigger(jQuery.Event(Pushpop.EventType.DidSelectCell, {
+        $element.trigger($.Event(Pushpop.EventType.DidSelectCell, {
           cellElement: activeCellElement,
           $cellElement: _$activeCellElement,
           index: index
         }));
         
-        if (_$activeCellElement.hasClass('pp-tableview-inline-text-input-cell')) _$activeCellElement.children('input:first').focus();
+        if (_$activeCellElement.hasClass('pp-tableview-inline-text-input-cell')) _$activeCellElement.children('input').first().focus();
       } else {
-        $element.trigger(jQuery.Event(Pushpop.EventType.AccessoryButtonTapped, {
+        $element.trigger($.Event(Pushpop.EventType.AccessoryButtonTapped, {
           cellElement: activeCellElement,
           $cellElement: _$activeCellElement,
           index: index
@@ -161,33 +175,72 @@ if (!window['Pushpop']) window.Pushpop = {};
     $element.bind(Pushpop.EventType.AccessoryButtonTapped, function(evt) {
       var $cellElement = evt.$cellElement;
       
-      if ($cellElement.hasClass('pp-tableview-editing-accessory-delete')) {
-        if ($cellElement.hasClass('pp-tableview-picker-value-cell')) {
-          $cellElement.addClass('pp-tableview-editing-delete-confirmation');
-          var value = $cellElement.data('value');
+      if ($cellElement.hasClass('pp-tableview-editing-accessory-insert')) {
+        if ($cellElement.hasClass('pp-tableview-picker-cell')) {
           var pickerCell = $cellElement.data('pickerCell');
-          if (pickerCell) {
-            $cellElement.slideUp(200, function() {
-              var text = pickerCell.getTextByValue(value);
-              var $cellElement = pickerCell.$element;
-              var cellElement = $cellElement[0];
-              
-              pickerCell.removeValue(value);
-              
-              $element.trigger(jQuery.Event(Pushpop.EventType.DidRemoveValue, {
-                cellElement: cellElement,
-                $cellElement: $cellElement,
-                value: value,
-                text: text
-              }));
-              
-              $element.trigger(jQuery.Event(Pushpop.EventType.DidChangeValue, {
-                cellElement: cellElement,
-                $cellElement: $cellElement,
-                value: pickerCell.getValue()
-              }));
-            });
+          if (pickerCell) pickerCell.show();
+        }
+      } else if ($cellElement.hasClass('pp-tableview-editing-accessory-delete')) {
+        if ($cellElement.hasClass('pp-tableview-picker-value-cell')) {
+          if ($cellElement.hasClass('pp-tableview-editing-delete-confirmation')) return;
+          
+          $cellElement.addClass('pp-tableview-editing-delete-confirmation');
+          
+          var $deleteButtonContainer = $cellElement.children('div.delete-button-container');
+          
+          // Do we need to add a delete button to this li element?
+          if ($deleteButtonContainer.length === 0) {
+            // Add a delete button on the right side
+            $deleteButtonContainer = $('<div class="delete-button-container"><a class="pp-button pp-delete-button">Delete</a></div>');
+            $cellElement.append($deleteButtonContainer);
+            // Force a reflow before adding the 'show-delete-button' class below so the transition will always occur
+            $cellElement[0].offsetWidth;
           }
+          
+          $deleteButtonContainer.addClass('show-delete-button');
+          
+          // Bind to the mousedown of the delete button
+          $deleteButtonContainer.children('a.pp-delete-button').one('mousedown touchstart', function(evt) {
+            var value = $cellElement.data('value');
+            var pickerCell = $cellElement.data('pickerCell');
+            if (pickerCell) {
+              $cellElement.slideUp(200, function() {
+                var text = pickerCell.getTextByValue(value);
+                var $cellElement = pickerCell.$element;
+                var cellElement = $cellElement[0];
+
+                pickerCell.removeValue(value);
+
+                $element.trigger($.Event(Pushpop.EventType.DidRemoveValue, {
+                  cellElement: cellElement,
+                  $cellElement: $cellElement,
+                  value: value,
+                  text: text
+                }));
+
+                $element.trigger($.Event(Pushpop.EventType.DidChangeValue, {
+                  cellElement: cellElement,
+                  $cellElement: $cellElement,
+                  value: pickerCell.getValue()
+                }));
+              });
+            }
+            
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
+          });
+          
+          // Bind to the body's mousedown event to hide the delete button
+          $('body').bind('mousedown.cancelDelete touchstart.cancelDelete', function(evt) {
+            if (evt.target !== $cellElement[0]) {
+              $(this).unbind(evt);
+              // Hide the delete button on right and rotate the delete icon on 
+              // left back to its original state
+              $deleteButtonContainer.removeClass('show-delete-button');
+              $cellElement.removeClass('pp-tableview-editing-delete-confirmation');
+            }
+          });
+          
         }
       }
     });
@@ -198,7 +251,8 @@ if (!window['Pushpop']) window.Pushpop = {};
     $element: null,
     isEditing: false,
     getView: function() {
-      return this.$element.parents('.pp-view:first').data('view');
+      var parent = this.$element.parents('.pp-view').first()[0];
+      return (parent ? parent.view : null);
     }
   };
 
@@ -218,7 +272,7 @@ if (!window['Pushpop']) window.Pushpop = {};
     if (isMultiple) $element.addClass('pp-tableview-editing-cell pp-tableview-editing-accessory-insert');
     
     var viewStack = this.getParentTableView().getView().getViewStack();
-    var $viewElement = $('<div class="pp-view sk-scroll-view" id="pp-tableview-picker-view-' + (++_lastPickerViewId) + '"/>');
+    var $viewElement = $('<div class="pp-view sk-scroll-view pp-tableview-picker-view" id="pp-tableview-picker-view-' + (++_lastPickerViewId) + '"/>');
     viewStack.$element.append($viewElement);
     
     var scrollView = new SKScrollView($viewElement);
@@ -243,26 +297,41 @@ if (!window['Pushpop']) window.Pushpop = {};
 		// This string is used to store the value of each item that is selected as the user
 		//   is drilling down through the layers of the tableview data.
 		var valueHierarchy = '';
-
+    
 		var callbackForDidSelectCell = function(evt) {
       var $cellElement = evt.$cellElement;
+      
+		  // Check if the cell was disabled or a header cell.  If so, return.
+		  if ($cellElement.hasClass('pp-tableview-cell-disabled') || $cellElement.hasClass('header')) return;
+		  
+      // Ensure that the list is selectable. Once an item is selected, the list is marked as unselectable
+      // until the next time its view is presented
+      var parentList = $cellElement.parent();
+      if (parentList.hasClass('pp-tableview-unselectable')) return;
+      
+      parentList.addClass('pp-tableview-unselectable');
+		  		  
       var value = $cellElement.data('value');
+      if (!value) return;
+      
 			// Is value an array?
 			if ($.isArray(value)) {
 				// Add the id of the item to the value hierarchy
 				valueHierarchy += (valueHierarchy.length > 0 ? self.valuesDelimiter : '') + $cellElement.data('id');
 				// Create a new pp-tableview with the choices being the values in this array
-				var $viewElement = $('<div class="pp-view sk-scroll-view temp-view" id="pp-tableview-picker-view-' + (++_lastPickerViewId) + '"/>');
+				var $viewElement = $('<div class="pp-view sk-scroll-view temp-view pp-tableview-picker-view" id="pp-tableview-picker-view-' + (++_lastPickerViewId) + '"/>');
 				// Append the new tableview to the viewstack
 		    viewStack.$element.append($viewElement);
+		    // Bind the DidPopView event on the view element
+		    $viewElement.bind(Pushpop.EventType.DidPopView, callbackForDidPopView);
 				// Give the new tableview a scrollview
 				var scrollView = new SKScrollView($viewElement);
 		    var $scrollViewContentElement = scrollView.content.$element;
 				var view = new Pushpop.View($viewElement);
 				// Make a new ul for the items
-				var $ul = $('<ul class="pp-tableview" />');
+				var $ul = $('<ul class="pp-tableview pp-tableview-unselectable" />');
 				// Add the header item.  Give it the same text as the previous view
-				$ul.append('<li class="header">' + $cellElement.siblings(':first').html() + '</li>')
+				$ul.append('<li class="header">' + $cellElement.siblings(':first-child').html() + '</li>')
 				// Add the root level items. Note: we only add the root level items 
 				// so we don't load the dom with too many elements
 				for (var i = 0, length = value.length; i < length; i++) {
@@ -271,7 +340,7 @@ if (!window['Pushpop']) window.Pushpop = {};
 					
 					// If this value is not an array, check to see if it is already selected
 					if (!$.isArray(value[i].value) && (self._value.indexOf(valueHierarchy + self.valuesDelimiter + value[i].value) > -1)) {
-						$li.addClass('pp-tableview-accessory-checkmark');
+						$li.addClass('pp-tableview-accessory-checkmark pp-tableview-cell-disabled');
 					}
 					
 					$li.data('value', value[i].value);
@@ -287,18 +356,18 @@ if (!window['Pushpop']) window.Pushpop = {};
 				
 				// Bind the DidSelectCell event for this tableViewElement
 				$ul.bind(Pushpop.EventType.DidSelectCell, callbackForDidSelectCell);
-				
+        $viewElement.bind(Pushpop.EventType.DidPresentView, callbackForDidPresentView);
+
 				// Push the table view
 				viewStack.push(view);
 			} else {
 				// Add this value to the value hierarchy
 				valueHierarchy += (valueHierarchy.length > 0 ? self.valuesDelimiter : '') + value;
-				
       	var text = self.getTextByValue(valueHierarchy);
       
 	      if (self.isMultiple) {
-	        self.setValue(valueHierarchy, true);
-	        $element.trigger(jQuery.Event(Pushpop.EventType.DidAddValue, {
+	        self.setValue(valueHierarchy);
+	        $element.trigger($.Event(Pushpop.EventType.DidAddValue, {
 	          cellElement: element,
 	          $cellElement: $element,
 	          value: valueHierarchy,
@@ -308,21 +377,36 @@ if (!window['Pushpop']) window.Pushpop = {};
 	        self.setValue(valueHierarchy);
 	      }
       
-	      $element.trigger(jQuery.Event(Pushpop.EventType.DidChangeValue, {
+	      $element.trigger($.Event(Pushpop.EventType.DidChangeValue, {
 	        cellElement: element,
 	        $cellElement: $element,
 	        value: self.getValue()
 	      }));
 	
 				// Clear the value hierarchy for next time
-				valueHierarchy = ''
+				valueHierarchy = '';
       
 				// After popping the parent view, remove all temporary views from the dom
 	      viewStack.pop(self.getParentTableView().getView(), function() { $('.temp-view').remove(); });
 			}
     };
     
+    var callbackForDidPopView = function(evt) {
+      // Remove the last value off the valueHierarchry
+      var lastIndexOfDelimiter = valueHierarchy.lastIndexOf(self.valuesDelimiter);
+      valueHierarchy =  ((lastIndexOfDelimiter > 0) ? valueHierarchy.substring(0, lastIndexOfDelimiter) : '');
+      evt.view.$element.remove();
+    };
+    
+    var callbackForDidPresentView = function(evt) {
+      // Remove the pp-tableview-unselectable class from the unordered list, so its items can be selected.
+      // This is necessary because we temporarily "disable" selecting the items from both the current view 
+      // and the new view between the time an item is selected and the time the new view has finished being pushed.
+      evt.view.$element.find('ul.pp-tableview-unselectable').removeClass('pp-tableview-unselectable');
+    };
+    
     $tableViewElement.bind(Pushpop.EventType.DidSelectCell, callbackForDidSelectCell);
+    $viewElement.bind(Pushpop.EventType.DidPresentView, callbackForDidPresentView);
   };
 
   Pushpop.TableViewPickerCell.prototype = {
@@ -335,59 +419,59 @@ if (!window['Pushpop']) window.Pushpop = {};
     tableView: null,
     isMultiple: false,
 		valuesDelimiter: '-',
-		textPropertyOfItemsInDataSource: 'title',
+		displayTextProperty: 'title',
     getParentTableView: function() {
-      return this.$element.parents('.pp-tableview:first').data('tableview');
+      return this.$element.parents('.pp-tableview').first().data('tableview');
     },
     getTextByValue: function(value) {
-			// Does the value contain a delimeter? If so, we need to drill down through the data.
-			if (('' + value).indexOf(this.valuesDelimiter) > -1) {
-				var dataSource = this.getDataSource();
-				if (dataSource) {
-					return this.getTextByValuesArray(value.split(this.valuesDelimiter), dataSource);
-				}
-			} else {
-				// There's no need to drill down through the data
-      	return this.tableView.$element.children('[data-value="' + value + '"]:first').text();
-			}
+      // Does this picker cell have a datasource?
+			if (this.getDataSource()) {
+			  var item = this.getDataSourceItemByValue(value);
+			  return (item ? item[this.displayTextProperty] : '');
+			} 
+			// There's no need to drill down through the data
+			else return this.tableView.$element.children('[data-value="' + value + '"]').first().text();
     },
-		// Recursive method to drill down through the data (if necessary), and return the value
-		getTextByValuesArray: function(valuesArray, arrayOfItems) {
+    getDataSourceItemByValue: function(value) {
+      var valuesArray = [value];
+      // Do we need to drill down?
+      if (('' + value).indexOf(this.valuesDelimiter) > -1) {
+        valuesArray = value.split(this.valuesDelimiter);
+      }
+			  
+			return this.getDataSourceItemByValueRecursively(valuesArray, this.getDataSource());
+	    
+    },
+		// Recursive method to drill down through the data (if necessary), 
+		// and return the object with the specified value
+		getDataSourceItemByValueRecursively: function(valuesArray, arrayOfItems) {
 			// Get the first value in the array. Then remove it from the list
 			var valueToSearchFor = valuesArray[0];
 			valuesArray.splice(0, 1);
 			
-			var propertyToSearch;
 			// If this is not the last level, then we are need to search on the id property of the item,
 			//   otherwise, we need to search on the value property of the item.
-			if (valuesArray.length > 0) {
-				propertyToSearch = 'id';
-			} else {
-				propertyToSearch = 'value'
-			}
+			var propertyToSearch = (valuesArray.length > 0 ? 'id' : 'value');
+
 			// Loop through arrayOfItems and find the item with the right value
 			for(var i = 0, length = arrayOfItems.length; i < length; i++) {
 				if (arrayOfItems[i][propertyToSearch] == valueToSearchFor) {
 					// Are there more levels to drill down to?
-					if (valuesArray.length > 0) {
-						// Recursively call this function. The arrayOfItems to search through is the values property of this item
-						return this.getTextByValuesArray(valuesArray, arrayOfItems[i].value);
-					} else {
-						// This is the last level, so return the text
-						return arrayOfItems[i][this.textPropertyOfItemsInDataSource];
-					}
+					if (valuesArray.length > 0) return this.getDataSourceItemByValueRecursively(valuesArray, arrayOfItems[i].value);
+					// This is the last level, so return the text
+					else return arrayOfItems[i];
 				}
 			}
 		},
     getValue: function() {
       return this._value;
     },
-    setValue: function(value) {
+    setValue: function(value, text) {
       var element = this.element;
       var $element = this.$element;
       var $tableViewElement = this.tableView.$element;
       var isMultiple = this.isMultiple;
-      var text = this.getTextByValue(value);
+      text = text || this.getTextByValue(value);
       
       if (isMultiple) {
         for (var i = 0, length = this._value.length; i < length; i++) if (this._value[i] == value) return;
@@ -399,14 +483,14 @@ if (!window['Pushpop']) window.Pushpop = {};
         var $valueCellElement = $('<li class="pp-tableview-picker-value-cell pp-tableview-editing-cell pp-tableview-editing-accessory-delete" data-value="' + value + '">' + text + '</li>');
         $valueCellElement.data('pickerCell', this);
         $element.before($valueCellElement);
-        $tableViewElement.children('[data-value="' + value + '"]:first').addClass('pp-tableview-accessory-checkmark');
+        $tableViewElement.children('[data-value="' + value + '"]').first().addClass('pp-tableview-accessory-checkmark pp-tableview-cell-disabled');
       } else {
         this._value = [value];
         $element.attr('data-value', this._value.join(',')).data('value', this._value);
         this.$selectedTextElement.html(text);
         
-        $tableViewElement.children('.pp-tableview-accessory-checkmark').removeClass('pp-tableview-accessory-checkmark');
-        $tableViewElement.children('[data-value="' + value + '"]:first').addClass('pp-tableview-accessory-checkmark');
+        $tableViewElement.children('.pp-tableview-accessory-checkmark').removeClass('pp-tableview-accessory-checkmark pp-tableview-cell-disabled');
+        $tableViewElement.children('[data-value="' + value + '"]').first().addClass('pp-tableview-accessory-checkmark pp-tableview-cell-disabled');
       }
     },
     getDataSource: function() {
@@ -416,10 +500,10 @@ if (!window['Pushpop']) window.Pushpop = {};
 			this._dataSource = value;
 			
 			// Get the existing tableview that holds the available choices
-			var $ul = this.view.$element.find('ul.pp-tableview');
+			var $ul = this.tableView.$element;
 			
 			// Clear any existing items (except the header)
-			$ul.children('not(:first)').remove();
+			$ul.children(':not(:first-child)').remove();
 			
 			// Add the root level items. Note: we only add the root level items 
 			// so we don't load the dom with too many elements
@@ -460,8 +544,8 @@ if (!window['Pushpop']) window.Pushpop = {};
         this._value.splice(index, 1);
         
         var $tableViewElement = this.tableView.$element;
-        $tableViewElement.children('[data-value="' + value + '"]:first').removeClass('pp-tableview-accessory-checkmark');
-        $element.prevAll('[data-value="' + value + '"]:first').remove();
+        $tableViewElement.children('[data-value="' + value + '"]').first().removeClass('pp-tableview-accessory-checkmark pp-tableview-cell-disabled');
+        $element.prevAll('[data-value="' + value + '"]').first().remove();
       } else {
         this._value = [];
       }
@@ -495,19 +579,25 @@ if (!window['Pushpop']) window.Pushpop = {};
     
     var self = this;
     var viewStack = this.getParentTableView().getView().getViewStack();
-    var $viewElement = $('<div class="pp-view" id="pp-tableview-textarea-input-view-' + (++_lastTextareaInputViewId) + '"/>');
+    var $viewElement = $('<div class="pp-view sk-scroll-view pp-tableview-textarea-input-view" id="pp-tableview-textarea-input-view-' + (++_lastTextareaInputViewId) + '" data-always-bounce-horizontal="false" data-always-bounce-vertical="true"/>');
+    
+    var scrollView = new SKScrollView($viewElement);
+    var $scrollViewContentEl = scrollView.content.$element;
     viewStack.$element.append($viewElement);
 
     var view = this.view = new Pushpop.View($viewElement);
-    var $labelElement = $('<label class="pp-tableview-textarea-input-label">' + $element.children('label:first').text() + '</label>');
+    var $labelElement = $('<label class="pp-tableview-textarea-input-label">' + $element.children('label:first-child').text() + '</label>');
     var $textareaElement = this.$textareaElement = $element.children('textarea');
     var value = this._value = $textareaElement.val();
     $textareaElement.addClass('pp-tableview-textarea-input');
-    $viewElement.append($labelElement).append($textareaElement);
+    $scrollViewContentEl.append($labelElement).append($textareaElement);
 
     var $textElement = this.$textElement = $('<span/>').appendTo($element);
-    var $doneButtonElement = this.$doneButtonElement = $('<a class="pp-tableview-textarea-input-done-button" href="#">Done</a>');
-    $viewElement.append($doneButtonElement);
+    var $doneButtonElement = this.$doneButtonElement = $('<a class="pp-button" href="#">Done</a>');
+    var $cancelButtonElement = this.$cancelButtonElement = $('<a class="pp-button pp-cancel-button" href="#">Cancel</a>');
+		var $buttonContainer = $('<div class="pp-tableview-textarea-input-buttons" />');
+		$buttonContainer.append($doneButtonElement).append($cancelButtonElement);
+		$scrollViewContentEl.append($buttonContainer);
 
     $doneButtonElement.bind('click', function(evt) {
       var value = $textareaElement.val();
@@ -515,7 +605,7 @@ if (!window['Pushpop']) window.Pushpop = {};
       if (value !== self.getValue()) {
         self.setValue($textareaElement.val());
       
-        $element.trigger(jQuery.Event(Pushpop.EventType.DidChangeValue, {
+        $element.trigger($.Event(Pushpop.EventType.DidChangeValue, {
           cellElement: element,
           $cellElement: $element,
           value: value
@@ -523,6 +613,15 @@ if (!window['Pushpop']) window.Pushpop = {};
       }
       
       viewStack.pop();
+			evt.preventDefault();
+    });
+
+		$cancelButtonElement.bind('click', function(evt) {
+			// Set text back to the original value
+			$textareaElement.val(self.getValue());
+			
+      viewStack.pop();
+			evt.preventDefault();
     });
   };
 
@@ -535,7 +634,7 @@ if (!window['Pushpop']) window.Pushpop = {};
     $doneButtonElement: null,
     view: null,
     getParentTableView: function() {
-      return this.$element.parents('.pp-tableview:first').data('tableview');
+      return this.$element.parents('.pp-tableview').first().data('tableview');
     },
     getValue: function() {
       return this._value;

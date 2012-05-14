@@ -15,28 +15,26 @@
 	<script type="text/javascript" src="../pushpop.js"></script>
 	<script type="text/javascript" src="../pushpop-tableview/pushpop-tableview.js"></script>
 	<script type="text/javascript" src="pushpop-navigationbar.js"></script>
+	<script type="text/javascript" src="../pushpop-tableview/sample-data/sample-data.js"></script>
+	<script type="text/javascript">
+	  $(function() {
+	    // Set the datasource of one of the pickerCells with some sample data, and preselect a couple values
+      var pickerCell = $('#letter-picker-cell').data('pickerCell');
+      pickerCell.setDataSource(sampleData);
+      pickerCell.setValue('1-1-1');
+      pickerCell.setValue('26');
+    });
+	</script>
 </head>
 <body>
-  <div class="navbar navbar-fixed-top">
-    <div class="navbar-inner">
-      <div class="container">
-        <a class="brand" href="#">Pushpop</a>
-        <ul class="nav">
-          <li class="active"><a href="#">Home</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#contact">Contact</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  
   <div class="pp-split-view-container">
     <div class="pp-split-view-master">
       <div class="pp-view-stack">
-        <div class="pp-navigationbar">
-          <a class="pp-barbutton pp-barbutton-align-right active" href="#">Edit</a>
-        </div>
+        <div class="pp-navigationbar"></div>
         <div class="pp-view sk-scroll-view root" id="master-view-root" data-view-title="Master View 1">
+          <div class="pp-navigationbar-buttons" data-hide-back-button="true">
+            <a class="pp-barbutton pp-barbutton-align-right active" href="#">Edit</a>
+          </div>
           <a class="btn push" data-transition="slide-horizontal" href="#master-view-other">Slide Horizontal</a>
           <a class="btn push" data-transition="slide-vertical" href="#master-view-other">Slide Vertical</a>
           <a class="btn push" data-transition="flip-horizontal" href="#master-view-other">Flip Horizontal</a>
@@ -78,16 +76,23 @@
             <li class="pp-tableview-accessory-disclosure-indicator"><a class="push" data-transition="cross-fade" href="#detail-view-other">Cross Fade</a></li>
           </ul>
           <ul class="pp-tableview">
+            <li class="header">Go To View With Navigation Buttons</li>
+            <li class="pp-tableview-accessory-disclosure-indicator"><a class="push" data-transition="slide-horizontal" href="#detail-view-with-nav-buttons">Left and right nav buttons</a></li>
+            <li class="pp-tableview-accessory-disclosure-indicator"><a class="push" data-transition="slide-horizontal" href="#detail-view-with-nav-buttons-2">Right button and back button is hidden</a></li>
+            <li class="pp-tableview-accessory-disclosure-indicator"><a class="push" data-transition="slide-horizontal" href="#detail-view-with-nav-buttons-3">No buttons and back button is hidden</a></li>
+            <li class="pp-tableview-accessory-disclosure-indicator"><a class="push" data-transition="slide-horizontal" href="#detail-view-with-nav-buttons-4">Right buttons with back button.</a></li>
+          </ul>
+          <ul class="pp-tableview">
             <li class="header">Accessories</li>
             <li class="pp-tableview-accessory-checkmark">Checkmark</li>
             <li class="pp-tableview-accessory-detail-disclosure-button">Detail Disclosure Button</li>
             <li>
               <span>Info Button</span>
-              <a class="pp-tableview-button" href="#">Info</a>
+              <a class="pp-button" href="#">Info</a>
             </li>
             <li>
               <span>Delete Button</span>
-              <a class="pp-tableview-button pp-tableview-delete-button" href="#">Delete</a>
+              <a class="pp-button pp-delete-button" href="#">Delete</a>
             </li>
           </ul>
           <ul class="pp-tableview">
@@ -143,6 +148,15 @@
                 <li data-value="18">Purple</li>
               </ul>
             </li>
+          </ul>  
+        	<ul class="pp-tableview">
+            <li class="header">Multi-Picker Table Cells With Data Source</li>
+            <li id="letter-picker-cell" class="pp-tableview-picker-cell" data-multiple="true" data-name="letters">
+              <label>Add Letter</label>
+              <ul class="pp-tableview">
+                <li class="header">Select A Letter</li>
+              </ul>
+            </li>
           </ul>
         	<ul class="pp-tableview">
         		<li class="header">Inline Text Input Cells</li>
@@ -162,6 +176,41 @@
         <div class="pp-view" id="detail-view-other" data-view-title="Some Other Detail View">
           <a class="btn pop" href="#">Back</a>
           <p>This is some other "Detail" view.</p>
+        </div>
+        <div class="pp-view" id="detail-view-with-nav-buttons" data-view-title="View With Navigation Buttons">
+          <div class="pp-navigationbar-buttons">
+            <a class="pp-barbutton pp-barbutton-align-right active" href="#">Add</a>
+            <a class="pp-barbutton pp-barbutton-align-left active" href="#">Edit</a>
+          </div>
+          <a class="btn pop" href="#">Back</a>
+          <p>This view has left and right navigation buttons. There is no back button visible, because the Edit button on the left side
+            overrides it.</p>
+        </div>
+        <div class="pp-view" id="detail-view-with-nav-buttons-2" data-view-title="View With Navigation Buttons">
+          <div class="pp-navigationbar-buttons" data-hide-back-button="true">
+            <a class="pp-barbutton pp-barbutton-align-right active" href="#">Add</a>
+          </div>
+          <a class="btn pop" href="#">Back</a>
+          <p>This view has a right navigation button.  There is no back button visible because data-hide-back-button="true".</p>
+        </div>
+        <div class="pp-view" id="detail-view-with-nav-buttons-3" data-view-title="View With Navigation Buttons">
+          <div class="pp-navigationbar-buttons" data-hide-back-button="true"></div>
+          <a class="btn pop" href="#">Back</a>
+          <a class="btn push" href="#detail-view-with-nav-buttons-5">Go deeper</a>
+          <p>This view has navigation buttons.  There is no back button visible because data-hide-back-button="true".</p>
+        </div>
+        <div class="pp-view" id="detail-view-with-nav-buttons-4" data-view-title="View With Navigation Buttons">
+          <div class="pp-navigationbar-buttons">
+            <a class="pp-barbutton pp-barbutton-align-right active" href="#">Add</a>
+            <a class="pp-barbutton pp-barbutton-align-right active" href="#">Edit</a>
+          </div>
+          <a class="btn pop" href="#">Back</a>
+          <a class="btn push" href="#detail-view-with-nav-buttons-5">Go deeper</a>
+          <p>This view has right navigation buttons and a back button.</p>
+        </div>
+        <div class="pp-view" id="detail-view-with-nav-buttons-5" data-view-title="View With Back Button">
+          <a class="btn pop" href="#">Back</a>
+          <p>This view just has a back button.</p>
         </div>
       </div>
     </div>

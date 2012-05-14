@@ -1,15 +1,28 @@
-html, body {
+* {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-text-size-adjust: none;
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+}
+
+html {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  margin: 0;
+  font-size: 100%;  
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  -o-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
   background: #333 url('background.png');
-}
-
-a:hover {
-	text-decoration:none;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.231;
 }
 
 a.pp-button {
@@ -40,6 +53,10 @@ a.pp-button {
 	transition: opacity 0.2s ease;
 }
 
+a.pp-button:hover {
+	text-decoration:none;
+}
+
 a.pp-delete-button {
 	background: #CD6B74;
 	background: -moz-linear-gradient(top, #CD6B74 0%, #B9343F 50%, #B01825 51%, #B01825 100%);
@@ -49,6 +66,17 @@ a.pp-delete-button {
 	background: -ms-linear-gradient(top, #CD6B74 0%,#B9343F 50%,#B01825 51%,#B01825 100%);
 	background: linear-gradient(top, #CD6B74 0%,#B9343F 50%,#B01825 51%,#B01825 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cd6b74', endColorstr='#b01825',GradientType=0 );
+}
+
+a.pp-cancel-button {
+	background: #000; /* Old browsers */
+  background: -moz-linear-gradient(top,  #636363 0%, #202020 50%, #000 51%, #000 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#636363), color-stop(50%,#202020), color-stop(51%,#000), color-stop(100%,#000)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #636363 0%,#202020 50%,#000 51%,#000 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #636363 0%,#202020 50%,#000 51%,#000 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #636363 0%,#202020 50%,#000 51%,#000 100%); /* IE10+ */
+  background: linear-gradient(top,  #636363 0%,#202020 50%,#000 51%,#000 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#636363', endColorstr='#000',GradientType=0 ); /* IE6-9 */
 }
 
 /* NOTE: Use of .topbar has been removed in Bootstrap 2.x. */
@@ -95,10 +123,11 @@ a.pp-delete-button {
   right: 0;
   bottom: 0;
   left: 0;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  -webkit-text-size-adjust: none;
-  -webkit-touch-callout: none;
   -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
   -webkit-backface-visibility: hidden;
   -moz-backface-visibility: hidden;
   -o-backface-visibility: hidden;
@@ -107,6 +136,10 @@ a.pp-delete-button {
 
 .pp-view.active, .pp-view.push, .pp-view.pop {
   display: block;
+}
+
+div.pp-navigationbar-buttons {
+  display: none;
 }
 
 .pp-view-stack {
@@ -882,4 +915,3 @@ a.pp-delete-button {
 .pp-view.pop.cross-fade.active.transition {
   opacity: 0.75;
 }
-
