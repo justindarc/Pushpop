@@ -13,64 +13,82 @@ Pushpop.TableView = function(element) {
   
   element.tableView = this;
   
+  var scrollViewElement = $element.parents('.sk-scroll-view')[0];
+  if (!scrollViewElement) return;
+  
   var self = this;
   
-  var scrollViewElement = $element.parents('.sk-scroll-view')[0];
-  var scrollView = this.scrollView = (scrollViewElement) ? scrollViewElement.scrollView : null;
+  var scrollView = this.scrollView = scrollViewElement.scrollView;
   
   var visibleHeight = this._visibleHeight = scrollView.getSize().height;
+  var numberOfBufferedCells = this._numberOfBufferedCells;
+  var lastOffset = -scrollView.y;
   
   scrollView.$element.bind(SKScrollEventType.ScrollChange, function(evt) {
     var offset = -scrollView.y;
-    var rowHeight = self.getRowHeight();
-    var numberOfVisibleCells = self.getNumberOfVisibleCells();
-    
     if (offset < 0) return;
     
     var firstCellElement = $element.children('li:first-child')[0];
     var lastCellElement = $element.children('li:last-child')[0];
-    
     if (!firstCellElement || !lastCellElement || firstCellElement === lastCellElement) return;
     
     var dataSource = self.getDataSource();
+    var rowHeight = self.getRowHeight();
+    var totalCellCount = dataSource.length;
+    var visibleCellCount = self.getNumberOfVisibleCells();
     
     var firstCell = firstCellElement.tableViewCell;
     var firstCellIndex = firstCell.getIndex();
     var lastCell = lastCellElement.tableViewCell;
     var lastCellIndex = lastCell.getIndex();
     
-    var firstCellOffset = firstCell.$element.offset().top;
-    var lastCellOffset = firstCellOffset + (numberOfVisibleCells * rowHeight);
+    // Manually calculate offset instead of calling .offset().
+    var margin = scrollView.getMargin();
+    var firstCellOffset = margin.top - offset;
+    var lastCellOffset = firstCellOffset + (visibleCellCount * rowHeight);
+    var delta = offset - lastOffset;
     
-    if (lastCellIndex + 1 < dataSource.length && firstCellOffset < 0 - (rowHeight * 8)) {
-      firstCell.prepareForReuse();
-      self._reusableCells.push(firstCell);
-      
-      var newLastCell = self.dequeueReusableCellWithIdentifier('pushpop.tableviewcell.default');
-      newLastCell.setData(dataSource, lastCellIndex + 1);
-      
-      $element.append(newLastCell.$element);
-      
-      var margin = scrollView.getMargin();
-      scrollView.setMargin({
-        top: margin.top + rowHeight,
-        bottom: margin.bottom - rowHeight
+    lastOffset = offset;
+    
+    // Handle scrolling when swiping up (scrolling towards the bottom).
+    if (delta > 0 && lastCellIndex + 1 < totalCellCount && firstCellOffset < 0 - (rowHeight * numberOfBufferedCells)) {
+      $element.children('li:nth-child(-n+' + numberOfBufferedCells + ')').each(function(index, element) {
+        if (lastCellIndex + index + 1 >= totalCellCount) return;
+        
+        var cell = element.tableViewCell;
+        cell.prepareForReuse();
+        self._reusableCells.push(cell);
+        
+        var newCell = self.dequeueReusableCellWithIdentifier('pushpop.tableviewcell.default');
+        newCell.setData(dataSource, lastCellIndex + index + 1);
+        
+        $element.append(newCell.$element);
+        
+        scrollView.setMargin({
+          top: margin.top + (rowHeight * (index + 1)),
+          bottom: margin.bottom - (rowHeight * (index + 1))
+        });
       });
     }
     
-    else if (firstCellIndex - 1 >= 0 && lastCellOffset > visibleHeight + (rowHeight * 8)) {
-      lastCell.prepareForReuse();
-      self._reusableCells.push(lastCell);
+    // Handle scrolling when swiping down (scrolling towards the top).
+    else if (delta < 0 && firstCellIndex - 1 >= 0 && lastCellOffset > visibleHeight + (rowHeight * numberOfBufferedCells)) {
+      $element.children('li:nth-child(n+' + (visibleCellCount - numberOfBufferedCells + 1) + ')').each(function(index, element) {
+        if (firstCellIndex - index - 1 < 0) return;
+        
+        var cell = element.tableViewCell;
+        cell.prepareForReuse();
+        self._reusableCells.push(cell);
+        
+        var newCell = self.dequeueReusableCellWithIdentifier('pushpop.tableviewcell.default');
+        newCell.setData(dataSource, firstCellIndex - index - 1);
       
-      var newFirstCell = self.dequeueReusableCellWithIdentifier('pushpop.tableviewcell.default');
-      newFirstCell.setData(dataSource, firstCellIndex - 1);
-      
-      $element.prepend(newFirstCell.$element);
-      
-      var margin = scrollView.getMargin();
-      scrollView.setMargin({
-        top: margin.top - rowHeight,
-        bottom: margin.bottom + rowHeight
+        $element.prepend(newCell.$element);
+        
+        scrollView.setMargin({
+          top: margin.top - (rowHeight * (index + 1)),
+          bottom: margin.bottom + (rowHeight * (index + 1))
+        });
       });
     }
   });
@@ -92,6 +110,7 @@ Pushpop.TableView.prototype = {
   scrollView: null,
   
   _visibleHeight: 0,
+  _numberOfBufferedCells: 16,
   
   _reusableCells: null,
   dequeueReusableCellWithIdentifier: function(reuseIdentifier) {
@@ -113,7 +132,7 @@ Pushpop.TableView.prototype = {
   
   _visibleCells: null,
   getVisibleCells: function() { return this._visibleCells; },
-  getNumberOfVisibleCells: function() { return Math.ceil(this._visibleHeight / this.getRowHeight()) + 8 },
+  getNumberOfVisibleCells: function() { return Math.ceil(this._visibleHeight / this.getRowHeight()) + this._numberOfBufferedCells },
   
   _selectedRowIndexes: null,
   getIndexForSelectedRow: function() {
@@ -130,19 +149,20 @@ Pushpop.TableView.prototype = {
     
   },
   
-  reloadData: function() {    
-    var totalCellCount = this.getDataSource().length;
-    var visibleCellCount = this.getNumberOfVisibleCells();
+  reloadData: function() {
+    var $element = this.$element;
+    
+    var dataSource = this.getDataSource();
+    var visibleCells = this._visibleCells;
+    
+    var totalCellCount = dataSource.length;
+    var visibleCellCount = Math.min(this.getNumberOfVisibleCells(), totalCellCount);
     var hiddenCellCount = totalCellCount - visibleCellCount;
     
     var scrollView = this.scrollView;
     
     // Scroll to the top of the table view without animating.
     scrollView.setContentOffset({ x: 0, y: 0 }, false);
-    
-    var visibleCells = this._visibleCells;
-    var dataSource = this.getDataSource();
-    var $element = this.$element;
     
     for (var i = 0; i < visibleCellCount; i++) {
       var cell = this.dequeueReusableCellWithIdentifier('pushpop.tableviewcell.default');
@@ -176,6 +196,14 @@ Pushpop.TableView.prototype = {
   setEditing: function(editing, animated) {
     this._editing = editing;
   }
+};
+
+Pushpop.TableViewDataSource = function() {
+  
+};
+
+Pushpop.TableViewDataSource.prototype = {
+  
 };
 
 Pushpop.TableViewCell = function(reuseIdentifier) {
@@ -218,9 +246,7 @@ Pushpop.TableViewCell.prototype = {
   
   setData: function(dataSource, index) {
     var data = dataSource[index];
-    
     this.setIndex(index);
-    
     this.setId(data.id);
     this.setValue(data.value);
     this.setTitle(data.title);
