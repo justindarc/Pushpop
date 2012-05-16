@@ -18,12 +18,18 @@ Pushpop.TableView = function(element) {
   
   var self = this;
   
+  var reusableCells = this._reusableCells = [];
+  var visibleCells = this._visibleCells = [];
+  var selectedRowIndexes = this._selectedRowIndexes = [];
+  
   var scrollView = this.scrollView = scrollViewElement.scrollView;
   
   var visibleHeight = this._visibleHeight = scrollView.getSize().height;
   var numberOfBufferedCells = this._numberOfBufferedCells;
+  var selectionTimeout = this._selectionTimeout;
   var lastOffset = -scrollView.y;
   
+  // Render table view cells "virtually" when the view is scrolled.
   scrollView.$element.bind(SKScrollEventType.ScrollChange, function(evt) {
     var offset = -scrollView.y;
     if (offset < 0) return;
@@ -34,8 +40,9 @@ Pushpop.TableView = function(element) {
     
     var dataSource = self.getDataSource();
     var rowHeight = self.getRowHeight();
-    var totalCellCount = dataSource.length;
+    var totalCellCount = dataSource.getNumberOfRows();
     var visibleCellCount = self.getNumberOfVisibleCells();
+    var selectedRowIndex = self.getIndexForSelectedRow();
     
     var firstCell = firstCellElement.tableViewCell;
     var firstCellIndex = firstCell.getIndex();
@@ -53,15 +60,14 @@ Pushpop.TableView = function(element) {
     // Handle scrolling when swiping up (scrolling towards the bottom).
     if (delta > 0 && lastCellIndex + 1 < totalCellCount && firstCellOffset < 0 - (rowHeight * numberOfBufferedCells)) {
       $element.children('li:nth-child(-n+' + numberOfBufferedCells + ')').each(function(index, element) {
-        if (lastCellIndex + index + 1 >= totalCellCount) return;
+        var newCellIndex = lastCellIndex + index + 1;
+        if (newCellIndex >= totalCellCount) return;
         
         var cell = element.tableViewCell;
         cell.prepareForReuse();
-        self._reusableCells.push(cell);
         
-        var newCell = self.dequeueReusableCellWithIdentifier('pushpop.tableviewcell.default');
-        newCell.setData(dataSource, lastCellIndex + index + 1);
-        
+        var newCell = dataSource.getCellForRowAtIndex(self, newCellIndex);
+        if (self.isRowSelectedAtIndex(newCellIndex)) newCell.setSelected(true);
         $element.append(newCell.$element);
         
         scrollView.setMargin({
@@ -74,15 +80,14 @@ Pushpop.TableView = function(element) {
     // Handle scrolling when swiping down (scrolling towards the top).
     else if (delta < 0 && firstCellIndex - 1 >= 0 && lastCellOffset > visibleHeight + (rowHeight * numberOfBufferedCells)) {
       $element.children('li:nth-child(n+' + (visibleCellCount - numberOfBufferedCells + 1) + ')').each(function(index, element) {
-        if (firstCellIndex - index - 1 < 0) return;
+        var newCellIndex = firstCellIndex - index - 1;
+        if (newCellIndex < 0) return;
         
         var cell = element.tableViewCell;
         cell.prepareForReuse();
-        self._reusableCells.push(cell);
         
-        var newCell = self.dequeueReusableCellWithIdentifier('pushpop.tableviewcell.default');
-        newCell.setData(dataSource, firstCellIndex - index - 1);
-      
+        var newCell = dataSource.getCellForRowAtIndex(self, newCellIndex);
+        if (self.isRowSelectedAtIndex(newCellIndex)) newCell.setSelected(true);
         $element.prepend(newCell.$element);
         
         scrollView.setMargin({
@@ -93,12 +98,40 @@ Pushpop.TableView = function(element) {
     }
   });
   
-  var reusableCells = this._reusableCells = [];
-  var visibleCells = this._visibleCells = [];
-  var selectedRowIndexes = this._selectedRowIndexes = [];
+  var isMouseDown = false;
   
-  var dataSourceUrl = $element.attr('data-source');
-  if (dataSourceUrl) $.getJSON(dataSourceUrl, function(dataSource) {
+  // TODO: Implement a brief pause before selection like iOS.
+  var isPendingSelection = false;
+  
+  $element.delegate('li', 'mousedown touchstart', function(evt) {
+    isMouseDown = true;
+    
+    var tableViewCell = this.tableViewCell;
+    tableViewCell.setSelected(true);
+    
+    selectedRowIndexes.length = 0;
+    selectedRowIndexes.push(tableViewCell.getIndex());
+    
+    $element.children('.pp-table-view-selected-state').each(function(index, element) {
+      if (element === tableViewCell.element) return;
+      element.tableViewCell.setSelected(false);
+    });
+  });
+  
+  $element.delegate('li', 'mouseup touchend', function(evt) { isMouseDown = false; });
+  
+  $element.delegate('li', 'mousemove touchmove', function(evt) {
+    if (!isMouseDown) return;
+    
+    var tableViewCell = this.tableViewCell;
+    tableViewCell.setSelected(false);
+    
+    selectedRowIndexes.length = 0;
+  });
+  
+  var dataSetUrl = $element.attr('data-set-url');
+  if (dataSetUrl) $.getJSON(dataSetUrl, function(dataSet) {
+    var dataSource = new Pushpop.TableViewDataSource(dataSet);
     self.setDataSource(dataSource);
   });
 };
@@ -111,6 +144,7 @@ Pushpop.TableView.prototype = {
   
   _visibleHeight: 0,
   _numberOfBufferedCells: 16,
+  _selectionTimeout: 500,
   
   _reusableCells: null,
   dequeueReusableCellWithIdentifier: function(reuseIdentifier) {
@@ -127,6 +161,8 @@ Pushpop.TableView.prototype = {
     
     if (!cell) cell = new Pushpop.TableViewCell(reuseIdentifier);
     
+    cell.tableView = this;
+    
     return cell;
   },
   
@@ -140,7 +176,12 @@ Pushpop.TableView.prototype = {
     return (selectedRowIndexes && selectedRowIndexes.length > 0) ? selectedRowIndexes[0] : -1;
   },
   getIndexesForSelectedRows: function() {
-    return this._selectedRowIndexes || [];
+    return this._selectedRowIndexes;
+  },
+  isRowSelectedAtIndex: function(index) {
+    var selectedRowIndexes = this._selectedRowIndexes;
+    for (var i = 0, length = selectedRowIndexes.length; i < length; i++) if (selectedRowIndexes[i] === index) return true;
+    return false;
   },
   selectRowAtIndex: function(index, animated) {
     
@@ -153,9 +194,8 @@ Pushpop.TableView.prototype = {
     var $element = this.$element;
     
     var dataSource = this.getDataSource();
-    var visibleCells = this._visibleCells;
     
-    var totalCellCount = dataSource.length;
+    var totalCellCount = dataSource.getNumberOfRows();
     var visibleCellCount = Math.min(this.getNumberOfVisibleCells(), totalCellCount);
     var hiddenCellCount = totalCellCount - visibleCellCount;
     
@@ -165,9 +205,7 @@ Pushpop.TableView.prototype = {
     scrollView.setContentOffset({ x: 0, y: 0 }, false);
     
     for (var i = 0; i < visibleCellCount; i++) {
-      var cell = this.dequeueReusableCellWithIdentifier('pushpop.tableviewcell.default');
-      cell.setData(dataSource, i);
-      
+      var cell = dataSource.getCellForRowAtIndex(this, i);      
       $element.append(cell.$element);
     }
     
@@ -198,12 +236,58 @@ Pushpop.TableView.prototype = {
   }
 };
 
-Pushpop.TableViewDataSource = function() {
+/**
+  Creates a new data source for a TableView.
+  @param {Array} [dataSet] An optional array of data to initialize a default data source.
+  @param {Array} [dataSet.id] The unique identifier for a specific record.
+  @param {Array} [dataSet.value] The (sometimes) hidden value for a specific record.
+  @param {Array} [dataSet.title] The title to be displayed in a TableViewCell for a specific record.
+  @constructor
+*/
+Pushpop.TableViewDataSource = function(dataSet) {
+  if (!dataSet || dataSet.constructor !== Array) return;
   
+  this.getCellForRowAtIndex = function(tableView, index) {
+    var cell = tableView.dequeueReusableCellWithIdentifier('pushpop.tableviewcell.default');
+    
+    var data = dataSet[index];
+    cell.setIndex(index);
+    cell.setId(data.id);
+    cell.setValue(data.value);
+    cell.setTitle(data.title);
+    
+    return cell;
+  };
+  
+  this.getNumberOfRows = function() {
+    return dataSet.length;
+  };
 };
 
+/**
+  @description NOTE: In order to have a TableView with custom TableViewCells, a custom
+  TableViewDataSource must be implemented with at least the two required methods as
+  per this prototype.
+*/
 Pushpop.TableViewDataSource.prototype = {
   
+  /**
+    REQUIRED: Returns a TableViewCell for the specified index.
+    @param {Pushpop.TableView} tableView The TableView the TableViewCell should be returned for.
+    @param {Number} index The index of the data to be used when populating the TableViewCell.
+    @type Pushpop.TableViewCell
+  */
+  getCellForRowAtIndex: function(tableView, index) {
+    return null;
+  },
+  
+  /**
+    REQUIRED: Returns the number of rows provided by this data source.
+    @type Number
+  */
+  getNumberOfRows: function() {
+    return 0;
+  }
 };
 
 Pushpop.TableViewCell = function(reuseIdentifier) {
@@ -218,14 +302,30 @@ Pushpop.TableViewCell = function(reuseIdentifier) {
 Pushpop.TableViewCell.prototype = {
   element: null,
   $element: null,
+  
+  tableView: null,
   reuseIdentifier: 'pushpop.tableviewcell.default',
   
   prepareForReuse: function() {
     this.$element.remove();
+    
+    this.tableView._reusableCells.push(this);
+    
+    this.setSelected(false);
     this.setIndex(-1);
     this.setId(-1);
     this.setValue(null);
     this.setTitle('');
+  },
+  
+  _isSelected: false,
+  getSelected: function() { return this._isSelected; },
+  setSelected: function(value) {
+    if (this._isSelected = value) {
+      this.$element.addClass('pp-table-view-selected-state');
+    } else {
+      this.$element.removeClass('pp-table-view-selected-state');
+    }
   },
   
   _index: -1,
@@ -242,17 +342,9 @@ Pushpop.TableViewCell.prototype = {
   
   _title: '',
   getTitle: function() { return this._title; },
-  setTitle: function(title) { this.$element.html(this._title = title); },
-  
-  setData: function(dataSource, index) {
-    var data = dataSource[index];
-    this.setIndex(index);
-    this.setId(data.id);
-    this.setValue(data.value);
-    this.setTitle(data.title);
-  }
+  setTitle: function(title) { this.$element.html(this._title = title); }
 };
 
 $(function() {
-  $('.pp-tableview').each(function(index, element) { new Pushpop.TableView(element); });
+  $('.pp-table-view').each(function(index, element) { new Pushpop.TableView(element); });
 });
