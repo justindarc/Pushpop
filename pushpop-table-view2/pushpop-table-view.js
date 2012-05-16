@@ -26,7 +26,7 @@ Pushpop.TableView = function(element) {
   
   var visibleHeight = this._visibleHeight = scrollView.getSize().height;
   var numberOfBufferedCells = this._numberOfBufferedCells;
-  var selectionTimeout = this._selectionTimeout;
+  var selectionTimeoutDuration = this._selectionTimeoutDuration;
   var lastOffset = -scrollView.y;
   
   // Render table view cells "virtually" when the view is scrolled.
@@ -98,35 +98,40 @@ Pushpop.TableView = function(element) {
     }
   });
   
-  var isMouseDown = false;
-  
-  // TODO: Implement a brief pause before selection like iOS.
-  var isPendingSelection = false;
-  
-  $element.delegate('li', 'mousedown touchstart', function(evt) {
-    isMouseDown = true;
+  // Handle mouse/touch events to allow the user to make row selections.
+  var isPendingSelection = false, selectionTimeout = null;
+
+  $element.delegate('li', !!('ontouchstart' in window) ? 'touchstart' : 'mousedown', function(evt) {
+    isPendingSelection = true;
     
     var tableViewCell = this.tableViewCell;
-    tableViewCell.setSelected(true);
     
-    selectedRowIndexes.length = 0;
-    selectedRowIndexes.push(tableViewCell.getIndex());
-    
-    $element.children('.pp-table-view-selected-state').each(function(index, element) {
-      if (element === tableViewCell.element) return;
-      element.tableViewCell.setSelected(false);
-    });
+    selectionTimeout = window.setTimeout(function() {
+      if (!isPendingSelection) return;
+      isPendingSelection = false;
+      
+      self.deselectAllRows();
+      self.selectRowAtIndex(tableViewCell.getIndex());
+    }, selectionTimeoutDuration);
   });
   
-  $element.delegate('li', 'mouseup touchend', function(evt) { isMouseDown = false; });
+  $element.bind(!!('ontouchmove' in window) ? 'touchmove' : 'mousemove', function(evt) {
+    if (!isPendingSelection) return;
+    isPendingSelection = false;
+    
+    window.clearTimeout(selectionTimeout);
+  });
   
-  $element.delegate('li', 'mousemove touchmove', function(evt) {
-    if (!isMouseDown) return;
+  $element.delegate('li', !!('ontouchend' in window) ? 'touchend' : 'mouseup', function(evt) {
+    if (!isPendingSelection) return;
+    isPendingSelection = false;
     
+    window.clearTimeout(selectionTimeout);
+  
     var tableViewCell = this.tableViewCell;
-    tableViewCell.setSelected(false);
     
-    selectedRowIndexes.length = 0;
+    self.deselectAllRows();
+    self.selectRowAtIndex(tableViewCell.getIndex());
   });
   
   var dataSetUrl = $element.attr('data-set-url');
@@ -144,7 +149,7 @@ Pushpop.TableView.prototype = {
   
   _visibleHeight: 0,
   _numberOfBufferedCells: 16,
-  _selectionTimeout: 500,
+  _selectionTimeoutDuration: 250,
   
   _reusableCells: null,
   dequeueReusableCellWithIdentifier: function(reuseIdentifier) {
@@ -184,10 +189,25 @@ Pushpop.TableView.prototype = {
     return false;
   },
   selectRowAtIndex: function(index, animated) {
+    this._selectedRowIndexes.push(index);
     
+    var tableViewCell, $cells = this.$element.children();
+    for (var i = 0, length = $cells.length; i < length; i++) {
+      tableViewCell = $cells[i].tableViewCell;
+      if (tableViewCell.getIndex() === index) {
+        tableViewCell.setSelected(true);
+        return;
+      }
+    }
   },
   deselectRowAtIndex: function(index, animated) {
     
+  },
+  deselectAllRows: function() {
+    this._selectedRowIndexes.length = 0;
+    this.$element.children('.pp-table-view-selected-state').each(function(index, element) {
+      element.tableViewCell.setSelected(false);
+    });
   },
   
   reloadData: function() {
