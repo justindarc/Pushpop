@@ -24,6 +24,12 @@ Pushpop.TableView = function(element) {
   
   var scrollView = this.scrollView = scrollViewElement.scrollView;
   
+  var containsSearchBar = $element.attr('data-contains-search-bar') || 'false';
+  containsSearchBar = containsSearchBar !== 'false';
+  
+  var searchBar = null;
+  if (containsSearchBar) searchBar = this._searchBar = new Pushpop.TableViewSearchBar(this);
+  
   var visibleHeight = this._visibleHeight = scrollView.getSize().height;
   var numberOfBufferedCells = this._numberOfBufferedCells;
   var selectionTimeoutDuration = this._selectionTimeoutDuration;
@@ -201,7 +207,22 @@ Pushpop.TableView.prototype = {
     }
   },
   deselectRowAtIndex: function(index, animated) {
+    var selectedRowIndexes = this._selectedRowIndexes;
+    for (var i = 0, length = selectedRowIndexes.length; i < length; i++) {
+      if (selectedRowIndexes[i] === index) {
+        selectedRowIndexes.splice(i, 1);
+        break;
+      }
+    }
     
+    var tableViewCell, $selectedCells = this.$element.children('.pp-table-view-selected-state');
+    for (var i = 0, length = $cells.length; i < length; i++) {
+      tableViewCell = $cells[i].tableViewCell;
+      if (tableViewCell.getIndex() === index) {
+        tableViewCell.setSelected(false);
+        return;
+      }
+    }
   },
   deselectAllRows: function() {
     this._selectedRowIndexes.length = 0;
@@ -234,6 +255,12 @@ Pushpop.TableView.prototype = {
       top: 0,
       bottom: hiddenCellCount * this.getRowHeight()
     });
+  },
+  
+  _searchBar: null,
+  getSearchBar: function() { return this._searchBar; },
+  setSearchBar: function(searchBar) {
+    this._searchBar = searchBar;
   },
   
   _dataSource: null,
@@ -308,6 +335,33 @@ Pushpop.TableViewDataSource.prototype = {
   getNumberOfRows: function() {
     return 0;
   }
+};
+
+Pushpop.TableViewSearchBar = function(tableView) {
+  var $element = this.$element = $('<div class="pp-table-view-search-bar"/>');
+  var element = this.element = $element[0];
+  
+  element.tableViewSearchBar = this;
+  
+  var $input = this.$input = $('<input type="text" placeholder="Search"/>').appendTo($element);
+  var $overlay = this.$overlay = $('<div class="pp-table-view-search-bar-overlay"/>').appendTo(tableView.scrollView.$element);
+  
+  $input.bind('focus', function(evt) { $overlay.addClass('pp-active'); });
+  $input.bind('blur', function(evt) { $overlay.removeClass('pp-active'); });
+  $overlay.bind('mousedown touchstart', function(evt) { evt.stopPropagation(); evt.preventDefault(); });
+  $overlay.bind('mouseup touchend', function(evt) { $input.trigger('blur'); });
+  
+  this.tableView = tableView;
+  tableView.$element.before($element);
+};
+
+Pushpop.TableViewSearchBar.prototype = {
+  element: null,
+  $element: null,
+  $input: null,
+  $overlay: null,
+  
+  tableView: null
 };
 
 Pushpop.TableViewCell = function(reuseIdentifier) {
