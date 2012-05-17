@@ -563,6 +563,7 @@ div.pp-table-view-search-bar {
   padding: 0;
   position: relative;
   font-size: 1em;
+  width: 100%;
   height: 3.25em;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
@@ -616,14 +617,28 @@ div.pp-table-view-search-bar > input {
   left: 0.5em;
   width: auto;
   z-index: 1;
-  outline: 0;
+  outline: none;
   -webkit-border-radius: 1.1em;
   -moz-border-radius: 1.1em;
   border-radius: 1.1em;
   -webkit-box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, 0.7);
   -moz-box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, 0.7);
   box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, 0.7);
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  -o-transform: translate(0, 0);
+  transform: translate(0, 0);
+  -webkit-transition: right 0.2s linear;
+  -moz-transition: right 0.2s linear;
+  -ms-transition: right 0.2s linear;
+  -o-transition: right 0.2s linear;
+  transition: right 0.2s linear;
   -webkit-appearance: none;
+}
+
+div.pp-table-view-search-bar > input:focus {
+  right: 5.5em;
 }
 
 div.pp-table-view-search-bar > input::-webkit-input-placeholder,
@@ -631,6 +646,69 @@ div.pp-table-view-search-bar > input:-moz-input-placeholder {
   color: #bbb;
 }
 
+div.pp-table-view-search-bar > a.pp-table-view-search-bar-button {
+  background: #8b99ae; /* Old browsers */
+  background: -moz-linear-gradient(top,  #8b99ae 0%, #647791 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#8b99ae), color-stop(100%,#647791)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #8b99ae 0%,#647791 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #8b99ae 0%,#647791 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #8b99ae 0%,#647791 100%); /* IE10+ */
+  background: linear-gradient(top,  #8b99ae 0%,#647791 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8b99ae', endColorstr='#647791',GradientType=0 ); /* IE6-9 */
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  display: inline-block;
+  position: absolute;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 1em;
+  font-weight: bold;
+  padding: 0.4em 0.65em;
+  margin: 0.4em 0 0;
+  right: -4.75em;
+  width: 3.25em;
+  line-height: 1.35em;
+  color: #fff;
+  text-shadow: 0 -1px 1px #000;
+  text-align: center;
+  text-decoration: none !important;
+  cursor: default;
+  z-index: 1;
+  outline: none;
+  opacity: 0;
+  -webkit-border-radius: 0.5em;
+  -moz-border-radius: 0.5em;
+  border-radius: 0.5em;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  -o-transform: translate(0, 0);
+  transform: translate(0, 0);
+  -webkit-transition: all 0.3s linear;
+  -moz-transition: all 0.3s linear;
+  -ms-transition: all 0.3s linear;
+  -o-transition: all 0.3s linear;
+  transition: all 0.3s linear;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+div.pp-table-view-search-bar > a.pp-table-view-search-bar-button:active {
+  background: #758296; /* Old browsers */
+  background: -moz-linear-gradient(top,  #758296 0%, #56677f 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#758296), color-stop(100%,#56677f)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #758296 0%,#56677f 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #758296 0%,#56677f 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #758296 0%,#56677f 100%); /* IE10+ */
+  background: linear-gradient(top,  #758296 0%,#56677f 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#758296', endColorstr='#56677f',GradientType=0 ); /* IE6-9 */
+}
+
+div.pp-table-view-search-bar > input:focus + a.pp-table-view-search-bar-button {
+  opacity: 1;
+  -webkit-transform: translate3d(-5.25em, 0, 0);
+  -moz-transform: translate(-5.25em, 0);
+  -ms-transform: translate(-5.25em, 0);
+  -o-transform: translate(-5.25em, 0);
+  transform: translate(-5.25em, 0);
+}
 
 div.pp-table-view-search-bar-overlay {
   background: rgba(0, 0, 0, 0.8);
@@ -648,11 +726,11 @@ div.pp-table-view-search-bar-overlay {
   -ms-transform: translate(0, 0);
   -o-transform: translate(0, 0);
   transform: translate(0, 0);
-  -webkit-transition: visibility 0s linear 0.3s,opacity 0.3s ease;
-  -moz-transition: visibility 0s linear 0.3s,opacity 0.3s ease;
-  -ms-transition: visibility 0s linear 0.3s,opacity 0.3s ease;
-  -o-transition: visibility 0s linear 0.3s,opacity 0.3s ease;
-  transition: visibility 0s linear 0.3s,opacity 0.3s ease;
+  -webkit-transition: visibility 0s linear 0.2s, opacity 0.2s linear;
+  -moz-transition: visibility 0s linear 0.2s, opacity 0.2s linear;
+  -ms-transition: visibility 0s linear 0.2s, opacity 0.2s linear;
+  -o-transition: visibility 0s linear 0.2s, opacity 0.2s linear;
+  transition: visibility 0s linear 0.2s, opacity 0.2s linear;
 }
 
 div.pp-table-view-search-bar-overlay.pp-active {
