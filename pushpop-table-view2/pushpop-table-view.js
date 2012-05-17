@@ -344,10 +344,15 @@ Pushpop.TableViewSearchBar = function(tableView) {
   element.tableViewSearchBar = this;
   
   var $input = this.$input = $('<input type="text" placeholder="Search"/>').appendTo($element);
+  var $cancelButton = this.$cancelButton = $('<a class="pp-table-view-search-bar-button" href="#">Cancel</a>').appendTo($element);
   var $overlay = this.$overlay = $('<div class="pp-table-view-search-bar-overlay"/>').appendTo(tableView.scrollView.$element);
   
-  $input.bind('focus', function(evt) { $overlay.addClass('pp-active'); });
+  $input.bind('mousedown touchstart', function(evt) { evt.stopPropagation(); });
+  $input.bind('mouseup touchend', function(evt) { $input.trigger('focus'); });
+  $input.bind('focus', function(evt) { tableView.scrollView.setContentOffset({ x: 0, y: 0 }, false); window.setTimeout(function() { $overlay.addClass('pp-active'); }, 0); });
   $input.bind('blur', function(evt) { $overlay.removeClass('pp-active'); });
+  $cancelButton.bind('mousedown touchstart', function(evt) { evt.stopPropagation(); evt.preventDefault(); });
+  $cancelButton.bind('mouseup touchend', function(evt) { $input.trigger('blur'); });
   $overlay.bind('mousedown touchstart', function(evt) { evt.stopPropagation(); evt.preventDefault(); });
   $overlay.bind('mouseup touchend', function(evt) { $input.trigger('blur'); });
   
@@ -359,6 +364,7 @@ Pushpop.TableViewSearchBar.prototype = {
   element: null,
   $element: null,
   $input: null,
+  $cancelButton: null,
   $overlay: null,
   
   tableView: null
