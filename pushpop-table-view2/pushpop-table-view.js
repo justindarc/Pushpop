@@ -158,19 +158,21 @@ Pushpop.TableView.prototype = {
   _selectionTimeoutDuration: 250,
   
   _reusableCells: null,
+  getReusableCells: function() { return this._reusableCells; },
   dequeueReusableCellWithIdentifier: function(reuseIdentifier) {
-    var reusableCells = this._reusableCells;
+    var reusableCells = this.getReusableCells();
+    var visibleCells = this.getVisibleCells();
     var cell = null;
     
     for (var i = 0, length = reusableCells.length; i < length; i++) {
       if (reusableCells[i].reuseIdentifier === reuseIdentifier) {
-        cell = reusableCells[i];
+        visibleCells.push(cell = reusableCells[i]);
         reusableCells.splice(i, 1);
         break;
       }
     }
     
-    if (!cell) cell = new Pushpop.TableViewCell(reuseIdentifier);
+    if (!cell) visibleCells.push(cell = new Pushpop.TableViewCell(reuseIdentifier));
     
     cell.tableView = this;
     
@@ -231,12 +233,8 @@ Pushpop.TableView.prototype = {
     });
   },
   
-  reloadData: function() {
-    var $element = this.$element;
-    
-    var dataSource = this.getDataSource();
-    
-    var totalCellCount = dataSource.getNumberOfRows();
+  scrollToTop: function() {
+    var totalCellCount = this.getDataSource().getNumberOfRows();
     var visibleCellCount = Math.min(this.getNumberOfVisibleCells(), totalCellCount);
     var hiddenCellCount = totalCellCount - visibleCellCount;
     
@@ -245,16 +243,33 @@ Pushpop.TableView.prototype = {
     // Scroll to the top of the table view without animating.
     scrollView.setContentOffset({ x: 0, y: 0 }, false);
     
-    for (var i = 0; i < visibleCellCount; i++) {
-      var cell = dataSource.getCellForRowAtIndex(this, i);      
-      $element.append(cell.$element);
-    }
-    
     // Set the scroll view margin.
     scrollView.setMargin({
       top: 0,
       bottom: hiddenCellCount * this.getRowHeight()
     });
+  },
+  
+  reloadData: function() {
+    var $element = this.$element;
+    
+    var dataSource = this.getDataSource();
+    
+    var visibleCells = this.getVisibleCells();
+    var i, length, visibleCellsToReuse = [];
+    for (i = 0, length = visibleCells.length; i < length; i++) visibleCellsToReuse.push(visibleCells[i]);
+    for (i = 0, length = visibleCellsToReuse.length; i < length; i++) visibleCellsToReuse[i].prepareForReuse();
+    
+    var totalCellCount = dataSource.getNumberOfRows();
+    var visibleCellCount = Math.min(this.getNumberOfVisibleCells(), totalCellCount);
+    var hiddenCellCount = totalCellCount - visibleCellCount;
+    
+    for (i = 0; i < visibleCellCount; i++) {
+      var cell = dataSource.getCellForRowAtIndex(this, i);      
+      $element.append(cell.$element);
+    }
+    
+    this.scrollToTop();
   },
   
   _searchBar: null,
@@ -267,6 +282,8 @@ Pushpop.TableView.prototype = {
   getDataSource: function() { return this._dataSource; },
   setDataSource: function(dataSource) {
     this._dataSource = dataSource;
+    dataSource.setTableView(this);
+    
     this.reloadData();
   },
   
@@ -294,10 +311,13 @@ Pushpop.TableView.prototype = {
 Pushpop.TableViewDataSource = function(dataSet) {
   if (!dataSet || dataSet.constructor !== Array) return;
   
+  this.setDataSet(dataSet);
+  this.updateFilteredDataSet();
+  
   this.getCellForRowAtIndex = function(tableView, index) {
     var cell = tableView.dequeueReusableCellWithIdentifier('pushpop.tableviewcell.default');
     
-    var data = dataSet[index];
+    var data = this.getFilteredDataSet()[index];
     cell.setIndex(index);
     cell.setId(data.id);
     cell.setValue(data.value);
@@ -307,7 +327,7 @@ Pushpop.TableViewDataSource = function(dataSet) {
   };
   
   this.getNumberOfRows = function() {
-    return dataSet.length;
+    return this.getFilteredDataSet().length;
   };
 };
 
@@ -334,6 +354,45 @@ Pushpop.TableViewDataSource.prototype = {
   */
   getNumberOfRows: function() {
     return 0;
+  },
+  
+  _tableView: null,
+  getTableView: function() { return this._tableView; },
+  setTableView: function(tableView) { this._tableView = tableView; },
+  
+  _dataSet: null,
+  getDataSet: function() { return this._dataSet; },
+  setDataSet: function(dataSet) { this._dataSet = dataSet; },
+  
+  _filterFunction: function(regExp, item) {
+    return regExp.test(item.title);
+  },
+  getFilterFunction: function() { return this._filterFunction; },
+  setFilterFunction: function(filterFunction) { this._filterFunction = filterFunction; },
+  
+  _filteredDataSet: null,
+  getFilteredDataSet: function() { return this._filteredDataSet; },
+  
+  updateFilteredDataSet: function(searchQuery, isCaseSensitive) {
+    var filterFunction = this.getFilterFunction();
+    var dataSet = this.getDataSet();
+    var tableView = this.getTableView();
+    
+    if (!filterFunction || typeof filterFunction !== 'function' || !searchQuery) {
+      if (this._filteredDataSet !== dataSet) {
+        this._filteredDataSet = dataSet;
+        if (tableView) tableView.reloadData();
+      }
+      
+      return;
+    }
+    
+    var filteredDataSet = [];
+    var item, regExp = new RegExp(searchQuery + '+', (!isCaseSensitive ? 'i' : '') + 'm');
+    for (var i = 0, length = dataSet.length; i < length; i++) if (filterFunction(regExp, item = dataSet[i])) filteredDataSet.push(item);
+    
+    this._filteredDataSet = filteredDataSet;
+    if (tableView) tableView.reloadData();
   }
 };
 
@@ -343,20 +402,35 @@ Pushpop.TableViewSearchBar = function(tableView) {
   
   element.tableViewSearchBar = this;
   
+  this.tableView = tableView;
+  
   var $input = this.$input = $('<input type="text" placeholder="Search"/>').appendTo($element);
   var $cancelButton = this.$cancelButton = $('<a class="pp-table-view-search-bar-button" href="#">Cancel</a>').appendTo($element);
   var $overlay = this.$overlay = $('<div class="pp-table-view-search-bar-overlay"/>').appendTo(tableView.scrollView.$element);
   
+  var willFocus = false;
+  
   $input.bind('mousedown touchstart', function(evt) { evt.stopPropagation(); });
   $input.bind('mouseup touchend', function(evt) { $input.trigger('focus'); });
-  $input.bind('focus', function(evt) { tableView.scrollView.setContentOffset({ x: 0, y: 0 }, false); window.setTimeout(function() { $overlay.addClass('pp-active'); }, 0); });
+  $input.bind('focus', function(evt) { tableView.scrollToTop(); window.setTimeout(function() { $overlay.addClass('pp-active'); }, 0); });
   $input.bind('blur', function(evt) { $overlay.removeClass('pp-active'); });
   $cancelButton.bind('mousedown touchstart', function(evt) { evt.stopPropagation(); evt.preventDefault(); });
   $cancelButton.bind('mouseup touchend', function(evt) { $input.trigger('blur'); });
   $overlay.bind('mousedown touchstart', function(evt) { evt.stopPropagation(); evt.preventDefault(); });
   $overlay.bind('mouseup touchend', function(evt) { $input.trigger('blur'); });
   
-  this.tableView = tableView;
+  $input.bind('keyup', function(evt) {
+    var searchQuery = $input.val();
+    
+    if (!searchQuery) {
+      $overlay.addClass('pp-active');
+    } else {
+      $overlay.removeClass('pp-active');
+    }
+    
+    tableView.getDataSource().updateFilteredDataSet(searchQuery);
+  });
+  
   tableView.$element.before($element);
 };
 
@@ -389,7 +463,18 @@ Pushpop.TableViewCell.prototype = {
   prepareForReuse: function() {
     this.$element.remove();
     
-    this.tableView._reusableCells.push(this);
+    var tableView = this.tableView;
+    var reusableCells = tableView.getReusableCells();
+    var visibleCells = tableView.getVisibleCells();
+    
+    reusableCells.push(this);
+    
+    for (var i = 0, length = visibleCells.length; i < length; i++) {
+      if (visibleCells[i] === this) {
+        visibleCells.splice(i, 1);
+        break;
+      }
+    }
     
     this.setSelected(false);
     this.setIndex(-1);
