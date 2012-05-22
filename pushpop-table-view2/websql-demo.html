@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<title>Pushpop TableView WebSQL Demo</title>
+	<link rel="stylesheet" type="text/css" href="../externals/scrollkit/scrollkit.css">
+	<link rel="stylesheet" type="text/css" href="../pushpop.css">
+	<link rel="stylesheet" type="text/css" href="pushpop-table-view.css">
+	<script type="text/javascript" src="../jquery-1.7.1.js"></script>
+	<script type="text/javascript" src="../externals/scrollkit/scrollkit.js"></script>
+	<script type="text/javascript" src="../pushpop.js"></script>
+	<script type="text/javascript" src="pushpop-table-view.js"></script>
+	<script type="text/javascript">
+	  var tableView, dataSource;
+	  
+	  $(function() {
+      var $websqlTableView = $('#websql-table-view');
+      tableView = $websqlTableView[0].tableView;
+      
+      if (!window['openDatabase']) return alert('WebSQL is not supported on this platform');
+      
+      var db = window.openDatabase('PushpopTableViewWebSQLDemo', '1.0', null, 52428800, function(db) {
+        db.transaction(function(transaction) {
+          transaction.executeSql('CREATE TABLE IF NOT EXISTS rows (id INTEGER PRIMARY KEY, value INTEGER, title TEXT)');
+          for (var i = 0; i < 200000; i++) transaction.executeSql('INSERT INTO rows (id, value, title) VALUES (?, ?, ?)', [i + 1, i, 'Row ' + i]);
+          createTableViewDataSource();
+        });
+      });
+      
+      var createTableViewDataSource = function() {
+        db.transaction(function(transaction) {
+          transaction.executeSql('SELECT COUNT(*) AS numberOfRows FROM rows', null, function(transaction, result) {
+            var numberOfRows = result.rows.item(0).numberOfRows;
+            alert(numberOfRows + ' row(s) available in WebSQL database');
+            
+            dataSource = new Pushpop.TableViewDataSource();
+            dataSource.getNumberOfRows = function() { return numberOfRows; };
+            dataSource.getCellForRowAtIndex = function(tableView, index) {
+              var cell = tableView.dequeueReusableCellWithIdentifier('pushpop.tableviewcell.default');
+              
+              db.transaction(function(transaction) {
+                transaction.executeSql('SELECT * FROM rows ORDER BY id LIMIT ?, 1', [index], function(transaction, result) {
+                  var data = result.rows.item(0);
+                  
+                  cell.setId(data.id);
+                  cell.setValue(data.value);
+                  cell.setTitle(data.title);
+                });
+              });
+              
+              cell.setIndex(index);
+              
+              return cell;
+            };
+            
+            tableView.setDataSource(dataSource);
+          });
+        });
+      };
+      
+      if (db.version) createTableViewDataSource();
+    });
+	</script>
+</head>
+<body>
+  <div class="pp-view-stack">  
+    <div class="pp-view sk-scroll-view" id="detail-view-root" data-always-bounce-vertical="true">
+      <ul id="websql-table-view" class="pp-table-view" data-contains-search-bar="true"></ul>
+    </div>
+  </div>
+</body>
+</html>

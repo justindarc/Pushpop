@@ -2,7 +2,7 @@
 
 var Pushpop = window['Pushpop'] || {};
 
-Pushpop.TableView = function(element) {
+Pushpop.TableView = function TableView(element) {
   var $window = $(window['addEventListener'] ? window : document.body);
   
   var $element = this.$element = $(element);
@@ -148,6 +148,8 @@ Pushpop.TableView = function(element) {
 };
 
 Pushpop.TableView.prototype = {
+  constructor: Pushpop.TableView,
+  
   element: null,
   $element: null,
   
@@ -308,12 +310,16 @@ Pushpop.TableView.prototype = {
   @param {Array} [dataSet.title] The title to be displayed in a TableViewCell for a specific record.
   @constructor
 */
-Pushpop.TableViewDataSource = function(dataSet) {
+Pushpop.TableViewDataSource = function TableViewDataSource(dataSet) {
   if (!dataSet || dataSet.constructor !== Array) return;
   
   this.setDataSet(dataSet);
-  this.updateFilteredDataSet();
+  this.shouldReloadTableForSearchString();
   
+  // Default implementation if using an in-memory data set.
+  this.getNumberOfRows = function() { return this.getFilteredDataSet().length; };
+  
+  // Default implementation if using an in-memory data set.
   this.getCellForRowAtIndex = function(tableView, index) {
     var cell = tableView.dequeueReusableCellWithIdentifier('pushpop.tableviewcell.default');
     
@@ -325,10 +331,6 @@ Pushpop.TableViewDataSource = function(dataSet) {
     
     return cell;
   };
-  
-  this.getNumberOfRows = function() {
-    return this.getFilteredDataSet().length;
-  };
 };
 
 /**
@@ -337,6 +339,13 @@ Pushpop.TableViewDataSource = function(dataSet) {
   per this prototype.
 */
 Pushpop.TableViewDataSource.prototype = {
+  constructor: Pushpop.TableViewDataSource,
+  
+  /**
+    REQUIRED: Returns the number of rows provided by this data source.
+    @type Number
+  */
+  getNumberOfRows: function() { return 0; },
   
   /**
     REQUIRED: Returns a TableViewCell for the specified index.
@@ -344,17 +353,7 @@ Pushpop.TableViewDataSource.prototype = {
     @param {Number} index The index of the data to be used when populating the TableViewCell.
     @type Pushpop.TableViewCell
   */
-  getCellForRowAtIndex: function(tableView, index) {
-    return null;
-  },
-  
-  /**
-    REQUIRED: Returns the number of rows provided by this data source.
-    @type Number
-  */
-  getNumberOfRows: function() {
-    return 0;
-  },
+  getCellForRowAtIndex: function(tableView, index) { return null; },
   
   _tableView: null,
   getTableView: function() { return this._tableView; },
@@ -364,39 +363,82 @@ Pushpop.TableViewDataSource.prototype = {
   getDataSet: function() { return this._dataSet; },
   setDataSet: function(dataSet) { this._dataSet = dataSet; },
   
-  _filterFunction: function(regExp, item) {
-    return regExp.test(item.title);
-  },
-  getFilterFunction: function() { return this._filterFunction; },
-  setFilterFunction: function(filterFunction) { this._filterFunction = filterFunction; },
-  
   _filteredDataSet: null,
   getFilteredDataSet: function() { return this._filteredDataSet; },
   
-  updateFilteredDataSet: function(searchQuery, isCaseSensitive) {
+  // Default filter function that searches an item's title.
+  _filterFunction: function(regExp, item) { return regExp.test(item.title); },
+  
+  /**
+    Returns the current filter function for searching this TableView.
+    @type Function
+  */
+  getFilterFunction: function() { return this._filterFunction; },
+  
+  /**
+    Sets a filter function to be used when searching this TableView.
+    @param {Function} filterFunction The filter function to be used when searching this TableView.
+    @description The filter function gets called for each item in the data set during a search. A
+    valid filter function must take two parameters (regExp, item) and return a Boolean value. The
+    |regExp| parameter contains a RegExp object based on the search string to be used to match items
+    in the data set. The |item| parameter contains an item from the data set that the search string
+    in the RegExp should be tested against. The provided filter function should return a Boolean
+    value: |true| if the item should match the search string or |false| if it should be filtered out.
+  */
+  setFilterFunction: function(filterFunction) { this._filterFunction = filterFunction; },
+  
+  _lastSearchString: null,
+  
+  /**
+    Executes the current filter function against each item in the data set to determine if the table
+    view should be reloaded to display a new filtered data set.
+    @param {String} searchString The search string to be used for matching items in the data set.
+    @param {Boolean} [isCaseSensitive] An optional boolean flag for forcing a case-sensitive RegExp
+    to be used when executing the filter function.
+    @type Boolean
+  */
+  shouldReloadTableForSearchString: function(searchString, isCaseSensitive) {
     var filterFunction = this.getFilterFunction();
     var dataSet = this.getDataSet();
     var tableView = this.getTableView();
     
-    if (!filterFunction || typeof filterFunction !== 'function' || !searchQuery) {
+    if (!filterFunction || typeof filterFunction !== 'function' || !searchString) {
+      this._lastSearchString = null;
+      
       if (this._filteredDataSet !== dataSet) {
         this._filteredDataSet = dataSet;
-        if (tableView) tableView.reloadData();
+        return true;
       }
       
-      return;
+      return false;
     }
     
     var filteredDataSet = [];
-    var item, regExp = new RegExp(searchQuery + '+', (!isCaseSensitive ? 'i' : '') + 'm');
-    for (var i = 0, length = dataSet.length; i < length; i++) if (filterFunction(regExp, item = dataSet[i])) filteredDataSet.push(item);
+    var regExp = new RegExp(searchString + '+', (!isCaseSensitive ? 'i' : '') + 'm');
+    var item, i, length;
+    
+    // The search string is a continuation of the last search string (e.g.: 'ab' -> 'abc').
+    if (searchString.indexOf(this._lastSearchString) === 0) {
+      
+      // Search the previous filtered data set instead of the whole data set.
+      var lastFilteredDataSet = this._filteredDataSet;
+      for (i = 0, length = lastFilteredDataSet.length; i < length; i++) if (filterFunction(regExp, item = lastFilteredDataSet[i])) filteredDataSet.push(item);
+    }
+    
+    // The search string is NOT a contination of the last search string (e.g.: 'abc' -> 'ab').
+    else {
+      
+      // Search the whole data set.
+      for (i = 0, length = dataSet.length; i < length; i++) if (filterFunction(regExp, item = dataSet[i])) filteredDataSet.push(item);
+    }
     
     this._filteredDataSet = filteredDataSet;
-    if (tableView) tableView.reloadData();
+    this._lastSearchString = searchString;
+    return true;
   }
 };
 
-Pushpop.TableViewSearchBar = function(tableView) {
+Pushpop.TableViewSearchBar = function TableViewSearchBar(tableView) {
   var $element = this.$element = $('<div class="pp-table-view-search-bar"/>');
   var element = this.element = $element[0];
   
@@ -415,26 +457,28 @@ Pushpop.TableViewSearchBar = function(tableView) {
   $input.bind('focus', function(evt) { tableView.scrollToTop(); window.setTimeout(function() { $overlay.addClass('pp-active'); }, 0); });
   $input.bind('blur', function(evt) { $overlay.removeClass('pp-active'); });
   $cancelButton.bind('mousedown touchstart', function(evt) { evt.stopPropagation(); evt.preventDefault(); });
-  $cancelButton.bind('mouseup touchend', function(evt) { $input.trigger('blur'); });
+  $cancelButton.bind('mouseup touchend', function(evt) { $input.val(null).trigger('keyup').trigger('blur'); });
   $overlay.bind('mousedown touchstart', function(evt) { evt.stopPropagation(); evt.preventDefault(); });
   $overlay.bind('mouseup touchend', function(evt) { $input.trigger('blur'); });
   
   $input.bind('keyup', function(evt) {
-    var searchQuery = $input.val();
+    var searchString = $input.val();
     
-    if (!searchQuery) {
+    if (!searchString) {
       $overlay.addClass('pp-active');
     } else {
       $overlay.removeClass('pp-active');
     }
     
-    tableView.getDataSource().updateFilteredDataSet(searchQuery);
+    if (tableView.getDataSource().shouldReloadTableForSearchString(searchString)) tableView.reloadData();
   });
   
   tableView.$element.before($element);
 };
 
 Pushpop.TableViewSearchBar.prototype = {
+  constructor: Pushpop.TableViewSearchBar,
+  
   element: null,
   $element: null,
   $input: null,
@@ -444,7 +488,7 @@ Pushpop.TableViewSearchBar.prototype = {
   tableView: null
 };
 
-Pushpop.TableViewCell = function(reuseIdentifier) {
+Pushpop.TableViewCell = function TableViewCell(reuseIdentifier) {
   var $element = this.$element = $('<li/>');
   var element = this.element = $element[0];
   
@@ -454,12 +498,19 @@ Pushpop.TableViewCell = function(reuseIdentifier) {
 };
 
 Pushpop.TableViewCell.prototype = {
+  constructor: Pushpop.TableViewCell,
+  
   element: null,
   $element: null,
   
   tableView: null,
   reuseIdentifier: 'pushpop.tableviewcell.default',
   
+  /**
+    Removes this TableViewCell from the TableView's visible cells, resets its
+    data and prepares it to be reused by the TableView by placing it in the
+    reusable cells queue.
+  */
   prepareForReuse: function() {
     this.$element.remove();
     
