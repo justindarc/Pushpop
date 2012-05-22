@@ -335,8 +335,9 @@ Pushpop.TableViewDataSource = function TableViewDataSource(dataSet) {
 
 /**
   @description NOTE: In order to have a TableView with custom TableViewCells, a custom
-  TableViewDataSource must be implemented with at least the two required methods as
-  per this prototype.
+  TableViewDataSource must be implemented with at least the two required methods defined
+  in this prototype. A third optional method may also be implemented as defined in this
+  prototype.
 */
 Pushpop.TableViewDataSource.prototype = {
   constructor: Pushpop.TableViewDataSource,
@@ -355,51 +356,19 @@ Pushpop.TableViewDataSource.prototype = {
   */
   getCellForRowAtIndex: function(tableView, index) { return null; },
   
-  _tableView: null,
-  getTableView: function() { return this._tableView; },
-  setTableView: function(tableView) { this._tableView = tableView; },
-  
-  _dataSet: null,
-  getDataSet: function() { return this._dataSet; },
-  setDataSet: function(dataSet) { this._dataSet = dataSet; },
-  
-  _filteredDataSet: null,
-  getFilteredDataSet: function() { return this._filteredDataSet; },
-  
-  // Default filter function that searches an item's title.
-  _filterFunction: function(regExp, item) { return regExp.test(item.title); },
-  
   /**
-    Returns the current filter function for searching this TableView.
-    @type Function
-  */
-  getFilterFunction: function() { return this._filterFunction; },
-  
-  /**
-    Sets a filter function to be used when searching this TableView.
-    @param {Function} filterFunction The filter function to be used when searching this TableView.
-    @description The filter function gets called for each item in the data set during a search. A
-    valid filter function must take two parameters (regExp, item) and return a Boolean value. The
-    |regExp| parameter contains a RegExp object based on the search string to be used to match items
-    in the data set. The |item| parameter contains an item from the data set that the search string
-    in the RegExp should be tested against. The provided filter function should return a Boolean
-    value: |true| if the item should match the search string or |false| if it should be filtered out.
-  */
-  setFilterFunction: function(filterFunction) { this._filterFunction = filterFunction; },
-  
-  _lastSearchString: null,
-  
-  /**
-    Executes the current filter function against each item in the data set to determine if the table
-    view should be reloaded to display a new filtered data set.
+    OPTIONAL: Executes the current filter function against each item in the data set to determine
+    if the table view should be reloaded to display a new filtered data set.
     @param {String} searchString The search string to be used for matching items in the data set.
     @param {Boolean} [isCaseSensitive] An optional boolean flag for forcing a case-sensitive RegExp
     to be used when executing the filter function.
     @type Boolean
   */
   shouldReloadTableForSearchString: function(searchString, isCaseSensitive) {
-    var filterFunction = this.getFilterFunction();
     var dataSet = this.getDataSet();
+    if (!dataSet) return false;
+    
+    var filterFunction = this.getFilterFunction();
     var tableView = this.getTableView();
     
     if (!filterFunction || typeof filterFunction !== 'function' || !searchString) {
@@ -435,7 +404,41 @@ Pushpop.TableViewDataSource.prototype = {
     this._filteredDataSet = filteredDataSet;
     this._lastSearchString = searchString;
     return true;
-  }
+  },
+  
+  _lastSearchString: null,
+  
+  _tableView: null,
+  getTableView: function() { return this._tableView; },
+  setTableView: function(tableView) { this._tableView = tableView; },
+  
+  _dataSet: null,
+  getDataSet: function() { return this._dataSet; },
+  setDataSet: function(dataSet) { this._dataSet = dataSet; },
+  
+  _filteredDataSet: null,
+  getFilteredDataSet: function() { return this._filteredDataSet; },
+  
+  // Default filter function that searches an item's title.
+  _filterFunction: function(regExp, item) { return regExp.test(item.title); },
+  
+  /**
+    Returns the current filter function for searching this TableView.
+    @type Function
+  */
+  getFilterFunction: function() { return this._filterFunction; },
+  
+  /**
+    Sets a filter function to be used when searching this TableView.
+    @param {Function} filterFunction The filter function to be used when searching this TableView.
+    @description The filter function gets called for each item in the data set during a search. A
+    valid filter function must take two parameters (regExp, item) and return a Boolean value. The
+    |regExp| parameter contains a RegExp object based on the search string to be used to match items
+    in the data set. The |item| parameter contains an item from the data set that the search string
+    in the RegExp should be tested against. The provided filter function should return a Boolean
+    value: |true| if the item should match the search string or |false| if it should be filtered out.
+  */
+  setFilterFunction: function(filterFunction) { this._filterFunction = filterFunction; }
 };
 
 Pushpop.TableViewSearchBar = function TableViewSearchBar(tableView) {
@@ -485,7 +488,9 @@ Pushpop.TableViewSearchBar.prototype = {
   $cancelButton: null,
   $overlay: null,
   
-  tableView: null
+  tableView: null,
+  
+  getSearchString: function() { return this.$input.val(); }
 };
 
 Pushpop.TableViewCell = function TableViewCell(reuseIdentifier) {

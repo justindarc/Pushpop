@@ -19,29 +19,38 @@
       var $websqlTableView = $('#websql-table-view');
       tableView = $websqlTableView[0].tableView;
       
-      if (!window['openDatabase']) return alert('WebSQL is not supported on this platform');
+      if (!window['openDatabase']) return window.alert('WebSQL is not supported on this platform');
       
-      var db = window.openDatabase('PushpopTableViewWebSQLDemo', '1.0', null, 52428800, function(db) {
+      var db = window.openDatabase('PushpopTableViewWebSQLDemo', '1.0', null, 52428800, function(db) {        
         db.transaction(function(transaction) {
           transaction.executeSql('CREATE TABLE IF NOT EXISTS rows (id INTEGER PRIMARY KEY, value INTEGER, title TEXT)');
-          for (var i = 0; i < 200000; i++) transaction.executeSql('INSERT INTO rows (id, value, title) VALUES (?, ?, ?)', [i + 1, i, 'Row ' + i]);
-          createTableViewDataSource();
+          createTableViewDataSource(true);
         });
       });
       
-      var createTableViewDataSource = function() {
+      var createTableViewDataSource = function(showPrompt) {        
         db.transaction(function(transaction) {
+          if (showPrompt) {
+            var numberOfRows = 0;
+            while (numberOfRows <= 0) numberOfRows = window.parseInt(window.prompt('Enter the number of rows to insert in the WebSQL database:', '100000'), 10);
+            window.alert('Depending on the number of rows being created, this may take a while; Press "OK" to begin');
+            for (var i = 0; i < numberOfRows; i++) transaction.executeSql('INSERT INTO rows (id, value, title) VALUES (?, ?, ?)', [i + 1, i, 'Row ' + i]);
+          }
+          
           transaction.executeSql('SELECT COUNT(*) AS numberOfRows FROM rows', null, function(transaction, result) {
             var numberOfRows = result.rows.item(0).numberOfRows;
-            alert(numberOfRows + ' row(s) available in WebSQL database');
+            window.alert(numberOfRows + ' row(s) available in WebSQL database');
             
             dataSource = new Pushpop.TableViewDataSource();
             dataSource.getNumberOfRows = function() { return numberOfRows; };
             dataSource.getCellForRowAtIndex = function(tableView, index) {
               var cell = tableView.dequeueReusableCellWithIdentifier('pushpop.tableviewcell.default');
+              var searchBar = tableView.getSearchBar();
+              var searchString = (searchBar) ? '%' + searchBar.getSearchString() + '%' : '%%';
               
               db.transaction(function(transaction) {
-                transaction.executeSql('SELECT * FROM rows ORDER BY id LIMIT ?, 1', [index], function(transaction, result) {
+                transaction.executeSql('SELECT id, value, title FROM rows WHERE title LIKE ? ORDER BY id LIMIT ?, 1', [searchString, index], function(transaction, result) {
+                  if (result.rows.length === 0) return;
                   var data = result.rows.item(0);
                   
                   cell.setId(data.id);
@@ -53,6 +62,16 @@
               cell.setIndex(index);
               
               return cell;
+            };
+            dataSource.shouldReloadTableForSearchString = function(searchString, isCaseSensitive) {
+              db.transaction(function(transaction) {
+                transaction.executeSql('SELECT COUNT(*) AS numberOfRows FROM rows WHERE title LIKE ?', ['%' + searchString + '%'], function(transaction, result) {
+                  numberOfRows = result.rows.item(0).numberOfRows;
+                  tableView.reloadData();
+                });
+              });
+              
+              return false;
             };
             
             tableView.setDataSource(dataSource);
