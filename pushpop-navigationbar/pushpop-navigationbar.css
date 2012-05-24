@@ -31,7 +31,16 @@
   top: 44px;
 }
 
-.pp-navigationbar >.pp-navigationbar-title {
+.pp-navigationbar > .pp-navigationbar-tap-to-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  z-index: 2;
+}
+
+.pp-navigationbar > .pp-navigationbar-title {
   display: inline-block;
   position: absolute;
   width: auto;
@@ -51,6 +60,7 @@
   text-rendering: optimizelegibility;
   text-shadow: 0 -1px 1px #000;
   white-space: nowrap;
+  z-index: 1;
 }
 
 .pp-navigationbar > .pp-barbutton {

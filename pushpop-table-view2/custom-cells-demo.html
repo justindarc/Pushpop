@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<title>Pushpop TableView Custom Cells Demo</title>
+	<link rel="stylesheet" type="text/css" href="../externals/scrollkit/scrollkit.css">
+	<link rel="stylesheet" type="text/css" href="../pushpop.css">
+	<link rel="stylesheet" type="text/css" href="pushpop-table-view.css">
+	<script type="text/javascript" src="../jquery-1.7.1.js"></script>
+	<script type="text/javascript" src="../externals/scrollkit/scrollkit.js"></script>
+	<script type="text/javascript" src="../pushpop.js"></script>
+	<script type="text/javascript" src="pushpop-table-view.js"></script>
+	<script type="text/javascript">
+	  
+	  // Constructor for the MyCustomCell "sub-class" of Pushpop.TableViewCell.
+    var MyCustomCell = function MyCustomCell(reuseIdentifier) {
+      
+      // Call the "super" constructor.
+      Pushpop.TableViewCell.prototype.constructor.apply(this, arguments);
+      
+      // Custom initialization here...
+      var $element = this.$element;
+      
+      $element.addClass('some-class-for-my-custom-cell');
+      
+      $element.bind('mousedown touchstart', function(evt) {
+        alert('This is a custom behavior on a custom cell!');
+      });
+    };
+    
+    // Inherit from Pushpop.TableViewCell.
+    MyCustomCell.prototype = new Pushpop.TableViewCell('my-custom-cell');
+    
+    // Override the constructor for new instances of MyCustomCell.
+    MyCustomCell.prototype.constructor = MyCustomCell;
+    
+    Pushpop.TableView.registerReusableCellPrototype(MyCustomCell.prototype);
+	</script>
+	<style type="text/css">
+	  .some-class-for-my-custom-cell {
+	    background-color: #0f0 !important;
+	  }
+	</style>
+</head>
+<body>
+  <div class="pp-view-stack">  
+    <div class="pp-view sk-scroll-view" id="detail-view-root" data-always-bounce-vertical="true">
+      <ul id="custom-cells-table-view" class="pp-table-view" data-contains-search-bar="true">
+        <li data-reuse-identifier="my-custom-cell">Static Row 0</li>
+        <li>Static Row 1</li>
+        <li>Static Row 2</li>
+        <li>Static Row 3</li>
+        <li>Static Row 4</li>
+        <li>Static Row 5</li>
+        <li>Static Row 6</li>
+        <li>Static Row 7</li>
+        <li>Static Row 8</li>
+        <li>Static Row 9</li>
+        <li>Static Row 10</li>
+        <li>Static Row 11</li>
+        <li>Static Row 12</li>
+        <li>Static Row 13</li>
+        <li>Static Row 14</li>
+        <li>Static Row 15</li>
+        <li>Static Row 16</li>
+        <li>Static Row 17</li>
+        <li>Static Row 18</li>
+        <li>Static Row 19</li>
+        <li>Static Row 20</li>
+        <li>Static Row 21</li>
+        <li>Static Row 22</li>
+        <li>Static Row 23</li>
+        <li>Static Row 24</li>
+        <li>Static Row 25</li>
+        <li>Static Row 26</li>
+        <li>Static Row 27</li>
+        <li>Static Row 28</li>
+        <li>Static Row 29</li>
+        <li>Static Row 30</li>
+        <li>Static Row 31</li>
+        <li>Static Row 32</li>
+        <li>Static Row 33</li>
+        <li>Static Row 34</li>
+        <li>Static Row 35</li>
+        <li>Static Row 36</li>
+        <li>Static Row 37</li>
+        <li>Static Row 38</li>
+        <li>Static Row 39</li>
+        <li>Static Row 40</li>
+        <li>Static Row 41</li>
+        <li>Static Row 42</li>
+        <li>Static Row 43</li>
+        <li>Static Row 44</li>
+        <li>Static Row 45</li>
+        <li>Static Row 46</li>
+        <li>Static Row 47</li>
+        <li>Static Row 48</li>
+        <li>Static Row 49</li>
+        <li>Static Row 50</li>
+        <li>Static Row 51</li>
+        <li>Static Row 52</li>
+        <li>Static Row 53</li>
+        <li>Static Row 54</li>
+        <li>Static Row 55</li>
+        <li>Static Row 56</li>
+        <li>Static Row 57</li>
+        <li>Static Row 58</li>
+        <li>Static Row 59</li>
+        <li>Static Row 60</li>
+        <li>Static Row 61</li>
+        <li>Static Row 62</li>
+        <li>Static Row 63</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
