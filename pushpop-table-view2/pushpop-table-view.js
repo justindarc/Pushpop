@@ -39,6 +39,7 @@ Pushpop.TableView = function TableView(element) {
   var numberOfBufferedCells = this._numberOfBufferedCells;
   var selectionTimeoutDuration = this._selectionTimeoutDuration;
   var lastOffset = -scrollView.y;
+  var topMargin = window.parseInt($element.css('margin-top'), 10);
   
   // Render table view cells "virtually" when the view is scrolled.
   scrollView.$element.bind(SKScrollEventType.ScrollChange, function(evt) {
@@ -57,8 +58,7 @@ Pushpop.TableView = function TableView(element) {
     
     var firstCell = firstCellElement.tableViewCell;
     var firstCellIndex = firstCell.getIndex();
-    var lastCell = lastCellElement.tableViewCell;
-    var lastCellIndex = lastCell.getIndex();
+    var lastCellIndex = firstCellIndex + visibleCellCount - 1;
     
     // Manually calculate offset instead of calling .offset().
     var margin = scrollView.getMargin();
@@ -109,6 +109,12 @@ Pushpop.TableView = function TableView(element) {
     }
   });
   
+  // Handle case when table view is scrolled to the top (e.g.: tapping top of navigation bar).
+  scrollView.$element.bind(SKScrollEventType.WillScrollToTop, function(evt) {    
+    var firstCellElement = $element.children('li:first-child')[0];
+    if (firstCellElement) firstCellElement.tableViewCell.setIndex(0);
+  }).bind(SKScrollEventType.DidScrollToTop, function(evt) { self.reloadData(); });
+  
   // Handle mouse/touch events to allow the user to make row selections.
   var isPendingSelection = false, selectionTimeout = null;
 
@@ -146,10 +152,50 @@ Pushpop.TableView = function TableView(element) {
   });
   
   var dataSetUrl = $element.attr('data-set-url');
-  if (dataSetUrl) $.getJSON(dataSetUrl, function(dataSet) {
-    var dataSource = new Pushpop.TableViewDataSource(dataSet);
-    self.setDataSource(dataSource);
-  });
+  
+  // Create a new data source from a data set URL.
+  if (dataSetUrl) {
+    $.getJSON(dataSetUrl, function(dataSet) {
+      $element.html(null);
+      self.setDataSource(new Pushpop.TableViewDataSource(dataSet));
+    });
+  }
+  
+  // Create a new data source from existing <li/> elements.
+  else {
+    var dataSet = [];
+    $element.children('li').each(function(index, element) {
+      var $child = $(element);
+      dataSet.push({
+        id: $child.attr('data-id') || index + 1,
+        value: $child.attr('data-value') || index,
+        title: $child.html(),
+        reuseIdentifier: ($child.attr('data-reuse-identifier') || 'pp-table-view-cell-style-default').replace(' ', '-')
+      });
+    });
+    
+    $element.html(null);
+    this.setDataSource(new Pushpop.TableViewDataSource(dataSet));
+  }
+};
+
+Pushpop.TableView._reusableCellPrototypes = {};
+
+Pushpop.TableView.getReusableCellPrototypes = function() {
+  var reusableCellPrototypes = Pushpop.TableView._reusableCellPrototypes, items = [];
+  for (var reusableCellPrototype in reusableCellPrototypes) items.push(reusableCellPrototypes[reusableCellPrototype]);
+  return items;
+};
+
+Pushpop.TableView.getReusableCellPrototypeWithIdentifier = function(reuseIdentifier) { return Pushpop.TableView._reusableCellPrototypes[reuseIdentifier]; };
+
+Pushpop.TableView.registerReusableCellPrototype = function(cellPrototype) {
+  if (!cellPrototype) return;
+  
+  var reuseIdentifier = cellPrototype.getReuseIdentifier();
+  if (!reuseIdentifier) return;
+  
+  Pushpop.TableView._reusableCellPrototypes[reuseIdentifier] = cellPrototype;
 };
 
 Pushpop.TableView.prototype = {
@@ -192,9 +238,16 @@ Pushpop.TableView.prototype = {
     var reusableCells = this.getReusableCells();
     reusableCells = reusableCells[reuseIdentifier] || (reusableCells[reuseIdentifier] = []);
     
-    var cell = null;
+    var cell = null, cellPrototype = null;
     
-    visibleCells.push((reusableCells.length > 0) ? (cell = reusableCells.pop()) : (cell = new Pushpop.TableViewCell(reuseIdentifier)));
+    if (reusableCells.length > 0) {
+      cell = reusableCells.pop();
+    } else {
+      cellPrototype = Pushpop.TableView.getReusableCellPrototypeWithIdentifier(reuseIdentifier);
+      cell = (cellPrototype) ? new cellPrototype.constructor(reuseIdentifier) : new Pushpop.TableViewCell(reuseIdentifier);
+    }
+    
+    visibleCells.push(cell);
     cell.tableView = this;
     
     return cell;
@@ -313,7 +366,7 @@ Pushpop.TableView.prototype = {
   /**
     Resets the scroll position back to the top of the TableView.
   */
-  scrollToTop: function() {
+  resetScrollView: function() {
     var numberOfRows = this._numberOfRows;
     var visibleCellCount = Math.min(this.getCalculatedNumberOfVisibleCells(), numberOfRows);
     var hiddenCellCount = numberOfRows - visibleCellCount;
@@ -337,11 +390,11 @@ Pushpop.TableView.prototype = {
     if there is a change in the search string.
   */
   reloadData: function() {
-    var $element = this.$element;
+    var $element = this.$element;    
     
     var dataSource = this.getDataSource();
-    
     var visibleCells = this.getVisibleCells();
+    
     var i, length, visibleCellsToReuse = [];
     for (i = 0, length = visibleCells.length; i < length; i++) visibleCellsToReuse.push(visibleCells[i]);
     for (i = 0, length = visibleCellsToReuse.length; i < length; i++) visibleCellsToReuse[i].prepareForReuse();
@@ -355,7 +408,7 @@ Pushpop.TableView.prototype = {
       $element.append(cell.$element);
     }
     
-    this.scrollToTop();
+    this.resetScrollView();
   },
   
   _searchBar: null,
@@ -446,8 +499,9 @@ Pushpop.TableViewDataSource = function TableViewDataSource(dataSet) {
   
   // Default implementation if using an in-memory data set.
   this.getCellForRowAtIndex = function(tableView, index) {
-    var cell = tableView.dequeueReusableCellWithIdentifier('pushpop.tableviewcell.default');
     var data = this.getFilteredDataSet()[index];
+    var reuseIdentifier = data.reuseIdentifier || 'pp-table-view-cell-style-default';
+    var cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier);
     
     cell.setIndex(index);
     cell.setId(data.id);
@@ -628,7 +682,7 @@ Pushpop.TableViewSearchBar = function TableViewSearchBar(tableView) {
   
   $input.bind('mousedown touchstart', function(evt) { evt.stopPropagation(); });
   $input.bind('mouseup touchend', function(evt) { $input.trigger('focus'); });
-  $input.bind('focus', function(evt) { self._tableView.scrollToTop(); window.setTimeout(function() { $overlay.addClass('pp-active'); }, 0); });
+  $input.bind('focus', function(evt) { self._tableView.resetScrollView(); window.setTimeout(function() { $overlay.addClass('pp-active'); }, 0); });
   $input.bind('blur', function(evt) { $overlay.removeClass('pp-active'); });
   $cancelButton.bind('mousedown touchstart', function(evt) { evt.stopPropagation(); evt.preventDefault(); });
   $cancelButton.bind('mouseup touchend', function(evt) { $input.val(null).trigger('keyup').trigger('blur'); });
@@ -694,12 +748,11 @@ Pushpop.TableViewSearchBar.prototype = {
   @constructor
 */
 Pushpop.TableViewCell = function TableViewCell(reuseIdentifier) {
-  var $element = this.$element = $('<li/>');
+  var reuseIdentifier =  this._reuseIdentifier = reuseIdentifier || this._reuseIdentifier;
+  var $element = this.$element = $('<li data-reuse-identifier="' + reuseIdentifier + '"/>');
   var element = this.element = $element[0];
   
   element.tableViewCell = this;
-  
-  if (reuseIdentifier) this.reuseIdentifier = reuseIdentifier;
 };
 
 Pushpop.TableViewCell.prototype = {
@@ -709,7 +762,6 @@ Pushpop.TableViewCell.prototype = {
   $element: null,
   
   tableView: null,
-  reuseIdentifier: 'pushpop.tableviewcell.default',
   
   /**
     Removes this TableViewCell from the TableView's visible cells, resets its
@@ -717,10 +769,13 @@ Pushpop.TableViewCell.prototype = {
     reusable cells queue.
   */
   prepareForReuse: function() {
-    this.$element.remove();
+    
+    // Detach the TableViewCell from the DOM.
+    // NOTE: Using .detach() will preserve any attached event handlers.
+    this.$element.detach();
     
     var tableView = this.tableView;
-    var reuseIdentifier = this.reuseIdentifier;
+    var reuseIdentifier = this.getReuseIdentifier();
     var visibleCells = tableView.getVisibleCells();
     var reusableCells = tableView.getReusableCells();
     reusableCells = reusableCells[reuseIdentifier] || (reusableCells[reuseIdentifier] = []);
@@ -740,6 +795,14 @@ Pushpop.TableViewCell.prototype = {
     this.setValue(null);
     this.setHtml('');
   },
+  
+  _reuseIdentifier: 'pp-table-view-cell-style-default',
+  
+  /**
+    Returns a string containing this cell's reuse identifier.
+    @type String
+  */
+  getReuseIdentifier: function() { return this._reuseIdentifier; },
   
   _isSelected: false,
   
@@ -817,6 +880,8 @@ Pushpop.TableViewCell.prototype = {
   */
   setHtml: function(html) { this.$element.html(this._html = html); }
 };
+
+Pushpop.TableView.registerReusableCellPrototype(Pushpop.TableViewCell.prototype);
 
 $(function() {
   $('.pp-table-view').each(function(index, element) { new Pushpop.TableView(element); });

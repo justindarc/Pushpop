@@ -16,6 +16,18 @@ Pushpop.NavigationBar = function(element) {
   var viewStack = $element.parents('.pp-view-stack')[0];  
   if (viewStack) viewStack = this.viewStack = viewStack.viewStack;
   
+  var tapToTop = $element.attr('data-tap-to-top') || 'false';
+  tapToTop = this.tapToTop = this.tapToTop || (tapToTop !== 'false');
+  
+  var $tapToTopElement = this.$tapToTopElement = $('<div class="pp-navigationbar-tap-to-top"/>').appendTo($element);
+  $tapToTopElement.bind('click', function(evt) {
+    if (!self.tapToTop) return;
+    
+    var activeView = viewStack.getActiveView();
+    var scrollView = activeView.element.scrollView;
+    if (scrollView && !scrollView.isScrolling) scrollView.scrollToTop(true);
+  });
+  
   var $backButtonElement = this.$backButtonElement = $('<a class="pp-barbutton pp-barbutton-align-left pp-barbutton-style-back" href="#">Back</a>').appendTo($element);
   
   var activeView = viewStack.getActiveView();
@@ -35,10 +47,12 @@ Pushpop.NavigationBar = function(element) {
 Pushpop.NavigationBar.prototype = {
   element: null,
   $element: null,
+  $tapToTopElement: null,
   $backButtonElement: null,
   $viewSpecificNavButtons: null,
   $titleElement: null,
   viewStack: null,
+  tapToTop: false,
   setTitle: function(value) {
     var $titleElement = this.$titleElement;
     if (!$titleElement) $titleElement = this.$titleElement = $('<h1 class="pp-navigationbar-title"/>').appendTo(this.$element);
