@@ -23,8 +23,13 @@
       // Custom initialization here...
       var $element = this.$element;
       
+      // Assign a custom CSS class to this cell to add specific styles to it.
       $element.addClass('some-class-for-my-custom-cell');
       
+      // Attach an event handler to this cell to add custom behaviors to it.
+      // NOTE: It is recommended to attach event handlers here in the constructor
+      // instead of in the .draw() method and when listening for events on child
+      // elements of this cell, use event delegation.
       $element.bind('mousedown touchstart', function(evt) {
         alert('This is a custom behavior on a custom cell!');
       });
@@ -36,6 +41,13 @@
     // Override the constructor for new instances of MyCustomCell.
     MyCustomCell.prototype.constructor = MyCustomCell;
     
+    // Override the .draw() method.
+    MyCustomCell.prototype.draw = function() {
+      var data = this.getData();
+      this.$element.html('**CUSTOM CELL** ' + ((data) ? data.title : ''));
+    };
+    
+    // Register the prototype for MyCustomCell as a reusable cell type.
     Pushpop.TableView.registerReusableCellPrototype(MyCustomCell.prototype);
 	</script>
 	<style type="text/css">
@@ -48,17 +60,17 @@
   <div class="pp-view-stack">  
     <div class="pp-view sk-scroll-view" id="detail-view-root" data-always-bounce-vertical="true">
       <ul id="custom-cells-table-view" class="pp-table-view" data-contains-search-bar="true">
-        <li data-reuse-identifier="my-custom-cell">Static Row 0</li>
+        <li>Static Row 0</li>
         <li>Static Row 1</li>
         <li>Static Row 2</li>
         <li>Static Row 3</li>
-        <li>Static Row 4</li>
+        <li data-reuse-identifier="my-custom-cell">Static Row 4</li>
         <li>Static Row 5</li>
         <li>Static Row 6</li>
-        <li>Static Row 7</li>
+        <li data-reuse-identifier="my-custom-cell">Static Row 7</li>
         <li>Static Row 8</li>
         <li>Static Row 9</li>
-        <li>Static Row 10</li>
+        <li data-reuse-identifier="my-custom-cell">Static Row 10</li>
         <li>Static Row 11</li>
         <li>Static Row 12</li>
         <li>Static Row 13</li>
