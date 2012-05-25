@@ -504,9 +504,7 @@ Pushpop.TableViewDataSource = function TableViewDataSource(dataSet) {
     var cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier);
     
     cell.setIndex(index);
-    cell.setId(data.id);
-    cell.setValue(data.value);
-    cell.setHtml(data.title);
+    cell.setData(data);
     
     return cell;
   };
@@ -764,6 +762,16 @@ Pushpop.TableViewCell.prototype = {
   tableView: null,
   
   /**
+    Replaces this TableViewCell's HTML with new content based on the cell's data.
+    @description NOTE: When creating a custom cell type, this method should be
+    overridden to provide the appropriate HTML markup for the cell.
+  */
+  draw: function() {
+    var data = this.getData();
+    this.$element.html((data) ? data.title : null);
+  },
+  
+  /**
     Removes this TableViewCell from the TableView's visible cells, resets its
     data and prepares it to be reused by the TableView by placing it in the
     reusable cells queue.
@@ -791,9 +799,53 @@ Pushpop.TableViewCell.prototype = {
     
     this.setSelected(false);
     this.setIndex(-1);
-    this.setId(-1);
-    this.setValue(null);
-    this.setHtml('');
+    this.setData(null);
+  },
+  
+  _data: null,
+  
+  /**
+    Returns the data of the item in the data source that corresponds to this cell.
+    @type Object
+  */
+  getData: function() { return this._data; },
+  
+  /**
+    Sets the data of this cell that corresponds to an item in the data source.
+    @description NOTE: This method will set the cell's value to the |value| property
+    of the provided data.
+    @param {Object} data The data of an item in the data source to assign to this cell.
+  */
+  setData: function(data) {
+    this._data = data;
+    this.draw();
+    this.setValue((data) ? data.title : null);
+  },
+  
+  _value: null,
+  
+  /**
+    Returns the value of the item in the data source that corresponds to this cell.
+    @description NOTE: This method is typically only used by "input" cell types. When
+    setData() is called, the cell's value will be set to the |value| property of the
+    cell's data (e.g.: this.getData().value). The value that is returned by this method
+    originates from the |value| property of the cell's data.
+    @type Number|String|Object
+  */
+  getValue: function() { return this._value; },
+  
+  /**
+    Sets the value of this cell that corresponds to an item in the data source.
+    @description NOTE: This method is typically only used by "input" cell types. When
+    setData() is called, this method is called to set the |value| property of the
+    cell's data (e.g.: this.getData().value). The value that is set by this method
+    will also replace the value of the |value| property of the cell's data.
+    @param {Number|String|Object} value The value of an item in the data source to assign to this cell.
+  */
+  setValue: function(value) {
+    var data = this.getData();
+    if (data) data.value = value;
+    this._value = value;
   },
   
   _reuseIdentifier: 'pp-table-view-cell-style-default',
@@ -803,6 +855,20 @@ Pushpop.TableViewCell.prototype = {
     @type String
   */
   getReuseIdentifier: function() { return this._reuseIdentifier; },
+  
+  _index: -1,
+  
+  /**
+    Returns the index of the item in the data source that corresponds to this cell.
+    @type Number
+  */
+  getIndex: function() { return this._index; },
+  
+  /**
+    Sets the index of this cell that corresponds to an item in the data source.
+    @param {Number} index The index of an item in the data source to assign to this cell.
+  */
+  setIndex: function(index) { this._index = index; },
   
   _isSelected: false,
   
@@ -823,62 +889,6 @@ Pushpop.TableViewCell.prototype = {
       this.$element.removeClass('pp-table-view-selected-state');
     }
   },
-  
-  _index: -1,
-  
-  /**
-    Returns the index of the item in the data source that corresponds to this cell.
-    @type Number
-  */
-  getIndex: function() { return this._index; },
-  
-  /**
-    Sets the index of this cell that corresponds to an item in the data source.
-    @param {Number} index The index of an item in the data source to assign to this cell.
-  */
-  setIndex: function(index) { this._index = index; },
-  
-  _id: -1,
-  
-  /**
-    Returns the ID of the item in the data source that corresponds to this cell.
-    @type Number|String
-  */
-  getId: function() { return this._id; },
-  
-  /**
-    Sets the ID of this cell that corresponds to an item in the data source.
-    @param {Number|String} id The ID of an item in the data source to assign to this cell.
-  */
-  setId: function(id) { this._id = id; },
-  
-  _value: null,
-  
-  /**
-    Returns the value of the item in the data source that corresponds to this cell.
-    @type Number|String
-  */
-  getValue: function() { return this._value; },
-  
-  /**
-    Sets the value of this cell that corresponds to an item in the data source.
-    @param {Number|String} value The value of an item in the data source to assign to this cell.
-  */
-  setValue: function(value) { this._value = value; },
-  
-  _html: '',
-  
-  /**
-    Returns the HTML of the item in the data source that corresponds to this cell.
-    @type String
-  */
-  getHtml: function() { return this._html; },
-  
-  /**
-    Sets the HTML of this cell that corresponds to an item in the data source.
-    @param {String} html The HTML of an item in the data source to assign to this cell.
-  */
-  setHtml: function(html) { this.$element.html(this._html = html); }
 };
 
 Pushpop.TableView.registerReusableCellPrototype(Pushpop.TableViewCell.prototype);
