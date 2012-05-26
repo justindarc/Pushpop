@@ -44,7 +44,7 @@
     // Override the .draw() method.
     MyCustomCell.prototype.draw = function() {
       var data = this.getData();
-      this.$element.html('**CUSTOM CELL** ' + ((data) ? data.title : ''));
+      this.$element.html('*CUSTOM* ' + ((data) ? data.title : '') + ' *CUSTOM*');
     };
     
     // Register the prototype for MyCustomCell as a reusable cell type.
@@ -60,70 +60,68 @@
   <div class="pp-view-stack">  
     <div class="pp-view sk-scroll-view" id="detail-view-root" data-always-bounce-vertical="true">
       <ul id="custom-cells-table-view" class="pp-table-view" data-contains-search-bar="true">
-        <li>Static Row 0</li>
-        <li>Static Row 1</li>
-        <li>Static Row 2</li>
-        <li>Static Row 3</li>
-        <li data-reuse-identifier="my-custom-cell">Static Row 4</li>
-        <li>Static Row 5</li>
-        <li>Static Row 6</li>
-        <li data-reuse-identifier="my-custom-cell">Static Row 7</li>
-        <li>Static Row 8</li>
-        <li>Static Row 9</li>
-        <li data-reuse-identifier="my-custom-cell">Static Row 10</li>
-        <li>Static Row 11</li>
-        <li>Static Row 12</li>
-        <li>Static Row 13</li>
-        <li>Static Row 14</li>
-        <li>Static Row 15</li>
-        <li>Static Row 16</li>
-        <li>Static Row 17</li>
-        <li>Static Row 18</li>
-        <li>Static Row 19</li>
-        <li>Static Row 20</li>
-        <li>Static Row 21</li>
-        <li>Static Row 22</li>
-        <li>Static Row 23</li>
-        <li>Static Row 24</li>
-        <li>Static Row 25</li>
-        <li>Static Row 26</li>
-        <li>Static Row 27</li>
-        <li>Static Row 28</li>
-        <li>Static Row 29</li>
-        <li>Static Row 30</li>
-        <li>Static Row 31</li>
-        <li>Static Row 32</li>
-        <li>Static Row 33</li>
-        <li>Static Row 34</li>
-        <li>Static Row 35</li>
-        <li>Static Row 36</li>
-        <li>Static Row 37</li>
-        <li>Static Row 38</li>
-        <li>Static Row 39</li>
-        <li>Static Row 40</li>
-        <li>Static Row 41</li>
-        <li>Static Row 42</li>
-        <li>Static Row 43</li>
-        <li>Static Row 44</li>
-        <li>Static Row 45</li>
-        <li>Static Row 46</li>
-        <li>Static Row 47</li>
-        <li>Static Row 48</li>
-        <li>Static Row 49</li>
-        <li>Static Row 50</li>
-        <li>Static Row 51</li>
-        <li>Static Row 52</li>
-        <li>Static Row 53</li>
-        <li>Static Row 54</li>
-        <li>Static Row 55</li>
-        <li>Static Row 56</li>
-        <li>Static Row 57</li>
-        <li>Static Row 58</li>
-        <li>Static Row 59</li>
-        <li>Static Row 60</li>
-        <li>Static Row 61</li>
-        <li>Static Row 62</li>
-        <li>Static Row 63</li>
+        <li>This is a plain, ordinary cell</li>
+        <li>This is a plain, ordinary cell</li>
+        <li data-reuse-identifier="pp-subtitle-table-view-cell" data-subtitle="And here it is!!!!">This row has a subtitle</li>
+        <li data-reuse-identifier="pp-subtitle-table-view-cell" data-subtitle="Revolver, Rubber Soul, Abbey Road">The Beatles</li>
+        <li data-reuse-identifier="pp-value-table-view-cell" data-value="some value here">I have a value</li>
+        <li data-reuse-identifier="pp-value-table-view-cell" data-value="Purple">Color</li>
+        <li data-reuse-identifier="pp-value2-table-view-cell" data-value="this is also a value">label</li>
+        <li data-reuse-identifier="pp-value2-table-view-cell" data-value="(888) 555-5512">mobile</li>
+        <li data-reuse-identifier="pp-value2-table-view-cell" data-value="(888) 555-5512">home</li>
+        <li data-reuse-identifier="pp-value2-table-view-cell" data-value="(888) 555-5512">work</li>
+        <li data-reuse-identifier="pp-value2-table-view-cell" data-value="(888) 555-5512">main</li>
+        <li data-reuse-identifier="pp-value2-table-view-cell" data-value="(888) 555-5512">fax</li>
+        <li>This is a plain, ordinary cell</li>
+        <li>This is a plain, ordinary cell</li>
+        <li data-reuse-identifier="my-custom-cell">Tap me!!</li>
+        <li>This is a plain, ordinary cell</li>
+        <li>This is a plain, ordinary cell</li>
+        <li data-reuse-identifier="pp-subtitle-table-view-cell" data-subtitle="And here it is!!!!">This row has a subtitle</li>
+        <li data-reuse-identifier="pp-subtitle-table-view-cell" data-subtitle="Revolver, Rubber Soul, Abbey Road">The Beatles</li>
+        <li data-reuse-identifier="pp-value-table-view-cell" data-value="some value here">I have a value</li>
+        <li data-reuse-identifier="pp-value-table-view-cell" data-value="Purple">Color</li>
+        <li data-reuse-identifier="pp-value2-table-view-cell" data-value="this is also a value">label</li>
+        <li data-reuse-identifier="pp-value2-table-view-cell" data-value="(888) 555-5512">mobile</li>
+        <li data-reuse-identifier="pp-value2-table-view-cell" data-value="(888) 555-5512">home</li>
+        <li data-reuse-identifier="pp-value2-table-view-cell" data-value="(888) 555-5512">work</li>
+        <li data-reuse-identifier="pp-value2-table-view-cell" data-value="(888) 555-5512">main</li>
+        <li data-reuse-identifier="pp-value2-table-view-cell" data-value="(888) 555-5512">fax</li>
+        <li>This is a plain, ordinary cell</li>
+        <li>This is a plain, ordinary cell</li>
+        <li data-reuse-identifier="my-custom-cell">Tap me!!</li>
+        <li>This is a plain, ordinary cell</li>
+        <li>This is a plain, ordinary cell</li>
+        <li data-reuse-identifier="pp-subtitle-table-view-cell" data-subtitle="And here it is!!!!">This row has a subtitle</li>
+        <li data-reuse-identifier="pp-subtitle-table-view-cell" data-subtitle="Revolver, Rubber Soul, Abbey Road">The Beatles</li>
+        <li data-reuse-identifier="pp-value-table-view-cell" data-value="some value here">I have a value</li>
+        <li data-reuse-identifier="pp-value-table-view-cell" data-value="Purple">Color</li>
+        <li data-reuse-identifier="pp-value2-table-view-cell" data-value="this is also a value">label</li>
+        <li data-reuse-identifier="pp-value2-table-view-cell" data-value="(888) 555-5512">mobile</li>
+        <li data-reuse-identifier="pp-value2-table-view-cell" data-value="(888) 555-5512">home</li>
+        <li data-reuse-identifier="pp-value2-table-view-cell" data-value="(888) 555-5512">work</li>
+        <li data-reuse-identifier="pp-value2-table-view-cell" data-value="(888) 555-5512">main</li>
+        <li data-reuse-identifier="pp-value2-table-view-cell" data-value="(888) 555-5512">fax</li>
+        <li>This is a plain, ordinary cell</li>
+        <li>This is a plain, ordinary cell</li>
+        <li data-reuse-identifier="my-custom-cell">Tap me!!</li>
+        <li>This is a plain, ordinary cell</li>
+        <li>This is a plain, ordinary cell</li>
+        <li data-reuse-identifier="pp-subtitle-table-view-cell" data-subtitle="And here it is!!!!">This row has a subtitle</li>
+        <li data-reuse-identifier="pp-subtitle-table-view-cell" data-subtitle="Revolver, Rubber Soul, Abbey Road">The Beatles</li>
+        <li data-reuse-identifier="pp-value-table-view-cell" data-value="some value here">I have a value</li>
+        <li data-reuse-identifier="pp-value-table-view-cell" data-value="Purple">Color</li>
+        <li data-reuse-identifier="pp-value2-table-view-cell" data-value="this is also a value">label</li>
+        <li data-reuse-identifier="pp-value2-table-view-cell" data-value="(888) 555-5512">mobile</li>
+        <li data-reuse-identifier="pp-value2-table-view-cell" data-value="(888) 555-5512">home</li>
+        <li data-reuse-identifier="pp-value2-table-view-cell" data-value="(888) 555-5512">work</li>
+        <li data-reuse-identifier="pp-value2-table-view-cell" data-value="(888) 555-5512">main</li>
+        <li data-reuse-identifier="pp-value2-table-view-cell" data-value="(888) 555-5512">fax</li>
+        <li>This is a plain, ordinary cell</li>
+        <li>This is a plain, ordinary cell</li>
+        <li data-reuse-identifier="my-custom-cell">Tap me!!</li>
+        <li>This is a plain, ordinary cell</li>
+        <li>This is a plain, ordinary cell</li>
       </ul>
     </div>
   </div>

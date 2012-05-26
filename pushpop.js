@@ -1,4 +1,4 @@
-'use strict';
+;'use strict';
 
 // Load custom build of Modernizr if an appropriate build has not been loaded.
 if (!window['Modernizr'] || Modernizr.touch === undefined || Modernizr.csstransitions === undefined || Modernizr.csstransforms === undefined || Modernizr.csstransforms3d === undefined) {
