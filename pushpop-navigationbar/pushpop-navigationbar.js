@@ -1,4 +1,4 @@
-'use strict';
+;'use strict';
 
 if (!window['Pushpop']) window.Pushpop = {};
 

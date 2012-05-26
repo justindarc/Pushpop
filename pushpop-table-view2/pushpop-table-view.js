@@ -1,4 +1,4 @@
-'use strict';
+;'use strict';
 
 var Pushpop = window['Pushpop'] || {};
 
@@ -163,19 +163,32 @@ Pushpop.TableView = function TableView(element) {
   
   // Create a new data source from existing <li/> elements.
   else {
-    var dataSet = [];
-    $element.children('li').each(function(index, element) {
-      var $child = $(element);
-      dataSet.push({
-        id: $child.attr('data-id') || index + 1,
-        value: $child.attr('data-value') || index,
-        title: $child.html(),
-        reuseIdentifier: ($child.attr('data-reuse-identifier') || 'pp-table-view-cell-style-default').replace(' ', '-')
+    (function(self, $element) {
+      var dataSet = [];
+      
+      var dashAlpha = /-([a-z]|[0-9])/ig;
+      var camelCase = function(string) { return string.replace(dashAlpha, function(all, letter) { return (letter + '').toUpperCase(); }); };
+      
+      $element.children('li').each(function(index, element) {
+        var data = { title: $(element).html() };
+        
+        var attributes = element.attributes;
+        var attribute, attributeName;
+        for (var i = 0, length = attributes.length; i < length; i++) {
+          attribute = attributes[i];
+          attributeName = attribute.name;
+          
+          if (attributeName.indexOf('data-') === 0) data[camelCase(attributeName.substring(5))] = attribute.value;
+        }
+        
+        if (!data['reuseIdentifier']) data.reuseIdentifier = 'pp-table-view-cell-default';
+      
+        dataSet.push(data);
       });
-    });
-    
-    $element.html(null);
-    this.setDataSource(new Pushpop.TableViewDataSource(dataSet));
+      
+      $element.html(null);
+      self.setDataSource(new Pushpop.TableViewDataSource(dataSet));
+    })(self, $element);
   }
 };
 
@@ -500,7 +513,7 @@ Pushpop.TableViewDataSource = function TableViewDataSource(dataSet) {
   // Default implementation if using an in-memory data set.
   this.getCellForRowAtIndex = function(tableView, index) {
     var data = this.getFilteredDataSet()[index];
-    var reuseIdentifier = data.reuseIdentifier || 'pp-table-view-cell-style-default';
+    var reuseIdentifier = data.reuseIdentifier || 'pp-table-view-cell-default';
     var cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier);
     
     cell.setIndex(index);
@@ -739,7 +752,7 @@ Pushpop.TableViewSearchBar.prototype = {
 };
 
 /**
-  Creates a new table view cell for a TableView.
+  Creates a new default table view cell for a TableView with bold black title text.
   @param {String} reuseIdentifier A string containing an identifier that is unique
   to the group of cells that this cell should belong to. This reuse identifier is
   used by the TableView to recycle TableViewCells of the same style and type.
@@ -768,7 +781,8 @@ Pushpop.TableViewCell.prototype = {
   */
   draw: function() {
     var data = this.getData();
-    this.$element.html((data) ? data.title : null);
+    var title = $.trim((data) ? data.title : '&nbsp;') || '&nbsp;';
+    this.$element.html(title);
   },
   
   /**
@@ -819,7 +833,7 @@ Pushpop.TableViewCell.prototype = {
   setData: function(data) {
     this._data = data;
     this.draw();
-    this.setValue((data) ? data.title : null);
+    this.setValue((data && data.value) ? data.value : null);
   },
   
   _value: null,
@@ -848,7 +862,7 @@ Pushpop.TableViewCell.prototype = {
     this._value = value;
   },
   
-  _reuseIdentifier: 'pp-table-view-cell-style-default',
+  _reuseIdentifier: 'pp-table-view-cell-default',
   
   /**
     Returns a string containing this cell's reuse identifier.
@@ -891,8 +905,94 @@ Pushpop.TableViewCell.prototype = {
   },
 };
 
+// Register the prototype for Pushpop.TableViewCell as a reusable cell type.
 Pushpop.TableView.registerReusableCellPrototype(Pushpop.TableViewCell.prototype);
 
-$(function() {
-  $('.pp-table-view').each(function(index, element) { new Pushpop.TableView(element); });
-});
+/**
+  Creates a new table view cell for a TableView with bold black title text and grey
+  subtitle text.
+  @param {String} reuseIdentifier A string containing an identifier that is unique
+  to the group of cells that this cell should belong to.
+  @constructor
+*/
+Pushpop.SubtitleTableViewCell = function SubtitleTableViewCell(reuseIdentifier) {
+  
+  // Call the "super" constructor.
+  Pushpop.TableViewCell.prototype.constructor.apply(this, arguments);
+  
+  // Assign a CSS class to this cell to add specific styles to it.
+  this.$element.addClass('pp-subtitle-table-view-cell');
+};
+
+Pushpop.SubtitleTableViewCell.prototype = new Pushpop.TableViewCell('pp-subtitle-table-view-cell');
+Pushpop.SubtitleTableViewCell.prototype.constructor = Pushpop.SubtitleTableViewCell;
+
+Pushpop.SubtitleTableViewCell.prototype.draw = function() {
+  var data = this.getData();
+  var title = $.trim((data) ? data.title : '&nbsp;') || '&nbsp;';
+  var subtitle = $.trim((data) ? data.subtitle : '&nbsp;') || '&nbsp;';
+  this.$element.html('<h1>' + title + '</h1><h2>' + subtitle + '</h2>');
+};
+
+// Register the prototype for Pushpop.SubtitleTableViewCell as a reusable cell type.
+Pushpop.TableView.registerReusableCellPrototype(Pushpop.SubtitleTableViewCell.prototype);
+
+/**
+  Creates a new table view cell for a TableView with a bold black text label and a
+  blue text value.
+  @param {String} reuseIdentifier A string containing an identifier that is unique
+  to the group of cells that this cell should belong to.
+  @constructor
+*/
+Pushpop.ValueTableViewCell = function ValueTableViewCell(reuseIdentifier) {
+  
+  // Call the "super" constructor.
+  Pushpop.TableViewCell.prototype.constructor.apply(this, arguments);
+  
+  // Assign a CSS class to this cell to add specific styles to it.
+  this.$element.addClass('pp-value-table-view-cell');
+};
+
+Pushpop.ValueTableViewCell.prototype = new Pushpop.TableViewCell('pp-value-table-view-cell');
+Pushpop.ValueTableViewCell.prototype.constructor = Pushpop.ValueTableViewCell;
+
+Pushpop.ValueTableViewCell.prototype.draw = function() {
+  var data = this.getData();
+  var title = $.trim((data) ? data.title : '&nbsp;') || '&nbsp;';
+  var value = $.trim((data) ? data.value : '&nbsp;') || '&nbsp;';
+  this.$element.html('<h1>' + title + '</h1><h2>' + value + '</h2>');
+};
+
+// Register the prototype for Pushpop.ValueTableViewCell as a reusable cell type.
+Pushpop.TableView.registerReusableCellPrototype(Pushpop.ValueTableViewCell.prototype);
+
+/**
+  Creates a new table view cell for a TableView with a small bold blue text label
+  and a long black bold text value.
+  @param {String} reuseIdentifier A string containing an identifier that is unique
+  to the group of cells that this cell should belong to.
+  @constructor
+*/
+Pushpop.Value2TableViewCell = function Value2TableViewCell(reuseIdentifier) {
+  
+  // Call the "super" constructor.
+  Pushpop.TableViewCell.prototype.constructor.apply(this, arguments);
+  
+  // Assign a CSS class to this cell to add specific styles to it.
+  this.$element.addClass('pp-value2-table-view-cell');
+};
+
+Pushpop.Value2TableViewCell.prototype = new Pushpop.TableViewCell('pp-value2-table-view-cell');
+Pushpop.Value2TableViewCell.prototype.constructor = Pushpop.Value2TableViewCell;
+
+Pushpop.Value2TableViewCell.prototype.draw = function() {
+  var data = this.getData();
+  var title = $.trim((data) ? data.title : '&nbsp;') || '&nbsp;';
+  var value = $.trim((data) ? data.value : '&nbsp;') || '&nbsp;';
+  this.$element.html('<h1>' + title + '</h1><h2>' + value + '</h2>');
+};
+
+// Register the prototype for Pushpop.Value2TableViewCell as a reusable cell type.
+Pushpop.TableView.registerReusableCellPrototype(Pushpop.Value2TableViewCell.prototype);
+
+$(function() { $('.pp-table-view').each(function(index, element) { new Pushpop.TableView(element); }); });
