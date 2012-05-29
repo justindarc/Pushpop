@@ -995,4 +995,35 @@ Pushpop.Value2TableViewCell.prototype.draw = function() {
 // Register the prototype for Pushpop.Value2TableViewCell as a reusable cell type.
 Pushpop.TableView.registerReusableCellPrototype(Pushpop.Value2TableViewCell.prototype);
 
+/**
+  Creates a new table view cell for a TableView with a small bold blue text label
+  and an inline text input field.
+  @param {String} reuseIdentifier A string containing an identifier that is unique
+  to the group of cells that this cell should belong to.
+  @constructor
+*/
+Pushpop.InlineTextInputTableViewCell = function InlineTextInputTableViewCell(reuseIdentifier) {
+  
+  // Call the "super" constructor.
+  Pushpop.TableViewCell.prototype.constructor.apply(this, arguments);
+  
+  // Assign a CSS class to this cell to add specific styles to it.
+  this.$element.addClass('pp-inline-text-input-table-view-cell');
+};
+
+Pushpop.InlineTextInputTableViewCell.prototype = new Pushpop.TableViewCell('pp-inline-text-input-table-view-cell');
+Pushpop.InlineTextInputTableViewCell.prototype.constructor = Pushpop.InlineTextInputTableViewCell;
+
+Pushpop.InlineTextInputTableViewCell.prototype.draw = function() {
+  var data = this.getData();
+  var title = $.trim((data) ? data.title : '&nbsp;') || '&nbsp;';
+  var value = $.trim((data) ? data.value : '') || '';
+  var isPassword = (data) ? (data.password || 'false') : 'false';
+  isPassword = isPassword !== 'false';
+  this.$element.html('<h1>' + title + '</h1><input type="' + (isPassword ? 'password' : 'text') + '" value="' + value + '"/>');
+};
+
+// Register the prototype for Pushpop.InlineTextInputTableViewCell as a reusable cell type.
+Pushpop.TableView.registerReusableCellPrototype(Pushpop.InlineTextInputTableViewCell.prototype);
+
 $(function() { $('.pp-table-view').each(function(index, element) { new Pushpop.TableView(element); }); });
