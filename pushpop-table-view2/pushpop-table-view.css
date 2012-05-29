@@ -817,14 +817,51 @@ ul.pp-table-view > li.pp-value2-table-view-cell > h1 {
   text-align: right;
 }
 
+ul.pp-table-view > li.pp-value2-table-view-cell > h1::after {
+  content: '\00a0\00a0'; /* Add spacer after the label text */
+}
+
 ul.pp-table-view > li.pp-value2-table-view-cell > h2 {
   font-size: 0.9em;
   margin: 0.1em 0;
   width: 70%;
 }
 
-ul.pp-table-view > li.pp-value2-table-view-cell > h2::before {
-  content: '\00a0\00a0'; /* Add spacer before the value text */
+/**
+  Pushpop.InlineTextInputTableViewCell
+  ====================================
+  pp-inline-text-input-table-view-cell
+*/
+ul.pp-table-view > li.pp-inline-text-input-table-view-cell {
+  padding: 0.6em 0.6em 0.75em;
+}
+
+ul.pp-table-view > li.pp-inline-text-input-table-view-cell > h1,
+ul.pp-table-view > li.pp-inline-text-input-table-view-cell > input {
+  float: left;
+}
+
+ul.pp-table-view > li.pp-inline-text-input-table-view-cell > h1 {
+  color: #516691;
+  font-size: 0.75em;
+  margin: 0.25em 0 0;
+  width: 30%;
+  text-align: right;
+}
+
+ul.pp-table-view > li.pp-inline-text-input-table-view-cell > h1::after {
+  content: '\00a0\00a0'; /* Add spacer after the label text */
+}
+
+ul.pp-table-view > li.pp-inline-text-input-table-view-cell > input {
+  background: none;
+  border: none;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 1em;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  width: 70%;
 }
 
 /**
