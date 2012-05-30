@@ -1,0 +1,26 @@
+.pp-split-view {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  height: auto;
+}
+
+.pp-split-view > .pp-split-view-stack-master {
+  border-right: 1px solid #000;
+  position: absolute;
+  left: 0;
+  width: 320px;
+  height: 100%;
+}
+
+.pp-split-view > .pp-split-view-stack-detail {
+  position: absolute;
+  left: 321px;
+  right: 0;
+  width: auto;
+  height: 100%;
+}
+
+/* NOTE: Use of .topbar has been removed in Bootstrap 2.x. */
+.navbar ~ .pp-split-view, .topbar ~ .pp-split-view { top: 40px; }

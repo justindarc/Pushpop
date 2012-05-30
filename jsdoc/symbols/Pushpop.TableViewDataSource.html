@@ -1,0 +1,597 @@
+		
+		<div id="content">
+<!-- ============================== class title ============================ -->
+			<h1 class="page-header">
+				
+				Class Pushpop.TableViewDataSource
+								
+			</h1>
+
+<!-- ============================== class summary ========================== -->			
+			<p>
+				
+
+			
+				
+				
+				
+					<br /><i>Defined in: </i> <span class=""><a href="symbols/src/_Users_Justin_Development_JavaScript_Pushpop_pushpop-table-view2_pushpop-table-view.js.html">pushpop-table-view.js</a></span>.
+				
+			</p>
+
+	<div class="row">
+		<div class='span12'>
+<!-- ============================== constructor summary ==================== -->			
+			
+				<table class="table table-striped table-bordered" cellspacing="0" summary="A summary of the constructor documented in the class Pushpop.TableViewDataSource.">
+				<h3>Class Summary</h3>
+				<!-- thead>
+					<tr>
+						<th scope="col">Constructor Attributes</th>
+						<th scope="col">Constructor Name and Description</th>
+					</tr>
+				</thead -->
+				<tbody>
+					<tr>
+						<td class="attributes">&nbsp;</td>
+						<td class="nameDescription" >
+							<div class="fixedFont">
+								<b><a href='#constructor'>Pushpop.TableViewDataSource</a></b>(dataSet)
+							</div>
+							<div class="description">Creates a new data source for a TableView.</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			
+<!-- ==== all members ==== -->
+
+			
+
+			
+				
+					<table class="table table-striped table-bordered" cellspacing="0" summary="A summary of the methods documented in the class Pushpop.TableViewDataSource.">
+						<h3>Method Summary</h3>
+						<tbody>
+						
+							<tr>
+								<td class="attributes"><i>{<a href="symbols/Pushpop.TableViewCell.html">Pushpop.TableViewCell</a>}</i>&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#getCellForRowAtIndex">getCellForRowAtIndex</a></b>(tableView, index)
+									</div>
+									<div class="description">REQUIRED: Returns a TableViewCell for the specified index.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes"><i>{Array}</i>&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#getDataSet">getDataSet</a></b>()
+									</div>
+									<div class="description">Returns the in-memory data set this data source will provide to the table view.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes"><i>{Array}</i>&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#getFilteredDataSet">getFilteredDataSet</a></b>()
+									</div>
+									<div class="description">Returns the filtered in-memory data set this data source will provide to the table view.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes"><i>{<a href="symbols/Function.html">Function</a>}</i>&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#getFilterFunction">getFilterFunction</a></b>()
+									</div>
+									<div class="description">Returns the current filter function for searching this TableView.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes"><i>{Number}</i>&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#getNumberOfRows">getNumberOfRows</a></b>()
+									</div>
+									<div class="description">REQUIRED: Returns the number of rows provided by this data source.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes"><i>{<a href="symbols/Pushpop.TableView.html">Pushpop.TableView</a>}</i>&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#getTableView">getTableView</a></b>()
+									</div>
+									<div class="description">Returns the TableView this data source is bound to.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes">&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#setDataSet">setDataSet</a></b>(dataSet)
+									</div>
+									<div class="description">Sets the in-memory data set this data source should provide to the table view.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes">&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#setFilterFunction">setFilterFunction</a></b>(filterFunction)
+									</div>
+									<div class="description">Sets a filter function to be used when searching this TableView.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes">&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#setTableView">setTableView</a></b>(tableView)
+									</div>
+									<div class="description">Sets the TableView this data source should be bound to.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes"><i>{Boolean}</i>&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#shouldReloadTableForSearchString">shouldReloadTableForSearchString</a></b>(searchString, isCaseSensitive)
+									</div>
+									<div class="description">OPTIONAL: Determines if the table should be reloaded following a change in the search string.</div>
+								</td>
+							</tr>
+						
+						</tbody>
+					</table>
+												
+			
+		</div>
+		
+		
+			
+			</div>
+<!-- ========================= constructor details ==================== -->		
+			
+			<h3>
+				Class Detail
+			</h3>
+			<div class="details well" id="constructor">
+
+				
+				<div class="fixedFont">
+						<b>Pushpop.TableViewDataSource</b>(dataSet)
+				</div>
+				
+				<div class="description">
+					Creates a new data source for a TableView.
+					
+				</div>
+				
+				
+				
+				
+					
+						<dl class="detailList">
+						<dt class="heading">Parameters:</dt>
+						
+							<dt>
+								<span class="light fixedFont">{Array}</span>  <b>dataSet</b>
+								<i>Optional</i>
+							</dt>
+								<dd>An optional array of data to initialize a default data source.</dd>
+						
+							<dt>
+								<span class="light fixedFont">{Array}</span>  <b>dataSet.id</b>
+								<i>Optional</i>
+							</dt>
+								<dd>The unique identifier for a specific record.</dd>
+						
+							<dt>
+								<span class="light fixedFont">{Array}</span>  <b>dataSet.value</b>
+								<i>Optional</i>
+							</dt>
+								<dd>The (sometimes) hidden value for a specific record.</dd>
+						
+							<dt>
+								<span class="light fixedFont">{Array}</span>  <b>dataSet.title</b>
+								<i>Optional</i>
+							</dt>
+								<dd>The title to be displayed in a TableViewCell for a specific record.</dd>
+						
+						</dl>
+					
+					
+					
+					
+					
+					
+					
+
+			</div>
+			
+
+
+<!-- ============================== method details ========================= -->		
+			
+			
+			
+				<h3>
+					Method Detail
+				</h3>
+				
+					<div class="well" id="getCellForRowAtIndex">
+					<div class="fixedFont">
+					<span class='title'>					
+						<span class="light ">{<a href="symbols/Pushpop.TableViewCell.html">Pushpop.TableViewCell</a>}</span>
+						<b>getCellForRowAtIndex</b>(tableView, index)
+					</span>
+					
+					</div>
+					<div class="description">
+						REQUIRED: Returns a TableViewCell for the specified index.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont ">{<a href="symbols/Pushpop.TableView.html">Pushpop.TableView</a>}</span> <b>tableView</b>
+									
+								</dt>
+								<dd>The TableView the TableViewCell should be returned for.</dd>
+							
+								<dt>
+									<span class="light fixedFont ">{Number}</span> <b>index</b>
+									
+								</dt>
+								<dd>The index of the data to be used when populating the TableViewCell.</dd>
+							
+							</dl>
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="getDataSet">
+					<div class="fixedFont">
+					<span class='title'>					
+						<span class="light ">{Array}</span>
+						<b>getDataSet</b>()
+					</span>
+					
+					</div>
+					<div class="description">
+						Returns the in-memory data set this data source will provide to the table view.
+NOTE: This may not be utilized by a custom data source.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="getFilteredDataSet">
+					<div class="fixedFont">
+					<span class='title'>					
+						<span class="light ">{Array}</span>
+						<b>getFilteredDataSet</b>()
+					</span>
+					
+					</div>
+					<div class="description">
+						Returns the filtered in-memory data set this data source will provide to the table view.
+NOTE: This may not be utilized by a custom data source.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="getFilterFunction">
+					<div class="fixedFont">
+					<span class='title'>					
+						<span class="light ">{<a href="symbols/Function.html">Function</a>}</span>
+						<b>getFilterFunction</b>()
+					</span>
+					
+					</div>
+					<div class="description">
+						Returns the current filter function for searching this TableView.
+NOTE: This may not be utilized by a custom data source.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="getNumberOfRows">
+					<div class="fixedFont">
+					<span class='title'>					
+						<span class="light ">{Number}</span>
+						<b>getNumberOfRows</b>()
+					</span>
+					
+					</div>
+					<div class="description">
+						REQUIRED: Returns the number of rows provided by this data source.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="getTableView">
+					<div class="fixedFont">
+					<span class='title'>					
+						<span class="light ">{<a href="symbols/Pushpop.TableView.html">Pushpop.TableView</a>}</span>
+						<b>getTableView</b>()
+					</span>
+					
+					</div>
+					<div class="description">
+						Returns the TableView this data source is bound to.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="setDataSet">
+					<div class="fixedFont">
+					<span class='title'>					
+						
+						<b>setDataSet</b>(dataSet)
+					</span>
+					
+					</div>
+					<div class="description">
+						Sets the in-memory data set this data source should provide to the table view.
+NOTE: This may not be utilized by a custom data source.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>dataSet</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="setFilterFunction">
+					<div class="fixedFont">
+					<span class='title'>					
+						
+						<b>setFilterFunction</b>(filterFunction)
+					</span>
+					
+					</div>
+					<div class="description">
+						Sets a filter function to be used when searching this TableView.
+The filter function gets called for each item in the data set during a search. A
+    valid filter function must take two parameters (regExp, item) and return a Boolean value. The
+    |regExp| parameter contains a RegExp object based on the search string to be used to match items
+    in the data set. The |item| parameter contains an item from the data set that the search string
+    in the RegExp should be tested against. The provided filter function should return a Boolean
+    value: |true| if the item should match the search string or |false| if it should be filtered out.
+    NOTE: This may not be utilized by a custom data source.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont ">{<a href="symbols/Function.html">Function</a>}</span> <b>filterFunction</b>
+									
+								</dt>
+								<dd>The filter function to be used when searching this TableView.</dd>
+							
+							</dl>
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="setTableView">
+					<div class="fixedFont">
+					<span class='title'>					
+						
+						<b>setTableView</b>(tableView)
+					</span>
+					
+					</div>
+					<div class="description">
+						Sets the TableView this data source should be bound to.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>tableView</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="shouldReloadTableForSearchString">
+					<div class="fixedFont">
+					<span class='title'>					
+						<span class="light ">{Boolean}</span>
+						<b>shouldReloadTableForSearchString</b>(searchString, isCaseSensitive)
+					</span>
+					
+					</div>
+					<div class="description">
+						OPTIONAL: Determines if the table should be reloaded following a change in the search string.
+The default implementation assumes that the data set is fully loaded into
+    memory and executes the current filter function against each item in the data set. If the
+    filtered data set has changed since the last reload, it will return |true| which will force
+    the associated TableViewSearchBar to reload the data for the TableView. In a custom data
+    source that does not use an in-memory data set (e.g.: WebSQL or HTML5 LocalStorage), it is
+    recommended to override this method to perform any necessary queries asynchronously and
+    immediately return |false|. Once the asynchronous queries have completed, the application
+    should then manually call .reloadData() on the TableView to force an update (See the WebSQL
+    demo for an example on this implementation).
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont ">{String}</span> <b>searchString</b>
+									
+								</dt>
+								<dd>The search string to be used for matching items in the data set.</dd>
+							
+								<dt>
+									<span class="light fixedFont ">{Boolean}</span> <b>isCaseSensitive</b>
+									<i>Optional</i>
+								</dt>
+								<dd>An optional boolean flag for forcing a case-sensitive search.</dd>
+							
+							</dl>
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+				
+			
+			
+
+
+		
