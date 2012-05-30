@@ -13,15 +13,40 @@
 	<script type="text/javascript" src="../pushpop.js"></script>
 	<script type="text/javascript" src="pushpop-table-view.js"></script>
 	<script type="text/javascript">
-	  
+	  $(function() {
+	    var $inputTableView = $('#input-table-view');
+	    
+	    $inputTableView.bind(Pushpop.TableView.EventType.DidSelectRowAtIndex, function(evt) {
+	      if (evt.index !== 2) return;
+	      
+	      var tableView = evt.tableView;
+	      var dataSource = tableView.getDataSource();
+	      var dataSet = dataSource.getDataSet();
+	      
+	      var item, formData = [];
+	      for (var i = 0, length = dataSet.length; i < length; i++) {
+	        item = dataSet[i];
+	        
+	        if (item.reuseIdentifier === 'pp-inline-text-input-table-view-cell') {
+	          formData.push({
+	            name: item.name,
+	            value: item.value
+	          });
+	        }
+	      }
+	      
+	      alert(JSON.stringify(formData));
+	    });
+	  });
 	</script>
 </head>
 <body>
   <div class="pp-view-stack">  
     <div class="pp-view sk-scroll-view" id="detail-view-root" data-always-bounce-vertical="true">
       <ul id="input-table-view" class="pp-table-view" data-contains-search-bar="true">
-        <li data-reuse-identifier="pp-inline-text-input-table-view-cell" data-value="johnny.appleseed">username</li>
-        <li data-reuse-identifier="pp-inline-text-input-table-view-cell" data-value="itsasecret" data-password="true">password</li>
+        <li data-reuse-identifier="pp-inline-text-input-table-view-cell" data-name="username" data-value="johnny.appleseed">username</li>
+        <li data-reuse-identifier="pp-inline-text-input-table-view-cell" data-name="password" data-value="itsasecret" data-password="true">password</li>
+        <li>Tap Here To Log In</li>
       </ul>
     </div>
   </div>

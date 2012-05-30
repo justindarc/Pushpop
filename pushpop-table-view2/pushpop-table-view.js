@@ -195,8 +195,12 @@ Pushpop.TableView = function TableView(element) {
   }
 };
 
-Pushpop.TableView._reusableCellPrototypes = {};
+Pushpop.TableView.EventType = {
+  DidSelectRowAtIndex: 'Pushpop:TableView:DidSelectRowAtIndex',
+  DidDeselectRowAtIndex: 'Pushpop:TableView:DidDeselectRowAtIndex'
+};
 
+Pushpop.TableView._reusableCellPrototypes = {};
 Pushpop.TableView.getReusableCellPrototypes = function() {
   var reusableCellPrototypes = Pushpop.TableView._reusableCellPrototypes, items = [];
   for (var reusableCellPrototype in reusableCellPrototypes) items.push(reusableCellPrototypes[reusableCellPrototype]);
@@ -330,6 +334,7 @@ Pushpop.TableView.prototype = {
     if the row is currently visible.
   */
   selectRowAtIndex: function(index, animated) {
+    var $element = this.$element;
     this._selectedRowIndexes.push(index);
     
     var tableViewCell, $cells = this.$element.children();
@@ -337,9 +342,14 @@ Pushpop.TableView.prototype = {
       tableViewCell = $cells[i].tableViewCell;
       if (tableViewCell.getIndex() === index) {
         tableViewCell.setSelected(true);
-        return;
+        break;
       }
     }
+    
+    $element.trigger($.Event(Pushpop.TableView.EventType.DidSelectRowAtIndex, {
+      tableView: this,
+      index: index
+    }));
   },
   
   /**
@@ -351,6 +361,7 @@ Pushpop.TableView.prototype = {
     animated if the row is currently visible.
   */
   deselectRowAtIndex: function(index, animated) {
+    var $element = this.$element;
     var selectedRowIndexes = this._selectedRowIndexes;
     for (var i = 0, length = selectedRowIndexes.length; i < length; i++) {
       if (selectedRowIndexes[i] === index) {
@@ -359,22 +370,37 @@ Pushpop.TableView.prototype = {
       }
     }
     
-    var tableViewCell, $selectedCells = this.$element.children('.pp-table-view-selected-state');
+    var tableViewCell, $selectedCells = $element.children('.pp-table-view-selected-state');
     for (var i = 0, length = $cells.length; i < length; i++) {
       tableViewCell = $cells[i].tableViewCell;
       if (tableViewCell.getIndex() === index) {
         tableViewCell.setSelected(false);
-        return;
+        break;
       }
     }
+    
+    $element.trigger($.Event(Pushpop.TableView.EventType.DidDeselectRowAtIndex, {
+      tableView: this,
+      index: index
+    }));
   },
   
   /**
     De-selects all rows in the table.
   */
   deselectAllRows: function() {
-    this._selectedRowIndexes.length = 0;
-    this.$element.children('.pp-table-view-selected-state').each(function(index, element) {
+    var $element = this.$element;
+    var selectedRowIndexes = this._selectedRowIndexes;
+    for (var i = 0, length = selectedRowIndexes.length; i < length; i++) {
+      $element.trigger($.Event(Pushpop.TableView.EventType.DidDeselectRowAtIndex, {
+        tableView: this,
+        index: selectedRowIndexes[i]
+      }));
+    }
+    
+    selectedRowIndexes.length = 0;
+    
+    $element.children('.pp-table-view-selected-state').each(function(index, element) {
       element.tableViewCell.setSelected(false);
     });
   },
@@ -1010,8 +1036,13 @@ Pushpop.InlineTextInputTableViewCell = function InlineTextInputTableViewCell(reu
   // Call the "super" constructor.
   Pushpop.TableViewCell.prototype.constructor.apply(this, arguments);
   
+  var self = this, $element = this.$element;
+  
   // Assign a CSS class to this cell to add specific styles to it.
-  this.$element.addClass('pp-inline-text-input-table-view-cell');
+  $element.addClass('pp-inline-text-input-table-view-cell');
+  
+  // Attach an event handler to this cell to update its value when the input changes.
+  $element.delegate('input', 'keyup change', function(evt) { self.setValue($(this).val()); });
 };
 
 Pushpop.InlineTextInputTableViewCell.prototype = new Pushpop.TableViewCell('pp-inline-text-input-table-view-cell');
@@ -1024,6 +1055,21 @@ Pushpop.InlineTextInputTableViewCell.prototype.draw = function() {
   var isPassword = (data) ? (data.password || 'false') : 'false';
   isPassword = isPassword !== 'false';
   this.$element.html('<h1>' + title + '</h1><input type="' + (isPassword ? 'password' : 'text') + '" value="' + value + '"/>');
+};
+
+Pushpop.InlineTextInputTableViewCell.prototype.setSelected = function(value) {
+  
+  // Call the "super" method.
+  Pushpop.TableViewCell.prototype.setSelected.apply(this, arguments);
+  
+  var $element = this.$element;
+  
+  if (value) {
+    $element.children('input').focus();
+    window.setTimeout(function() { $element.removeClass('pp-table-view-selected-state'); }, 100);
+  } else {
+    $element.children('input').blur();
+  }
 };
 
 // Register the prototype for Pushpop.InlineTextInputTableViewCell as a reusable cell type.
