@@ -1,0 +1,591 @@
+		
+		<div id="content">
+<!-- ============================== class title ============================ -->
+			<h1 class="page-header">
+				
+				Class Pushpop.TableViewCell
+								
+			</h1>
+
+<!-- ============================== class summary ========================== -->			
+			<p>
+				
+
+			
+				
+				
+				
+					<br /><i>Defined in: </i> <span class=""><a href="symbols/src/_Users_Justin_Development_JavaScript_Pushpop_pushpop-table-view2_pushpop-table-view.js.html">pushpop-table-view.js</a></span>.
+				
+			</p>
+
+	<div class="row">
+		<div class='span12'>
+<!-- ============================== constructor summary ==================== -->			
+			
+				<table class="table table-striped table-bordered" cellspacing="0" summary="A summary of the constructor documented in the class Pushpop.TableViewCell.">
+				<h3>Class Summary</h3>
+				<!-- thead>
+					<tr>
+						<th scope="col">Constructor Attributes</th>
+						<th scope="col">Constructor Name and Description</th>
+					</tr>
+				</thead -->
+				<tbody>
+					<tr>
+						<td class="attributes">&nbsp;</td>
+						<td class="nameDescription" >
+							<div class="fixedFont">
+								<b><a href='#constructor'>Pushpop.TableViewCell</a></b>(reuseIdentifier)
+							</div>
+							<div class="description">Creates a new default table view cell for a TableView with bold black title text.</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			
+<!-- ==== all members ==== -->
+
+			
+
+			
+				
+					<table class="table table-striped table-bordered" cellspacing="0" summary="A summary of the methods documented in the class Pushpop.TableViewCell.">
+						<h3>Method Summary</h3>
+						<tbody>
+						
+							<tr>
+								<td class="attributes">&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#draw">draw</a></b>()
+									</div>
+									<div class="description">Replaces this TableViewCell's HTML with new content based on the cell's data.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes"><i>{Object}</i>&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#getData">getData</a></b>()
+									</div>
+									<div class="description">Returns the data of the item in the data source that corresponds to this cell.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes"><i>{Number}</i>&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#getIndex">getIndex</a></b>()
+									</div>
+									<div class="description">Returns the index of the item in the data source that corresponds to this cell.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes"><i>{String}</i>&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#getReuseIdentifier">getReuseIdentifier</a></b>()
+									</div>
+									<div class="description">Returns a string containing this cell's reuse identifier.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes"><i>{Boolean}</i>&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#getSelected">getSelected</a></b>()
+									</div>
+									<div class="description">Returns a flag indicating whether or not this TableViewCell is currently selected.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes"><i>{Number|String|Object}</i>&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#getValue">getValue</a></b>()
+									</div>
+									<div class="description">Returns the value of the item in the data source that corresponds to this cell.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes">&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#prepareForReuse">prepareForReuse</a></b>()
+									</div>
+									<div class="description">Removes this TableViewCell from the TableView's visible cells, resets its
+    data and prepares it to be reused by the TableView by placing it in the
+    reusable cells queue.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes">&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#setData">setData</a></b>(data)
+									</div>
+									<div class="description">Sets the data of this cell that corresponds to an item in the data source.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes">&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#setIndex">setIndex</a></b>(index)
+									</div>
+									<div class="description">Sets the index of this cell that corresponds to an item in the data source.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes">&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#setSelected">setSelected</a></b>(value)
+									</div>
+									<div class="description">Sets a flag to indicate if this TableViewCell should be selected.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes">&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#setValue">setValue</a></b>(value)
+									</div>
+									<div class="description">Sets the value of this cell that corresponds to an item in the data source.</div>
+								</td>
+							</tr>
+						
+						</tbody>
+					</table>
+												
+			
+		</div>
+		
+		
+			
+			</div>
+<!-- ========================= constructor details ==================== -->		
+			
+			<h3>
+				Class Detail
+			</h3>
+			<div class="details well" id="constructor">
+
+				
+				<div class="fixedFont">
+						<b>Pushpop.TableViewCell</b>(reuseIdentifier)
+				</div>
+				
+				<div class="description">
+					Creates a new default table view cell for a TableView with bold black title text.
+					
+				</div>
+				
+				
+				
+				
+					
+						<dl class="detailList">
+						<dt class="heading">Parameters:</dt>
+						
+							<dt>
+								<span class="light fixedFont">{String}</span>  <b>reuseIdentifier</b>
+								
+							</dt>
+								<dd>A string containing an identifier that is unique
+  to the group of cells that this cell should belong to. This reuse identifier is
+  used by the TableView to recycle TableViewCells of the same style and type.</dd>
+						
+						</dl>
+					
+					
+					
+					
+					
+					
+					
+
+			</div>
+			
+
+
+<!-- ============================== method details ========================= -->		
+			
+			
+			
+				<h3>
+					Method Detail
+				</h3>
+				
+					<div class="well" id="draw">
+					<div class="fixedFont">
+					<span class='title'>					
+						
+						<b>draw</b>()
+					</span>
+					
+					</div>
+					<div class="description">
+						Replaces this TableViewCell's HTML with new content based on the cell's data.
+NOTE: When creating a custom cell type, this method should be
+    overridden to provide the appropriate HTML markup for the cell.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="getData">
+					<div class="fixedFont">
+					<span class='title'>					
+						<span class="light ">{Object}</span>
+						<b>getData</b>()
+					</span>
+					
+					</div>
+					<div class="description">
+						Returns the data of the item in the data source that corresponds to this cell.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="getIndex">
+					<div class="fixedFont">
+					<span class='title'>					
+						<span class="light ">{Number}</span>
+						<b>getIndex</b>()
+					</span>
+					
+					</div>
+					<div class="description">
+						Returns the index of the item in the data source that corresponds to this cell.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="getReuseIdentifier">
+					<div class="fixedFont">
+					<span class='title'>					
+						<span class="light ">{String}</span>
+						<b>getReuseIdentifier</b>()
+					</span>
+					
+					</div>
+					<div class="description">
+						Returns a string containing this cell's reuse identifier.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="getSelected">
+					<div class="fixedFont">
+					<span class='title'>					
+						<span class="light ">{Boolean}</span>
+						<b>getSelected</b>()
+					</span>
+					
+					</div>
+					<div class="description">
+						Returns a flag indicating whether or not this TableViewCell is currently selected.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="getValue">
+					<div class="fixedFont">
+					<span class='title'>					
+						<span class="light ">{Number|String|Object}</span>
+						<b>getValue</b>()
+					</span>
+					
+					</div>
+					<div class="description">
+						Returns the value of the item in the data source that corresponds to this cell.
+NOTE: This method is typically only used by "input" cell types. When
+    setData() is called, the cell's value will be set to the |value| property of the
+    cell's data (e.g.: this.getData().value). The value that is returned by this method
+    originates from the |value| property of the cell's data.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="prepareForReuse">
+					<div class="fixedFont">
+					<span class='title'>					
+						
+						<b>prepareForReuse</b>()
+					</span>
+					
+					</div>
+					<div class="description">
+						Removes this TableViewCell from the TableView's visible cells, resets its
+    data and prepares it to be reused by the TableView by placing it in the
+    reusable cells queue.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="setData">
+					<div class="fixedFont">
+					<span class='title'>					
+						
+						<b>setData</b>(data)
+					</span>
+					
+					</div>
+					<div class="description">
+						Sets the data of this cell that corresponds to an item in the data source.
+NOTE: This method will set the cell's value to the |value| property
+    of the provided data.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont ">{Object}</span> <b>data</b>
+									
+								</dt>
+								<dd>The data of an item in the data source to assign to this cell.</dd>
+							
+							</dl>
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="setIndex">
+					<div class="fixedFont">
+					<span class='title'>					
+						
+						<b>setIndex</b>(index)
+					</span>
+					
+					</div>
+					<div class="description">
+						Sets the index of this cell that corresponds to an item in the data source.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont ">{Number}</span> <b>index</b>
+									
+								</dt>
+								<dd>The index of an item in the data source to assign to this cell.</dd>
+							
+							</dl>
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="setSelected">
+					<div class="fixedFont">
+					<span class='title'>					
+						
+						<b>setSelected</b>(value)
+					</span>
+					
+					</div>
+					<div class="description">
+						Sets a flag to indicate if this TableViewCell should be selected.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont ">{Boolean}</span> <b>value</b>
+									
+								</dt>
+								<dd>A boolean value to determine if this cell should be selected.</dd>
+							
+							</dl>
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="setValue">
+					<div class="fixedFont">
+					<span class='title'>					
+						
+						<b>setValue</b>(value)
+					</span>
+					
+					</div>
+					<div class="description">
+						Sets the value of this cell that corresponds to an item in the data source.
+NOTE: This method is typically only used by "input" cell types. When
+    setData() is called, this method is called to set the |value| property of the
+    cell's data (e.g.: this.getData().value). The value that is set by this method
+    will also replace the value of the |value| property of the cell's data.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont ">{Number|String|Object}</span> <b>value</b>
+									
+								</dt>
+								<dd>The value of an item in the data source to assign to this cell.</dd>
+							
+							</dl>
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+				
+			
+			
+
+
+		

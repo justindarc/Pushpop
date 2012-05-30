@@ -1,5 +1,8 @@
 ;'use strict';
 
+/**
+  The base Pushpop object.
+*/
 var Pushpop = window['Pushpop'] || {};
 
 /**
