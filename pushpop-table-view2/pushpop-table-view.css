@@ -753,7 +753,7 @@ div.pp-table-view-search-bar-overlay.pp-active {
   pp-subtitle-table-view-cell
 */
 ul.pp-table-view > li.pp-subtitle-table-view-cell {
-  padding: 0 0.65em 0.1em;
+  padding: 0 0.65em;
 }
 
 ul.pp-table-view > li.pp-subtitle-table-view-cell > h1 {
@@ -775,7 +775,7 @@ ul.pp-table-view > li.pp-subtitle-table-view-cell > h2 {
   pp-value-table-view-cell
 */
 ul.pp-table-view > li.pp-value-table-view-cell {
-  padding: 0.6em 0.6em 0.75em;
+  padding: 0.6em 0.6em 0.7em;
 }
 
 ul.pp-table-view > li.pp-value-table-view-cell > h1,
@@ -789,6 +789,7 @@ ul.pp-table-view > li.pp-value-table-view-cell > h2 {
 ul.pp-table-view > li.pp-value-table-view-cell > h2 {
   color: #385487;
   font-weight: normal;
+  margin: 0.1em 0 0;
   text-align: right;
 }
 
@@ -798,7 +799,7 @@ ul.pp-table-view > li.pp-value-table-view-cell > h2 {
   pp-value2-table-view-cell
 */
 ul.pp-table-view > li.pp-value2-table-view-cell {
-  padding: 0.6em 0.6em 0.75em;
+  padding: 0.6em 0.6em 0.55em;
 }
 
 ul.pp-table-view > li.pp-value2-table-view-cell > h1,
@@ -820,7 +821,7 @@ ul.pp-table-view > li.pp-value2-table-view-cell > h1::after {
 
 ul.pp-table-view > li.pp-value2-table-view-cell > h2 {
   font-size: 0.9em;
-  margin: 0.1em 0;
+  margin: 0.15em 0 0;
   width: 70%;
 }
 
@@ -830,7 +831,7 @@ ul.pp-table-view > li.pp-value2-table-view-cell > h2 {
   pp-inline-text-input-table-view-cell
 */
 ul.pp-table-view > li.pp-inline-text-input-table-view-cell {
-  padding: 0.6em 0.6em 0.75em;
+  padding: 0.55em 0.6em 0.55em;
 }
 
 ul.pp-table-view > li.pp-inline-text-input-table-view-cell > h1,
@@ -841,7 +842,7 @@ ul.pp-table-view > li.pp-inline-text-input-table-view-cell > input {
 ul.pp-table-view > li.pp-inline-text-input-table-view-cell > h1 {
   color: #516691;
   font-size: 0.75em;
-  margin: 0.25em 0 0;
+  margin: 0.35em 0 0;
   width: 30%;
   text-align: right;
 }
@@ -854,8 +855,9 @@ ul.pp-table-view > li.pp-inline-text-input-table-view-cell > input {
   background: none;
   border: none;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 1em;
-  margin: 0;
+  font-size: 0.9em;
+  font-weight: bold;
+  margin: 0.3em 0 0;
   padding: 0;
   outline: none;
   width: 70%;
