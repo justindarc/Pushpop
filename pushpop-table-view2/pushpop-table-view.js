@@ -38,7 +38,6 @@ Pushpop.TableView = function TableView(element) {
   var searchBar = null;
   if (containsSearchBar) searchBar = this._searchBar = new Pushpop.TableViewSearchBar(this);
   
-  var visibleHeight = this._visibleHeight = scrollView.getSize().height;
   var numberOfBufferedCells = this._numberOfBufferedCells;
   var selectionTimeoutDuration = this._selectionTimeoutDuration;
   var lastOffset = -scrollView.y;
@@ -68,6 +67,7 @@ Pushpop.TableView = function TableView(element) {
     var firstCellOffset = margin.top - offset;
     var lastCellOffset = firstCellOffset + (visibleCellCount * rowHeight);
     var delta = offset - lastOffset;
+    var visibleHeight = self.getVisibleHeight();
     
     lastOffset = offset;
     
@@ -226,10 +226,13 @@ Pushpop.TableView.prototype = {
   
   scrollView: null,
   
-  _visibleHeight: 0,
   _numberOfBufferedCells: 16,
   _numberOfRows: 0,
   _selectionTimeoutDuration: 250,
+  
+  _visibleHeight: 0,
+  
+  getVisibleHeight: function() { return (this._visibleHeight = (this._visibleHeight || this.scrollView.getSize().height)); },
   
   _reusableCells: null,
   
@@ -288,7 +291,7 @@ Pushpop.TableView.prototype = {
     (e.g.: Immediately following an orientation change or window resize).
     @type Number
   */
-  getCalculatedNumberOfVisibleCells: function() { return Math.ceil(this._visibleHeight / this.getRowHeight()) + this._numberOfBufferedCells },
+  getCalculatedNumberOfVisibleCells: function() { return Math.ceil(this.getVisibleHeight() / this.getRowHeight()) + this._numberOfBufferedCells },
   
   _selectedRowIndexes: null,
   

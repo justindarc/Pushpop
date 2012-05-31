@@ -55,9 +55,7 @@
                   if (result.rows.length === 0) return;
                   var data = result.rows.item(0);
                   
-                  cell.setId(data.id);
-                  cell.setValue(data.value);
-                  cell.setHtml(data.title);
+                  cell.setData(data);
                 });
               });
               
