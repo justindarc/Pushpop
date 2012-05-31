@@ -15,6 +15,12 @@ Pushpop.SplitView = function SplitView(element) {
   if (splitView) return splitView;
   
   element.splitView = this;
+  
+  var $window = $(window['addEventListener'] ? window : document.body);
+  
+  $window.bind('resize', function(evt) {
+    console.log('here');
+  })
 };
 
 Pushpop.SplitView.prototype = {
@@ -23,3 +29,5 @@ Pushpop.SplitView.prototype = {
   element: null,
   $element: null
 };
+
+$(function() { $('.pp-split-view').each(function(index, element) { new Pushpop.SplitView(element); }); });
