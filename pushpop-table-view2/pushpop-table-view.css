@@ -614,6 +614,7 @@ div.pp-table-view-search-bar > input {
   border-color: rgba(126, 142, 160, 0.75) rgba(166, 177, 188, 1) rgba(163, 175, 184, 1);
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1.1em;
+  line-height: 1em;
   margin: 0;
   padding: 0.8em 0.2em 0 2em !important;
   position: absolute;
@@ -621,6 +622,7 @@ div.pp-table-view-search-bar > input {
   right: 0.5em;
   left: 0.5em;
   width: auto;
+  height: 1.15em;
   z-index: 1;
   outline: none;
   -webkit-border-radius: 1.1em;
@@ -646,9 +648,79 @@ div.pp-table-view-search-bar > input:focus {
   right: 5.5em;
 }
 
-div.pp-table-view-search-bar > input::-webkit-input-placeholder,
-div.pp-table-view-search-bar > input:-moz-input-placeholder {
-  color: #bbb;
+div.pp-table-view-search-bar > input::-webkit-input-placeholder { color: #bbb; } /* Must be contained in its own rule */
+div.pp-table-view-search-bar > input:-moz-placeholder { color: #bbb; } /* Must be contained in its own rule */
+
+div.pp-table-view-search-bar > a.pp-table-view-search-bar-clear-button {
+  background: #b2b2b2;
+  color: #fff;
+  display: inline-block;
+  top: 0.85em;
+  right: 6.5em;
+  width: 0;
+  height: 1.4em;
+  overflow: hidden;
+  position: absolute;
+  text-decoration: none;
+  z-index: 1;
+  -webkit-border-radius: 0.7em;
+  -moz-border-radius: 0.7em;
+  border-radius: 0.7em;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  -o-transform: translate(0, 0);
+  transform: translate(0, 0);
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+  transition: none;
+}
+
+div.pp-table-view-search-bar > a.pp-table-view-search-bar-clear-button.pp-active {
+  width: 1.4em;
+  -webkit-transition: width 0s linear 0.2s;
+  -moz-transition: width 0s linear 0.2s;
+  -ms-transition: width 0s linear 0.2s;
+  -o-transition: width 0s linear 0.2s;
+  transition: width 0s linear 0.2s;
+}
+
+div.pp-table-view-search-bar > a.pp-table-view-search-bar-clear-button:active {
+  background: #80868d;
+}
+
+div.pp-table-view-search-bar > a.pp-table-view-search-bar-clear-button::before {
+  background: #fff;
+  content: '';
+  display: block;
+  position: absolute;
+  width: 0.8em;
+  height: 0.2em;
+  top: 0.65em;
+  left: 0.35em;
+  -webkit-transform: rotate(45deg) scaleX(1.15);
+  -moz-transform: rotate(45deg) scaleX(1.15);
+  -ms-transform: rotate(45deg) scaleX(1.15);
+  -o-transform: rotate(45deg) scaleX(1.15);
+  transform: rotate(45deg) scaleX(1.15);
+}
+
+div.pp-table-view-search-bar > a.pp-table-view-search-bar-clear-button::after {
+  background: #fff;
+  content: '';
+  display: block;
+  position: absolute;
+  width: 0.2em;
+  height: 0.8em;
+  top: 0.35em;
+  left: 0.65em;
+  -webkit-transform: rotate(45deg) scaleY(1.15);
+  -moz-transform: rotate(45deg) scaleY(1.15);
+  -ms-transform: rotate(45deg) scaleY(1.15);
+  -o-transform: rotate(45deg) scaleY(1.15);
+  transform: rotate(45deg) scaleY(1.15);
 }
 
 div.pp-table-view-search-bar > a.pp-table-view-search-bar-button {
@@ -673,7 +745,7 @@ div.pp-table-view-search-bar > a.pp-table-view-search-bar-button {
   color: #fff;
   text-shadow: 0 -1px 0 #000;
   text-align: center;
-  text-decoration: none !important;
+  text-decoration: none;
   cursor: default;
   z-index: 1;
   outline: none;
