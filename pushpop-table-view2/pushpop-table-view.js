@@ -737,16 +737,25 @@ Pushpop.TableViewSearchBar = function TableViewSearchBar(tableView) {
   
   var $input = this.$input = $('<input type="text" placeholder="Search"/>').appendTo($element);
   var $cancelButton = this.$cancelButton = $('<a class="pp-table-view-search-bar-button" href="#">Cancel</a>').appendTo($element);
+  var $clearButton = this.$clearButton = $('<a class="pp-table-view-search-bar-clear-button" href="#"/>').appendTo($element);
   var $overlay = this.$overlay = $('<div class="pp-table-view-search-bar-overlay"/>');
   
   var willFocus = false;
   
   $input.bind('mousedown touchstart', function(evt) { evt.stopPropagation(); });
   $input.bind('mouseup touchend', function(evt) { $input.trigger('focus'); });
-  $input.bind('focus', function(evt) { self._tableView.resetScrollView(); window.setTimeout(function() { $overlay.addClass('pp-active'); }, 0); });
-  $input.bind('blur', function(evt) { $overlay.removeClass('pp-active'); });
+  $input.bind('focus', function(evt) {
+    self._tableView.resetScrollView();
+    window.setTimeout(function() {
+      $overlay.addClass('pp-active');
+      if ($input.val()) $clearButton.addClass('pp-active');
+    }, 0);
+  });
+  $input.bind('blur', function(evt) { $overlay.removeClass('pp-active'); $clearButton.removeClass('pp-active'); });
   $cancelButton.bind('mousedown touchstart', function(evt) { evt.stopPropagation(); evt.preventDefault(); });
   $cancelButton.bind('mouseup touchend', function(evt) { $input.val(null).trigger('keyup').trigger('blur'); });
+  $clearButton.bind('mousedown touchstart', function(evt) { evt.stopPropagation(); evt.preventDefault(); });
+  $clearButton.bind('mouseup touchend', function(evt) { $input.val(null).trigger('keyup'); });
   $overlay.bind('mousedown touchstart', function(evt) { evt.stopPropagation(); evt.preventDefault(); });
   $overlay.bind('mouseup touchend', function(evt) { $input.trigger('blur'); });
   
@@ -763,8 +772,10 @@ Pushpop.TableViewSearchBar = function TableViewSearchBar(tableView) {
     
     if (!searchString) {
       $overlay.addClass('pp-active');
+      $clearButton.removeClass('pp-active');
     } else {
       $overlay.removeClass('pp-active');
+      $clearButton.addClass('pp-active');
     }
     
     if (tableView.getDataSource().shouldReloadTableForSearchString(searchString)) tableView.reloadData();
@@ -780,6 +791,7 @@ Pushpop.TableViewSearchBar.prototype = {
   $element: null,
   $input: null,
   $cancelButton: null,
+  $clearButton: null,
   $overlay: null,
   
   _tableView: null,

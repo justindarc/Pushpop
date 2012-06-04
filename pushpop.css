@@ -77,7 +77,7 @@ div.pp-navigationbar-buttons {
   Pushpop Buttons
   ===============
 */
-a.pp-button {
+.pp-button {
   background: #8da3c0; /* Old browsers */
   background: -moz-linear-gradient(top,  #8da3c0 0%, #5877a2 50%, #476999 51%, #496b9a 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#8da3c0), color-stop(50%,#5877a2), color-stop(51%,#476999), color-stop(100%,#496b9a)); /* Chrome,Safari4+ */
@@ -88,9 +88,12 @@ a.pp-button {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8da3c0', endColorstr='#496b9a',GradientType=0 ); /* IE6-9 */
 	border: 1px solid rgba(0, 0, 0, 0.5);
 	color: #fff;
+	cursor: pointer;
 	display: inline-block;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 0.9em;
 	font-weight: bold;
+	line-height: 1.4em;
 	padding: 0.55em 0.9em 0.5em;
 	margin: 0.5em;
 	min-width: 2.5em;
@@ -113,7 +116,11 @@ a.pp-button {
 	transition: opacity 0.2s ease;
 }
 
-a.pp-button:active {
+.pp-button:hover {
+  text-decoration: none;
+}
+
+.pp-button:active {
   background: #7c87a4; /* Old browsers */
   background: -moz-linear-gradient(top,  #7c87a4 0%, #3a4e78 50%, #253c6a 51%, #263e6c 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#7c87a4), color-stop(50%,#3a4e78), color-stop(51%,#253c6a), color-stop(100%,#263e6c)); /* Chrome,Safari4+ */
@@ -124,9 +131,9 @@ a.pp-button:active {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7c87a4', endColorstr='#263e6c',GradientType=0 ); /* IE6-9 */
 }
 
-a.pp-button + a.pp-button { margin-left: 0; } /* Correct the spacing between consecutive buttons. */
+.pp-button + .pp-button { margin-left: 0; } /* Correct the spacing between consecutive buttons. */
 
-a.pp-button-style-black {
+.pp-button-style-black {
   background: #2d2d2d; /* Old browsers */
   background: -moz-linear-gradient(top,  #7e7e7e 0%, #404040 50%, #2d2d2d 51%, #272727 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#7e7e7e), color-stop(50%,#404040), color-stop(51%,#2d2d2d), color-stop(100%,#272727)); /* Chrome,Safari4+ */
@@ -137,7 +144,7 @@ a.pp-button-style-black {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7e7e7e', endColorstr='#272727',GradientType=0 ); /* IE6-9 */
 }
 
-a.pp-button-style-black:active {
+.pp-button-style-black:active {
   background: #5e5e5e; /* Old browsers */
   background: -moz-linear-gradient(top,  #5e5e5e 0%, #202020 50%, #0d0d0d 51%, #070707 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#5e5e5e), color-stop(50%,#202020), color-stop(51%,#0d0d0d), color-stop(100%,#070707)); /* Chrome,Safari4+ */
@@ -148,7 +155,7 @@ a.pp-button-style-black:active {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#5e5e5e', endColorstr='#070707',GradientType=0 ); /* IE6-9 */
 }
 
-a.pp-button-style-blue {
+.pp-button-style-blue {
   background: #7a9de9; /* Old browsers */
   background: -moz-linear-gradient(top,  #7a9de9 0%, #376fe0 50%, #2260dd 51%, #2362dd 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#7a9de9), color-stop(50%,#376fe0), color-stop(51%,#2260dd), color-stop(100%,#2362dd)); /* Chrome,Safari4+ */
@@ -159,7 +166,7 @@ a.pp-button-style-blue {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7a9de9', endColorstr='#2362dd',GradientType=0 ); /* IE6-9 */
 }
 
-a.pp-button-style-blue:active {
+.pp-button-style-blue:active {
   background: #7c87a4; /* Old browsers */
   background: -moz-linear-gradient(top,  #7c87a4 0%, #3a4e78 50%, #253c6a 51%, #263e6c 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#7c87a4), color-stop(50%,#3a4e78), color-stop(51%,#253c6a), color-stop(100%,#263e6c)); /* Chrome,Safari4+ */
@@ -170,7 +177,7 @@ a.pp-button-style-blue:active {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7c87a4', endColorstr='#263e6c',GradientType=0 ); /* IE6-9 */
 }
 
-a.pp-button-style-green {
+.pp-button-style-green {
   background: #61b860; /* Old browsers */
   background: -moz-linear-gradient(top,  #61b860 0%, #279f25 50%, #058f02 51%, #079004 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#61b860), color-stop(50%,#279f25), color-stop(51%,#058f02), color-stop(100%,#079004)); /* Chrome,Safari4+ */
@@ -181,7 +188,7 @@ a.pp-button-style-green {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#61b860', endColorstr='#079004',GradientType=0 ); /* IE6-9 */
 }
 
-a.pp-button-style-green:active {
+.pp-button-style-green:active {
   background: #217840; /* Old browsers */
   background: -moz-linear-gradient(top,  #217840 0%, #075f05 50%, #034f00 51%, #055002 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#217840), color-stop(50%,#075f05), color-stop(51%,#034f00), color-stop(100%,#055002)); /* Chrome,Safari4+ */
@@ -192,7 +199,7 @@ a.pp-button-style-green:active {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#217840', endColorstr='#055002',GradientType=0 ); /* IE6-9 */
 }
 
-a.pp-button-style-red {
+.pp-button-style-red {
   background: #ed8288; /* Old browsers */
   background: -moz-linear-gradient(top,  #ed8288 0%, #c83640 50%, #be1623 51%, #bd1421 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ed8288), color-stop(50%,#c83640), color-stop(51%,#be1623), color-stop(100%,#bd1421)); /* Chrome,Safari4+ */
@@ -203,7 +210,7 @@ a.pp-button-style-red {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ed8288', endColorstr='#bd1421',GradientType=0 ); /* IE6-9 */
 }
 
-a.pp-button-style-red:active {
+.pp-button-style-red:active {
   background: #a65960; /* Old browsers */
   background: -moz-linear-gradient(top,  #a65960 0%, #94262f 50%, #8d141e 51%, #8d131e 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#a65960), color-stop(50%,#94262f), color-stop(51%,#8d141e), color-stop(100%,#8d131e)); /* Chrome,Safari4+ */
