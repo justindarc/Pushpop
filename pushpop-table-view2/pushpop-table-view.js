@@ -545,7 +545,7 @@ Pushpop.TableViewDataSource = function TableViewDataSource(dataSet) {
   // Default implementation if using an in-memory data set.
   this.getCellForRowAtIndex = function(tableView, index) {
     var data = this.getFilteredDataSet()[index];
-    var reuseIdentifier = data.reuseIdentifier || 'pp-table-view-cell-default';
+    var reuseIdentifier = data.reuseIdentifier || this.getDefaultReuseIdentifier();
     var cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier);
     
     cell.setIndex(index);
@@ -647,8 +647,25 @@ Pushpop.TableViewDataSource.prototype = {
   
   /**
     Sets the TableView this data source should be bound to.
+    @param {Pushpop.TableView} tableView The TableView to bind this data source to.
   */
   setTableView: function(tableView) { this._tableView = tableView; },
+  
+  _defaultReuseIdentifier: 'pp-table-view-cell-default',
+  
+  /**
+    Returns the default reuse identifier that this data source will use when a
+    reuse identifier is not specified for a particular item.
+    @type String
+  */
+  getDefaultReuseIdentifier: function() { return this._defaultReuseIdentifier; },
+  
+  /**
+    Sets the default reuse identifier that this data source will use when a
+    reuse identifier is not specified for a particular item.
+    @param {String} reuseIdentifier The reuse identifier to set as default.
+  */
+  setDefaultReuseIdentifier: function(reuseIdentifier) { this._defaultReuseIdentifier = reuseIdentifier; },
   
   _dataSet: null,
   
@@ -662,6 +679,7 @@ Pushpop.TableViewDataSource.prototype = {
   /**
     Sets the in-memory data set this data source should provide to the table view.
     @description NOTE: This may not be utilized by a custom data source.
+    @param {Array} dataSet The set of data that this data source should provide to the table view.
   */
   setDataSet: function(dataSet) {
     this._dataSet = dataSet;

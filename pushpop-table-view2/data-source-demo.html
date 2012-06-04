@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<title>Pushpop TableView Data Source Demo</title>
+	<link rel="stylesheet" type="text/css" href="../externals/scrollkit/scrollkit.css">
+	<link rel="stylesheet" type="text/css" href="../pushpop.css">
+	<link rel="stylesheet" type="text/css" href="pushpop-table-view.css">
+	<script type="text/javascript" src="../jquery-1.7.1.js"></script>
+	<script type="text/javascript" src="../externals/scrollkit/scrollkit.js"></script>
+	<script type="text/javascript" src="../pushpop.js"></script>
+	<script type="text/javascript" src="pushpop-table-view.js"></script>
+	<script type="text/javascript">
+    $(function() {
+      var tableView = $('.pp-table-view')[0].tableView;
+      
+      $.getJSON('sample-data/big-data-100.json', function(dataSet) {
+        for (var i = 0, length = dataSet.length; i < length; i++) {
+          dataSet[i].subtitle = 'This is a subtitle for row ' + i;
+        }
+        
+        var dataSource = new Pushpop.TableViewDataSource(dataSet);
+        dataSource.setDefaultReuseIdentifier('pp-subtitle-table-view-cell');
+        
+        tableView.setDataSource(dataSource);
+      });
+    });
+	</script>
+</head>
+<body>
+  <div class="pp-view-stack">  
+    <div class="pp-view sk-scroll-view" id="detail-view-root" data-always-bounce-vertical="true">
+      <ul class="pp-table-view" data-contains-search-bar="true">
+        
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
