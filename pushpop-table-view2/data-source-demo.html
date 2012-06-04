@@ -13,17 +13,15 @@
 	<script type="text/javascript" src="../pushpop.js"></script>
 	<script type="text/javascript" src="pushpop-table-view.js"></script>
 	<script type="text/javascript">
+	  var tableView;
+	  
     $(function() {
-      var tableView = $('.pp-table-view')[0].tableView;
+      tableView = $('.pp-table-view')[0].tableView;
       
-      $.getJSON('sample-data/big-data-100.json', function(dataSet) {
-        for (var i = 0, length = dataSet.length; i < length; i++) {
-          dataSet[i].subtitle = 'This is a subtitle for row ' + i;
-        }
-        
+      $.getJSON('sample-data/big-data-20.json', function(dataSet) {        
         var dataSource = new Pushpop.TableViewDataSource(dataSet);
-        dataSource.setDefaultReuseIdentifier('pp-subtitle-table-view-cell');
         
+        dataSource.setDefaultReuseIdentifier('pp-subtitle-table-view-cell');
         tableView.setDataSource(dataSource);
       });
     });

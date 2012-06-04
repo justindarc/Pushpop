@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<title>Pushpop TableView Google Maps Demo</title>
+	<link rel="stylesheet" type="text/css" href="../externals/scrollkit/scrollkit.css">
+	<link rel="stylesheet" type="text/css" href="../pushpop.css">
+	<link rel="stylesheet" type="text/css" href="pushpop-table-view.css">
+	<script type="text/javascript" src="../jquery-1.7.1.js"></script>
+	<script type="text/javascript" src="../externals/scrollkit/scrollkit.js"></script>
+	<script type="text/javascript" src="../pushpop.js"></script>
+	<script type="text/javascript" src="pushpop-table-view.js"></script>
+	<script type="text/javascript">
+	  var tableView;
+    
+	  // Constructor for the MapsDirectionTableViewCell "sub-class" of Pushpop.TableViewCell.
+	  var MapsDirectionTableViewCell = function MapsDirectionTableViewCell(reuseIdentifier) {
+	    
+	    // Call the "super" constructor.
+      Pushpop.TableViewCell.prototype.constructor.apply(this, arguments);
+      
+      // Custom initialization here...
+      var $element = this.$element;
+      
+      // Assign a custom CSS class to this cell to add specific styles to it.
+      $element.addClass('maps-direction-table-view-cell');
+	  };
+	  
+	  // Inherit from Pushpop.TableViewCell using the 'maps-direction-table-view-cell' custom reuse identifier.
+    MapsDirectionTableViewCell.prototype = new Pushpop.TableViewCell('maps-direction-table-view-cell');
+    
+    // Override the constructor for new instances of MapsDirectionTableViewCell.
+    MapsDirectionTableViewCell.prototype.constructor = MapsDirectionTableViewCell;
+    
+    // Override the .draw() method.
+    MapsDirectionTableViewCell.prototype.draw = function() {
+      var data = this.getData();
+      this.$element.html('<label>' + data.stepNumber + '</label><div><h2>Drive ' + data.distance.text + ' (approx. ' + data.duration.text + ') then</h2><h1>' + data.html_instructions + '</h1></div>');
+    };
+    
+    // Register the prototype for MapsDirectionTableViewCell as a reusable cell type.
+    Pushpop.TableView.registerReusableCellPrototype(MapsDirectionTableViewCell.prototype);
+	  
+    $(function() {
+      tableView = $('#directions-table-view')[0].tableView;
+      
+      var origin = '1405 Eisenhower Boulevard, Johnstown, PA';
+      var destination = '3133 New Germany Road, Ebensburg, PA';
+      
+      var directionsApi = 'http://maps.googleapis.com/maps/api/directions/json?sensor=true&origin=' + origin + '&destination=' + destination;
+      
+      $.getJSON(directionsApi, function(data) {
+        var dataSet = data.routes[0].legs[0].steps;
+        
+        for (var i = 0, length = dataSet.length; i < length; i++) dataSet[i].stepNumber = i + 1;
+        
+        var dataSource = new Pushpop.TableViewDataSource(dataSet);
+        
+        dataSource.setDefaultReuseIdentifier('maps-direction-table-view-cell');
+        dataSource.setFilterFunction(function(regExp, item) {
+          return regExp.test(item.html_instructions);
+        });
+        
+        tableView.setDataSource(dataSource);
+      });
+    });
+	</script>
+	<style type="text/css">
+	
+	  /* Style the custom table view cell for displaying Google Maps directions */
+  	ul.pp-table-view > li.maps-direction-table-view-cell {
+      padding: 0 0.65em;
+    }
+    
+    /* Style the step number */
+    ul.pp-table-view > li.maps-direction-table-view-cell > label {
+      color: #808080;
+      float: left;
+      font-size: 1.5em;
+      font-weight: normal;
+      padding: 1em 0.5em 1em 0;
+    }
+    
+    /* Style the container for the duration/distance text and HTML instructions */
+    ul.pp-table-view > li.maps-direction-table-view-cell > div {
+      float: left;
+    }
+    
+    /* Style the duration/distance text */
+    ul.pp-table-view > li.maps-direction-table-view-cell > div > h2 {
+      color: #808080;
+      display: block;
+      font-weight: normal;
+      font-size: 0.8em;
+      margin: 0.2em 0 0;
+    }
+    
+    /* Style the HTML instructions */
+    ul.pp-table-view > li.maps-direction-table-view-cell > div > h1 {
+      font-size: 1.05em;
+      margin: 0;
+    }
+	</style>
+</head>
+<body>
+  <div class="pp-view-stack">  
+    <div class="pp-view sk-scroll-view" id="detail-view-root" data-always-bounce-vertical="true">
+      <ul id="directions-table-view" class="pp-table-view" data-contains-search-bar="true">
+        
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
