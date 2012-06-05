@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<title>Pushpop TableView Accessories Demo</title>
+	<link rel="stylesheet" type="text/css" href="../externals/scrollkit/scrollkit.css">
+	<link rel="stylesheet" type="text/css" href="../pushpop.css">
+	<link rel="stylesheet" type="text/css" href="../pushpop-navigationbar/pushpop-navigationbar.css">
+	<link rel="stylesheet" type="text/css" href="pushpop-table-view.css">
+	<script type="text/javascript" src="../jquery-1.7.1.js"></script>
+	<script type="text/javascript" src="../externals/scrollkit/scrollkit.js"></script>
+	<script type="text/javascript" src="../pushpop.js"></script>
+	<script type="text/javascript" src="../pushpop-navigationbar/pushpop-navigationbar.js"></script>
+	<script type="text/javascript" src="pushpop-table-view.js"></script>
+	<script type="text/javascript">
+	  $(function() {
+	    var $tableView = $('#accessories-table-view');
+	    var tableView = $tableView[0].tableView;
+	    
+	    var dataSet = [
+        {
+          title: 'Row 0',
+          accessoryType: null
+        },
+        {
+          title: 'Row 1',
+          accessoryType: 'pp-table-view-cell-accessory-disclosure-indicator'
+        },
+        {
+          title: 'Row 2',
+          accessoryType: 'pp-table-view-cell-accessory-detail-disclosure-button'
+        },
+        {
+          title: 'Row 3',
+          accessoryType: 'pp-table-view-cell-accessory-checkmark'
+        }
+      ];
+      
+      var dataSource = new Pushpop.TableViewDataSource(dataSet);
+      tableView.setDataSource(dataSource);
+      
+      $tableView.bind(Pushpop.TableView.EventType.AccessoryButtonTappedForRowWithIndex, function(evt) {
+        window.alert('Accessory button tapped for row with index: ' + evt.index);
+      });
+	  });
+	</script>
+</head>
+<body>
+  <div class="pp-view-stack">
+    <div class="pp-navigationbar" data-tap-to-top="true"></div>
+    <div class="pp-view sk-scroll-view" id="detail-view-root" data-view-title="TableView Accessories Demo" data-always-bounce-vertical="true">
+      <ul id="accessories-table-view" class="pp-table-view" data-contains-search-bar="true">
+        
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
