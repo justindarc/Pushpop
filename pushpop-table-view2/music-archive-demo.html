@@ -35,18 +35,8 @@
       var showsTableView = $showsTableView[0].tableView;
       var songsTableView = $songsTableView[0].tableView;
       
-      $.get('http://archive.org/browse.php?collection=etree&field=%2Fmetadata%2Fcreator', function(responseHtml) {
-        var dataSet = [];
-        
-        $(responseHtml).find('#browse').find('li').each(function(index, element) {
-          var $element = $(element);
-          dataSet.push({
-            id: index + 1,
-            title: $element.children('a:first-child').html(),
-            href: $element.children('a:last-child').attr('href')
-          });
-        });
-        
+      $.getJSON('http://archive.org/advancedsearch.php?q=mediatype%3A%22collection%22+AND+%28collection%3A%22etree%22%29&fl%5B%5D=identifier&fl%5B%5D=title&sort%5B%5D=titleSorter+asc&sort%5B%5D=&sort%5B%5D=&rows=99999&page=1&output=json&callback=?', function(responseData) {
+        var dataSet = responseData.response.docs;
         var dataSource = new Pushpop.TableViewDataSource(dataSet);
         artistsTableView.setDataSource(dataSource);
       });
@@ -56,8 +46,8 @@
         var dataSet = dataSource.getFilteredDataSet();
         var data = dataSet[evt.index];
         
-        var query = data.href.split('=')[1];
-        var url = 'http://archive.org/advancedsearch.php?q=' + query + '&rows=99999&page=1&output=json';
+        var query = 'collection%3A' + data.identifier;
+        var url = 'http://archive.org/advancedsearch.php?q=' + query + '&rows=99999&page=1&output=json&callback=?';
         
         $.getJSON(url, function(responseData) {
           var dataSet = responseData.response.docs;
@@ -74,7 +64,7 @@
         var data = dataSet[evt.index];
         
         var identifier = data.identifier;
-        var url = 'http://archive.org/details/' + identifier + '?output=json';
+        var url = 'http://archive.org/details/' + identifier + '?output=json&callback=?';
         
         $.getJSON(url, function(responseData) {
           var dataSet = [];
@@ -105,9 +95,7 @@
         var filename = data.filename;
         var url = 'http://archive.org/download/' + filename; 
         
-        $audio.attr('src', url);
-        $audio[0].play();
-        console.log(data);
+        $audio.attr('src', url)[0].play();
       });
     });
 	</script>
