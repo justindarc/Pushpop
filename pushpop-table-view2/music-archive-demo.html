@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<title>Pushpop TableView Music Archive Demo</title>
+	<link rel="stylesheet" type="text/css" href="../externals/scrollkit/scrollkit.css">
+	<link rel="stylesheet" type="text/css" href="../pushpop.css">
+	<link rel="stylesheet" type="text/css" href="../pushpop-navigationbar/pushpop-navigationbar.css">
+	<link rel="stylesheet" type="text/css" href="pushpop-table-view.css">
+	<script type="text/javascript" src="../jquery-1.7.1.js"></script>
+	<script type="text/javascript" src="../externals/scrollkit/scrollkit.js"></script>
+	<script type="text/javascript" src="../pushpop.js"></script>
+	<script type="text/javascript" src="../pushpop-navigationbar/pushpop-navigationbar.js"></script>
+	<script type="text/javascript" src="pushpop-table-view.js"></script>
+	<script type="text/javascript">
+    $(function() {
+      var $audio = $('<audio/>').appendTo(document.body);
+      
+      var $viewStack = $('#view-stack');
+      var viewStack = $viewStack[0].viewStack;
+      
+      var $artistsView = $('#artists-view');
+      var $showsView = $('#shows-view');
+      var $songsView = $('#songs-view');
+      var artistsView = $artistsView[0].view;
+      var showsView = $showsView[0].view;
+      var songsView = $songsView[0].view;
+      
+      var $artistsTableView = $('#artists-table-view');
+      var $showsTableView = $('#shows-table-view');
+      var $songsTableView = $('#songs-table-view');
+      var artistsTableView = $artistsTableView[0].tableView;
+      var showsTableView = $showsTableView[0].tableView;
+      var songsTableView = $songsTableView[0].tableView;
+      
+      $.get('http://archive.org/browse.php?collection=etree&field=%2Fmetadata%2Fcreator', function(responseHtml) {
+        var dataSet = [];
+        
+        $(responseHtml).find('#browse').find('li').each(function(index, element) {
+          var $element = $(element);
+          dataSet.push({
+            id: index + 1,
+            title: $element.children('a:first-child').html(),
+            href: $element.children('a:last-child').attr('href')
+          });
+        });
+        
+        var dataSource = new Pushpop.TableViewDataSource(dataSet);
+        artistsTableView.setDataSource(dataSource);
+      });
+      
+      $artistsTableView.bind(Pushpop.TableView.EventType.DidSelectRowAtIndex, function(evt) {
+        var dataSource = evt.tableView.getDataSource();
+        var dataSet = dataSource.getFilteredDataSet();
+        var data = dataSet[evt.index];
+        
+        var query = data.href.split('=')[1];
+        var url = 'http://archive.org/advancedsearch.php?q=' + query + '&rows=99999&page=1&output=json';
+        
+        $.getJSON(url, function(responseData) {
+          var dataSet = responseData.response.docs;
+          var dataSource = new Pushpop.TableViewDataSource(dataSet);
+          showsTableView.setDataSource(dataSource);
+        });
+        
+        viewStack.push(showsView);
+      });
+      
+      $showsTableView.bind(Pushpop.TableView.EventType.DidSelectRowAtIndex, function(evt) {
+        var dataSource = evt.tableView.getDataSource();
+        var dataSet = dataSource.getFilteredDataSet();
+        var data = dataSet[evt.index];
+        
+        var identifier = data.identifier;
+        var url = 'http://archive.org/details/' + identifier + '?output=json';
+        
+        $.getJSON(url, function(responseData) {
+          var dataSet = [];
+          
+          var regExp = new RegExp('.mp3$', 'i');
+          var files = responseData.files;
+          
+          for (var file in files) {
+            if (!regExp.test(file)) continue;
+            
+            files[file].filename = identifier + file;
+            files[file].title = (files[file].title || ('Track ' + files[file].track) || '').replace(/\\/g, '');
+            dataSet.push(files[file]);
+          }
+          
+          var dataSource = new Pushpop.TableViewDataSource(dataSet);
+          songsTableView.setDataSource(dataSource);
+        });
+        
+        viewStack.push(songsView);
+      });
+      
+      $songsTableView.bind(Pushpop.TableView.EventType.DidSelectRowAtIndex, function(evt) {
+        var dataSource = evt.tableView.getDataSource();
+        var dataSet = dataSource.getFilteredDataSet();
+        var data = dataSet[evt.index];
+        
+        var filename = data.filename;
+        var url = 'http://archive.org/download/' + filename; 
+        
+        $audio.attr('src', url);
+        $audio[0].play();
+        console.log(data);
+      });
+    });
+	</script>
+</head>
+<body>
+  <div class="pp-view-stack" id="view-stack">
+    <div class="pp-navigationbar" data-tap-to-top="true"></div>
+    <div class="pp-view sk-scroll-view" id="artists-view" data-view-title="Artists" data-always-bounce-vertical="true">
+      <ul class="pp-table-view" id="artists-table-view" data-contains-search-bar="true">
+        
+      </ul>
+    </div>
+    <div class="pp-view sk-scroll-view" id="shows-view" data-view-title="Shows" data-always-bounce-vertical="true">
+      <ul class="pp-table-view" id="shows-table-view" data-contains-search-bar="true">
+        
+      </ul>
+    </div>
+    <div class="pp-view sk-scroll-view" id="songs-view" data-view-title="Shows" data-always-bounce-vertical="true">
+      <ul class="pp-table-view" id="songs-table-view" data-contains-search-bar="true">
+        
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
