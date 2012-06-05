@@ -121,6 +121,16 @@ Pushpop.TableView = function TableView(element) {
   // Handle mouse/touch events to allow the user to make row selections.
   var isPendingSelection = false, selectionTimeout = null;
 
+  $element.delegate('span.pp-table-view-cell-accessory', !!('ontouchstart' in window) ? 'touchstart' : 'mousedown', function(evt) {
+    var tableViewCell = $(this).parent()[0].tableViewCell;
+    if (!tableViewCell) return;
+    
+    $element.trigger($.Event(Pushpop.TableView.EventType.AccessoryButtonTappedForRowWithIndex, {
+      tableView: self,
+      index: tableViewCell.getIndex()
+    }));
+  });
+
   $element.delegate('li', !!('ontouchstart' in window) ? 'touchstart' : 'mousedown', function(evt) {
     isPendingSelection = true;
     
@@ -197,7 +207,8 @@ Pushpop.TableView = function TableView(element) {
 
 Pushpop.TableView.EventType = {
   DidSelectRowAtIndex: 'Pushpop:TableView:DidSelectRowAtIndex',
-  DidDeselectRowAtIndex: 'Pushpop:TableView:DidDeselectRowAtIndex'
+  DidDeselectRowAtIndex: 'Pushpop:TableView:DidDeselectRowAtIndex',
+  AccessoryButtonTappedForRowWithIndex: 'Pushpop:TableView:AccessoryButtonTappedForRowWithIndex'
 };
 
 Pushpop.TableView._reusableCellPrototypes = {};
@@ -549,6 +560,7 @@ Pushpop.TableViewDataSource = function TableViewDataSource(dataSet) {
     var cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier);
     
     cell.setIndex(index);
+    cell.setAccessoryType(data.accessoryType);
     cell.setData(data);
     
     return cell;
@@ -828,6 +840,13 @@ Pushpop.TableViewCell = function TableViewCell(reuseIdentifier) {
   element.tableViewCell = this;
 };
 
+Pushpop.TableViewCell.AccessoryType = {
+  None: 'pp-table-view-cell-accessory-none',
+  DisclosureIndicator: 'pp-table-view-cell-accessory-disclosure-indicator',
+  DetailDisclosureButton: 'pp-table-view-cell-accessory-detail-disclosure-button',
+  Checkmark: 'pp-table-view-cell-accessory-checkmark'
+};
+
 Pushpop.TableViewCell.prototype = {
   constructor: Pushpop.TableViewCell,
   
@@ -844,7 +863,7 @@ Pushpop.TableViewCell.prototype = {
   draw: function() {
     var data = this.getData();
     var title = $.trim((data) ? data.title : '&nbsp;') || '&nbsp;';
-    this.$element.html(title);
+    this.$element.html(title + this.getAccessoryHtml());
   },
   
   /**
@@ -875,6 +894,7 @@ Pushpop.TableViewCell.prototype = {
     
     this.setSelected(false);
     this.setIndex(-1);
+    this.setAccessoryType(null);
     this.setData(null);
   },
   
@@ -894,8 +914,8 @@ Pushpop.TableViewCell.prototype = {
   */
   setData: function(data) {
     this._data = data;
-    if (data) this.draw();
     this.setValue((data && data.value) ? data.value : null);
+    if (data) this.draw();
   },
   
   _value: null,
@@ -931,6 +951,19 @@ Pushpop.TableViewCell.prototype = {
     @type String
   */
   getReuseIdentifier: function() { return this._reuseIdentifier; },
+  
+  _accessoryType: null,
+  
+  getAccessoryType: function() { return this._accessoryType; },
+  
+  setAccessoryType: function(accessoryType) {    
+    this._accessoryType = accessoryType;
+  },
+  
+  getAccessoryHtml: function() {
+    var accessoryType = this.getAccessoryType();
+    return '<span class="' + 'pp-table-view-cell-accessory' + ((accessoryType) ? (' ' + accessoryType) : '') + '"/>';
+  },
   
   _index: -1,
   
@@ -993,7 +1026,7 @@ Pushpop.SubtitleTableViewCell.prototype.draw = function() {
   var data = this.getData();
   var title = $.trim((data) ? data.title : '&nbsp;') || '&nbsp;';
   var subtitle = $.trim((data) ? data.subtitle : '&nbsp;') || '&nbsp;';
-  this.$element.html('<h1>' + title + '</h1><h2>' + subtitle + '</h2>');
+  this.$element.html('<h1>' + title + '</h1><h2>' + subtitle + '</h2>' + this.getAccessoryHtml());
 };
 
 // Register the prototype for Pushpop.SubtitleTableViewCell as a reusable cell type.
@@ -1022,7 +1055,7 @@ Pushpop.ValueTableViewCell.prototype.draw = function() {
   var data = this.getData();
   var title = $.trim((data) ? data.title : '&nbsp;') || '&nbsp;';
   var value = $.trim((data) ? data.value : '&nbsp;') || '&nbsp;';
-  this.$element.html('<h1>' + title + '</h1><h2>' + value + '</h2>');
+  this.$element.html('<h1>' + title + '</h1><h2>' + value + '</h2>' + this.getAccessoryHtml());
 };
 
 // Register the prototype for Pushpop.ValueTableViewCell as a reusable cell type.
@@ -1051,7 +1084,7 @@ Pushpop.Value2TableViewCell.prototype.draw = function() {
   var data = this.getData();
   var title = $.trim((data) ? data.title : '&nbsp;') || '&nbsp;';
   var value = $.trim((data) ? data.value : '&nbsp;') || '&nbsp;';
-  this.$element.html('<h1>' + title + '</h1><h2>' + value + '</h2>');
+  this.$element.html('<h1>' + title + '</h1><h2>' + value + '</h2>' + this.getAccessoryHtml());
 };
 
 // Register the prototype for Pushpop.Value2TableViewCell as a reusable cell type.
@@ -1087,7 +1120,7 @@ Pushpop.InlineTextInputTableViewCell.prototype.draw = function() {
   var value = $.trim((data) ? data.value : '') || '';
   var isPassword = (data) ? (data.password || 'false') : 'false';
   isPassword = isPassword !== 'false';
-  this.$element.html('<h1>' + title + '</h1><input type="' + (isPassword ? 'password' : 'text') + '" value="' + value + '"/>');
+  this.$element.html('<h1>' + title + '</h1><input type="' + (isPassword ? 'password' : 'text') + '" value="' + value + '"/>' + this.getAccessoryHtml());
 };
 
 Pushpop.InlineTextInputTableViewCell.prototype.setSelected = function(value) {

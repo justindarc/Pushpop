@@ -16,7 +16,7 @@
 	<script type="text/javascript" src="pushpop-table-view.js"></script>
 	<script type="text/javascript">
     $(function() {
-      var $audio = $('<audio/>').appendTo(document.body);
+      var $audio;
       
       var $viewStack = $('#view-stack');
       var viewStack = $viewStack[0].viewStack;
@@ -95,7 +95,10 @@
         var filename = data.filename;
         var url = 'http://archive.org/download/' + filename; 
         
-        $audio.attr('src', url)[0].play();
+        if ($audio) $audio.remove();
+        
+        $audio = $('<audio src="' + url + '"/>').appendTo(document.body);
+        $audio[0].play();
       });
     });
 	</script>
@@ -113,7 +116,7 @@
         
       </ul>
     </div>
-    <div class="pp-view sk-scroll-view" id="songs-view" data-view-title="Shows" data-always-bounce-vertical="true">
+    <div class="pp-view sk-scroll-view" id="songs-view" data-view-title="Songs" data-always-bounce-vertical="true">
       <ul class="pp-table-view" id="songs-table-view" data-contains-search-bar="true">
         
       </ul>
