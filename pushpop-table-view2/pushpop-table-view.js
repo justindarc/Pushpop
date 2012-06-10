@@ -754,10 +754,34 @@ Pushpop.TableViewSearchBar = function TableViewSearchBar(tableView) {
   
   var willFocus = false;
   
-  $input.bind('mousedown touchstart', function(evt) { evt.stopPropagation(); });
-  $input.bind('mouseup touchend', function(evt) { $input.trigger('focus'); });
+  $input.bind('mousedown touchstart', function(evt) {
+    if ($input.is(':focus')) {
+      evt.stopPropagation();
+      return;
+    }
+    
+    evt.preventDefault();
+    willFocus = true;
+  });
+  $input.bind('mousemove touchmove', function(evt) { willFocus = false; });
+  $input.bind('mouseup touchend', function(evt) {
+    if ($input.is(':focus')) {
+      evt.stopPropagation();
+      return;
+    }
+    
+    evt.preventDefault();
+    if (willFocus) $input.trigger('focus');
+  });
   $input.bind('focus', function(evt) {
+    if (!willFocus) {
+      $input.trigger('blur');
+      return false;
+    }
+    
+    willFocus = false;
     self._tableView.resetScrollView();
+    
     window.setTimeout(function() {
       $overlay.addClass('pp-active');
       if ($input.val()) $clearButton.addClass('pp-active');
