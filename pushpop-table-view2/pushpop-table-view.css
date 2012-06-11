@@ -15,9 +15,9 @@ ul.pp-table-view > li {
   border: 1px solid #cacaca;
   border-top: 1px solid #fdfdfd;
   color: #000;
+  line-height: 1.2em;
   padding: 0.7em 0.6em 0.7em;
   position: relative;
-  text-shadow: #fff 0 1px 0;
   font-size: 1em;
   font-weight: bold;
   zoom: 1; /* Trigger "hasLayout" in IE */
@@ -26,45 +26,6 @@ ul.pp-table-view > li {
   -ms-transform: translate(0, 0);
   -o-transform: translate(0, 0);
   transform: translate(0, 0);
-}
-
-/* Clearfix */
-ul.pp-table-view > li::before,
-ul.pp-table-view > li::after { content: ''; display: table; }
-ul.pp-table-view > li::after { clear: both; }
-
-ul.pp-table-view > li:first-child, ul.pp-table-view > li:first-child > a,
-ul.pp-table-view > li.pp-table-view-header + li, ul.pp-table-view > li.pp-table-view-header + li > a {
-  -webkit-border-radius: 0.65em 0.65em 0 0;
-  -moz-border-radius-topleft: 0.65em;
-  -moz-border-radius-topright: 0.65em;
-  -moz-border-radius-bottomright: 0;
-  -moz-border-radius-bottomleft: 0;
-  border-radius: 0.65em 0.65em 0 0;
-}
-
-ul.pp-table-view > li:last-child, ul.pp-table-view > li:last-child > a,
-ul.pp-table-view > li.last-child, ul.pp-table-view > li.last-child > a {
-  -webkit-border-radius: 0 0 0.65em 0.65em;
-  -moz-border-radius-topleft: 0;
-  -moz-border-radius-topright: 0;
-  -moz-border-radius-bottomright: 0.65em;
-  -moz-border-radius-bottomleft: 0.65em;
-  border-radius: 0 0 0.65em 0.65em;
-}
-
-ul.pp-table-view > li:last-child:first-child, ul.pp-table-view > li:last-child:first-child > a,
-ul.pp-table-view > li.last-child:first-child, ul.pp-table-view > li.last-child:first-child > a,
-ul.pp-table-view > li.pp-table-view-header + li:last-child, ul.pp-table-view > li.pp-table-view-header + li:last-child > a,
-ul.pp-table-view > li.pp-table-view-header + li.last-child, ul.pp-table-view > li.pp-table-view-header + li.last-child > a {
-  -webkit-border-radius: 0.65em;
-  -moz-border-radius: 0.65em;
-  border-radius: 0.65em;
-}
-
-ul.pp-table-view > li:first-child, ul.pp-table-view > li.pp-table-view-selected-state:first-child,
-ul.pp-table-view > li.pp-table-view-header + li, ul.pp-table-view > li.pp-table-view-header + li.pp-table-view-selected-state {
-  border-top: 1px solid #cacaca;
 }
 
 ul.pp-table-view > li.pp-table-view-selected-state {
@@ -81,8 +42,44 @@ ul.pp-table-view > li.pp-table-view-selected-state {
   text-shadow: none;
 }
 
-ul.pp-table-view > li.pp-table-view-selected-state > a {
-  color: #fff;
+ul.pp-table-view > li.pp-table-view-selected-state * {
+  color: #fff !important;
+}
+
+/* Clearfix */
+ul.pp-table-view > li::before,
+ul.pp-table-view > li::after { content: ''; display: table; }
+ul.pp-table-view > li::after { clear: both; }
+
+/* Headers and Footers */
+ul.pp-table-view > li:first-child, ul.pp-table-view > li.pp-table-view-header + li {
+  -webkit-border-radius: 0.65em 0.65em 0 0;
+  -moz-border-radius-topleft: 0.65em;
+  -moz-border-radius-topright: 0.65em;
+  -moz-border-radius-bottomright: 0;
+  -moz-border-radius-bottomleft: 0;
+  border-radius: 0.65em 0.65em 0 0;
+}
+
+ul.pp-table-view > li:last-child, ul.pp-table-view > li.last-child {
+  -webkit-border-radius: 0 0 0.65em 0.65em;
+  -moz-border-radius-topleft: 0;
+  -moz-border-radius-topright: 0;
+  -moz-border-radius-bottomright: 0.65em;
+  -moz-border-radius-bottomleft: 0.65em;
+  border-radius: 0 0 0.65em 0.65em;
+}
+
+ul.pp-table-view > li:last-child:first-child, ul.pp-table-view > li.last-child:first-child,
+ul.pp-table-view > li.pp-table-view-header + li:last-child, ul.pp-table-view > li.pp-table-view-header + li.last-child {
+  -webkit-border-radius: 0.65em;
+  -moz-border-radius: 0.65em;
+  border-radius: 0.65em;
+}
+
+ul.pp-table-view > li:first-child, ul.pp-table-view > li.pp-table-view-selected-state:first-child,
+ul.pp-table-view > li.pp-table-view-header + li, ul.pp-table-view > li.pp-table-view-header + li.pp-table-view-selected-state {
+  border-top: 1px solid #cacaca;
 }
 
 ul.pp-table-view > li.pp-table-view-header.pp-table-view-selected-state {
@@ -92,30 +89,11 @@ ul.pp-table-view > li.pp-table-view-header.pp-table-view-selected-state {
   text-shadow: #fff 0 1px 0;
 }
 
-ul.pp-table-view > li > a {
-  color :#000;
-  text-decoration: none;
-  outline: none;
-  display: block;
-  margin: -0.7em -0.65em -0.85em;
-  padding: 0.7em 0.65em 0.85em;
-}
-
-ul.pp-table-view > li.pp-table-view-header, ul.pp-table-view > li.pp-table-view-header > a {
-  background-color: transparent;
-  border: none;
-  color: #4c566c;
-  padding: 0.7em 0.65em 0.85em;
-  position: relative;
-  text-shadow: #fff 0 1px 0;
-  font-weight: bold;
-}
-
- /**
-   Pushpop.TableViewSearchBar
-   =============================
-   pp-table-view-search-bar
- */
+/**
+  Pushpop.TableViewSearchBar
+  =============================
+  pp-table-view-search-bar
+*/
 div.pp-table-view-search-bar {
   background: #d6dde2; /* Old browsers */
   background: -moz-linear-gradient(top,  #d6dde2 0%, #b3bec5 100%); /* FF3.6+ */
@@ -393,16 +371,25 @@ ul.pp-table-view > li.pp-subtitle-table-view-cell {
 }
 
 ul.pp-table-view > li.pp-subtitle-table-view-cell > h1 {
+  color: #000;
+  display: block;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1.05em;
+  font-weight: bold;
+  line-height: 1.15em;
   margin: 0;
+  text-rendering: auto;
 }
 
 ul.pp-table-view > li.pp-subtitle-table-view-cell > h2 {
   color: #808080;
   display: block;
-  font-weight: normal;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.8em;
+  font-weight: normal;
+  line-height: 1.5em;
   margin: 0.2em 0 0;
+  text-rendering: auto;
 }
 
 /**
@@ -417,9 +404,17 @@ ul.pp-table-view > li.pp-value-table-view-cell {
 ul.pp-table-view > li.pp-value-table-view-cell > h1,
 ul.pp-table-view > li.pp-value-table-view-cell > h2 {
   float: left;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1em;
-  margin: 0;
+  line-height: 1.2em;
   width: 50%;
+  text-rendering: auto;
+}
+
+ul.pp-table-view > li.pp-value-table-view-cell > h1 {
+  color: #000;
+  font-weight: bold;
+  margin: 0;
 }
 
 ul.pp-table-view > li.pp-value-table-view-cell > h2 {
@@ -441,11 +436,15 @@ ul.pp-table-view > li.pp-value2-table-view-cell {
 ul.pp-table-view > li.pp-value2-table-view-cell > h1,
 ul.pp-table-view > li.pp-value2-table-view-cell > h2 {
   float: left;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: bold;
+  text-rendering: auto;
 }
 
 ul.pp-table-view > li.pp-value2-table-view-cell > h1 {
   color: #516691;
   font-size: 0.75em;
+  line-height: 1.6em;
   margin: 0.25em 0 0;
   width: 30%;
   text-align: right;
@@ -456,7 +455,9 @@ ul.pp-table-view > li.pp-value2-table-view-cell > h1::after {
 }
 
 ul.pp-table-view > li.pp-value2-table-view-cell > h2 {
+  color: #000;
   font-size: 0.9em;
+  line-height: 1.4em;
   margin: 0.15em 0 0;
   width: 70%;
 }
@@ -477,10 +478,14 @@ ul.pp-table-view > li.pp-inline-text-input-table-view-cell > input {
 
 ul.pp-table-view > li.pp-inline-text-input-table-view-cell > h1 {
   color: #516691;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.75em;
+  font-weight: bold;
+  line-height: 1.6em;
   margin: 0.35em 0 0;
   width: 30%;
   text-align: right;
+  text-rendering: auto;
 }
 
 ul.pp-table-view > li.pp-inline-text-input-table-view-cell > h1::after {
@@ -490,13 +495,29 @@ ul.pp-table-view > li.pp-inline-text-input-table-view-cell > h1::after {
 ul.pp-table-view > li.pp-inline-text-input-table-view-cell > input {
   background: none;
   border: none;
+  color: #000;
+  display: inline-block;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.9em;
   font-weight: bold;
+  line-height: 1.2em;
   margin: 0.3em 0 0;
   padding: 0;
   outline: none;
   width: 70%;
+  height: 1.2em;
+  vertical-align: baseline;
+  -webkit-border-radius: none;
+  -moz-border-radius: none;
+  border-radius: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+  transition: none;
 }
 
 /**
@@ -535,6 +556,10 @@ span.pp-table-view-cell-accessory-disclosure-indicator::before {
   -ms-transform: scale(2) rotate(45deg);
   -o-transform: scale(2) rotate(45deg);
   transform: scale(2) rotate(45deg);
+}
+
+li.pp-table-view-selected-state > span.pp-table-view-cell-accessory-disclosure-indicator::before {
+  border-color: #fff;
 }
 
 /**
@@ -593,8 +618,7 @@ span.pp-table-view-cell-accessory-detail-disclosure-button::after {
 */
 span.pp-table-view-cell-accessory-checkmark::before {
   border: 0.25em solid transparent;
-  border-left-color: #324f85;
-  border-bottom-color: #324f85;
+  border-color: transparent transparent #324f85 #324f85;
   content: '';
   display: block;
   position: absolute;
@@ -608,6 +632,10 @@ span.pp-table-view-cell-accessory-checkmark::before {
   -ms-transform: scaleX(0.625) rotate(-45deg);
   -o-transform: scaleX(0.625) rotate(-45deg);
   transform: scaleX(0.625) rotate(-45deg);
+}
+
+li.pp-table-view-selected-state > span.pp-table-view-cell-accessory-checkmark::before {
+  border-color: transparent transparent #fff #fff;
 }
 
 /**
