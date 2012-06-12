@@ -127,10 +127,22 @@ Pushpop.TableView = function TableView(element) {
     if (firstCellElement) firstCellElement.tableViewCell.setIndex(0);
   }).bind(SKScrollEventType.DidScrollToTop, function(evt) { self.reloadData(); });
   
-  // Handle mouse/touch events to allow the user to make row selections.
-  var isPendingSelection = false, selectionTimeout = null;
+  // Handle mouse/touch events to allow the user to tap accessory buttons.
+  var isPendingAccessoryButtonTap = false;
 
   $element.delegate('span.pp-table-view-cell-accessory', !!('ontouchstart' in window) ? 'touchstart' : 'mousedown', function(evt) {
+    isPendingAccessoryButtonTap = true;
+  });
+  
+  $element.delegate('span.pp-table-view-cell-accessory', !!('ontouchmove' in window) ? 'touchmove' : 'mousemove', function(evt) {
+    if (!isPendingAccessoryButtonTap) return;
+    isPendingAccessoryButtonTap = false;
+  });
+  
+  $element.delegate('span.pp-table-view-cell-accessory', !!('ontouchend' in window) ? 'touchend' : 'mouseup', function(evt) {
+    if (!isPendingAccessoryButtonTap) return;
+    isPendingAccessoryButtonTap = false;
+    
     var tableViewCell = $(this).parent()[0].tableViewCell;
     if (!tableViewCell) return;
     
@@ -139,8 +151,15 @@ Pushpop.TableView = function TableView(element) {
       index: tableViewCell.getIndex()
     }));
   });
+  
+  // Handle mouse/touch events to allow the user to make row selections.
+  var isPendingSelection = false, selectionTimeout = null;
 
   $element.delegate('li', !!('ontouchstart' in window) ? 'touchstart' : 'mousedown', function(evt) {
+    
+    // Don't allow row to be selected if an accessory button is pending a tap.
+    if (isPendingAccessoryButtonTap) return;
+    
     isPendingSelection = true;
     
     var tableViewCell = this.tableViewCell;
@@ -173,9 +192,8 @@ Pushpop.TableView = function TableView(element) {
     self.selectRowAtIndex(tableViewCell.getIndex());
   });
   
-  var dataSetUrl = $element.attr('data-set-url');
-  
   // Create a new data source from a data set URL.
+  var dataSetUrl = $element.attr('data-set-url');
   if (dataSetUrl) {
     $.getJSON(dataSetUrl, function(dataSet) {
       $element.html(null);
