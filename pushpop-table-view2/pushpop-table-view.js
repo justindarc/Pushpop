@@ -71,6 +71,9 @@ Pushpop.TableView = function TableView(element) {
     
     lastOffset = offset;
     
+    var newMarginTopDelta = 0;
+    var newMarginBottomDelta = 0;
+    
     // Handle scrolling when swiping up (scrolling towards the bottom).
     if (delta > 0 && lastCellIndex + 1 < numberOfRows && firstCellOffset < 0 - (rowHeight * numberOfBufferedCells)) {
       $element.children('li:nth-child(-n+' + numberOfBufferedCells + ')').each(function(index, element) {
@@ -84,10 +87,13 @@ Pushpop.TableView = function TableView(element) {
         if (self.isRowSelectedAtIndex(newCellIndex)) newCell.setSelected(true);
         $element.append(newCell.$element);
         
-        scrollView.setMargin({
-          top: margin.top + (rowHeight * (index + 1)),
-          bottom: margin.bottom - (rowHeight * (index + 1))
-        });
+        newMarginTopDelta += rowHeight;
+        newMarginBottomDelta -= rowHeight;
+      });
+      
+      scrollView.setMargin({
+        top: margin.top + newMarginTopDelta,
+        bottom: margin.bottom + newMarginBottomDelta
       });
     }
     
@@ -104,10 +110,13 @@ Pushpop.TableView = function TableView(element) {
         if (self.isRowSelectedAtIndex(newCellIndex)) newCell.setSelected(true);
         $element.prepend(newCell.$element);
         
-        scrollView.setMargin({
-          top: margin.top - (rowHeight * (index + 1)),
-          bottom: margin.bottom + (rowHeight * (index + 1))
-        });
+        newMarginTopDelta -= rowHeight;
+        newMarginBottomDelta += rowHeight;
+      });
+      
+      scrollView.setMargin({
+        top: margin.top + newMarginTopDelta,
+        bottom: margin.bottom + newMarginBottomDelta
       });
     }
   });

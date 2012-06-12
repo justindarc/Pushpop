@@ -1,9 +1,20 @@
 ul.pp-table-view {
+  background-color: #ddd;
   font-size: 17px;
   line-height: 1.2em;
   list-style: none;
-  margin: 1em;
-  padding: 0;
+  margin: 0;
+  padding: 1em;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  -o-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  -o-transform: translate(0, 0);
+  transform: translate(0, 0);
 }
 
 ul.pp-table-view > li > ul.pp-table-view {
@@ -21,11 +32,6 @@ ul.pp-table-view > li {
   font-size: 1em;
   font-weight: bold;
   zoom: 1; /* Trigger "hasLayout" in IE */
-  -webkit-transform: translate3d(0, 0, 0);
-  -moz-transform: translate(0, 0);
-  -ms-transform: translate(0, 0);
-  -o-transform: translate(0, 0);
-  transform: translate(0, 0);
 }
 
 ul.pp-table-view > li.pp-table-view-selected-state {

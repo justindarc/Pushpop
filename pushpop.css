@@ -44,6 +44,7 @@ body {
   user-select: none;
   -webkit-backface-visibility: hidden;
   -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
   -o-backface-visibility: hidden;
   backface-visibility: hidden;
 }
@@ -66,6 +67,7 @@ div.pp-navigationbar-buttons {
   overflow: hidden;
   -webkit-perspective: 2000px;
   -moz-perspective: 2000px;
+  -ms-perspective: 2000px;
   -o-perspective: 2000px;
   perspective: 2000px;
 }
