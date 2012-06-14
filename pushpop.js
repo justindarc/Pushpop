@@ -36,8 +36,8 @@ Pushpop.View = function(element) {
   
   this.title = $element.attr('data-view-title');
   var $navbarButtonsContainer = $element.find('.pp-navigationbar-buttons');
-  var $navbarButtons = $navbarButtonsContainer.find('.pp-barbutton');
-  this.$navbarButtons = $navbarButtons;
+  var $navbarButtons = this.$navbarButtons = $navbarButtonsContainer.find('.pp-barbutton');
+  
   // Hide the back button if data-hide-back-button="true" or if there is a left navigation bar
   var dataHideBackButton = $navbarButtonsContainer.attr('data-hide-back-button');
   this.hideNavBackButton = ((dataHideBackButton && dataHideBackButton !== 'false') || $navbarButtons.filter('.pp-barbutton-align-left').length > 0);
@@ -128,23 +128,56 @@ Pushpop.ViewStack.prototype = {
         $oldActiveViewElement.removeClass('active transition push pop ' + newActiveView.transition);
         
         if (action === 'push') {
+          
+          // Trigger an event indicating that the new view was pushed.
           $newActiveViewElement.trigger($.Event(Pushpop.EventType.DidPushView, {
             view: newActiveView
           }));
         } else {
+          
+          // Trigger an event indicating that the previous view was popped.
           $oldActiveViewElement.trigger($.Event(Pushpop.EventType.DidPopView, {
             view: oldActiveView
           }));
         }
         
+        // Trigger an event indicating that the previous view was dismissed.
         $oldActiveViewElement.trigger($.Event(Pushpop.EventType.DidDismissView, {
           view: oldActiveView,
           action: action
-        }));        
+        }));
+        
+        // Trigger an event for each active child view of the previous view indicating
+        // that their parent was dismissed.
+        $oldActiveViewElement.find('.pp-view-stack').each(function(index, element) {
+          var viewStack = element.viewStack;
+          var activeView = viewStack.getActiveView();
+          if (!activeView) return;
+
+          activeView.$element.trigger($.Event(Pushpop.EventType.DidDismissView, {
+            view: activeView,
+            action: 'parent-' + action
+          }));
+        });
+        
+        // Trigger an event indicating that the new view was presented.
         $newActiveViewElement.trigger($.Event(Pushpop.EventType.DidPresentView, {
           view: newActiveView,
           action: action
         }));
+        
+        // Trigger an event for each active child view of the new view indicating
+        // that their parent was presented.
+        $newActiveViewElement.find('.pp-view-stack').each(function(index, element) {
+          var viewStack = element.viewStack;
+          var activeView = viewStack.getActiveView();
+          if (!activeView) return;
+
+          activeView.$element.trigger($.Event(Pushpop.EventType.DidPresentView, {
+            view: activeView,
+            action: 'parent-' + action
+          }));
+        });
 
 				if (!viewStack.callback) return;
 
@@ -176,17 +209,48 @@ Pushpop.ViewStack.prototype = {
     var $oldActiveViewElement = oldActiveView.$element;
     var $newActiveViewElement = newActiveView.$element;
     
+    // Trigger an event indicating that the new view is about to be pushed.
     $newActiveViewElement.trigger($.Event(Pushpop.EventType.WillPushView, {
       view: newActiveView
     }));
+    
+    // Trigger an event indicating that the previous view is about to be dismissed.
     $oldActiveViewElement.trigger($.Event(Pushpop.EventType.WillDismissView, {
       view: oldActiveView,
       action: 'push'
     }));
+    
+    // Trigger an event for each active child view of the previous view indicating that
+    // their parent is about to be dismissed.
+    $oldActiveViewElement.find('.pp-view-stack').each(function(index, element) {
+      var viewStack = element.viewStack;
+      var activeView = viewStack.getActiveView();
+      if (!activeView) return;
+      
+      activeView.$element.trigger($.Event(Pushpop.EventType.WillDismissView, {
+        view: activeView,
+        action: 'parent-push'
+      }));
+    });
+    
+    // Trigger an event indicating that the new view is about to be presented.
     $newActiveViewElement.trigger($.Event(Pushpop.EventType.WillPresentView, {
       view: newActiveView,
       action: 'push'
     }));
+    
+    // Trigger an event for each active child view of the new view indicating that
+    // their parent is about to be presented.
+    $newActiveViewElement.find('.pp-view-stack').each(function(index, element) {
+      var viewStack = element.viewStack;
+      var activeView = viewStack.getActiveView();
+      if (!activeView) return;
+      
+      activeView.$element.trigger($.Event(Pushpop.EventType.WillPresentView, {
+        view: activeView,
+        action: 'parent-push'
+      }));
+    });
     
     this.views.push(newActiveView);
 
@@ -262,17 +326,48 @@ Pushpop.ViewStack.prototype = {
     var $oldActiveViewElement = oldActiveView.$element;
     var $newActiveViewElement = newActiveView.$element;
     
+    // Trigger an event indicating that the previous view is about to be popped.
     $oldActiveViewElement.trigger($.Event(Pushpop.EventType.WillPopView, {
       view: oldActiveView
     }));
+    
+    // Trigger an event indicating that the previous view is about to be dismissed.
     $oldActiveViewElement.trigger($.Event(Pushpop.EventType.WillDismissView, {
       view: oldActiveView,
       action: 'pop'
     }));
+    
+    // Trigger an event for each active child view of the previous view indicating that
+    // their parent is about to be dismissed.
+    $oldActiveViewElement.find('.pp-view-stack').each(function(index, element) {
+      var viewStack = element.viewStack;
+      var activeView = viewStack.getActiveView();
+      if (!activeView) return;
+      
+      activeView.$element.trigger($.Event(Pushpop.EventType.WillDismissView, {
+        view: activeView,
+        action: 'parent-pop'
+      }));
+    });
+    
+    // Trigger an event indicating that the new view is about to be presented.
     $newActiveViewElement.trigger($.Event(Pushpop.EventType.WillPresentView, {
       view: newActiveView,
       action: 'pop'
     }));
+    
+    // Trigger an event for each active child view of the new view indicating that
+    // their parent is about to be presented.
+    $newActiveViewElement.find('.pp-view-stack').each(function(index, element) {
+      var viewStack = element.viewStack;
+      var activeView = viewStack.getActiveView();
+      if (!activeView) return;
+      
+      activeView.$element.trigger($.Event(Pushpop.EventType.WillPresentView, {
+        view: activeView,
+        action: 'parent-pop'
+      }));
+    });
     
     $newActiveViewElement.bind('webkitTransitionEnd transitionend oTransitionEnd transitionEnd', this.handleEvent);
     

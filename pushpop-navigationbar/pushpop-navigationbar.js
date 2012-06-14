@@ -13,8 +13,7 @@ Pushpop.NavigationBar = function(element) {
   
   var self = this;
 
-  var viewStack = $element.parents('.pp-view-stack')[0];  
-  if (viewStack) viewStack = this.viewStack = viewStack.viewStack;
+  var viewStack = this.viewStack = $element.parent('.pp-view-stack')[0].viewStack;
   
   var tapToTop = $element.attr('data-tap-to-top') || 'false';
   tapToTop = this.tapToTop = this.tapToTop || (tapToTop !== 'false');
@@ -60,18 +59,13 @@ Pushpop.NavigationBar.prototype = {
     $titleElement.html(value || '');
   },
 	loadNavbarButtons: function(view, action) {
+    if (action === 'parent-push' || action === 'parent-pop') return;
+    
 	  // Clear any nav buttons currently in the navbar (other than the back button)
 	  if (this.$viewSpecificNavButtons) this.$viewSpecificNavButtons.remove();
-    
-  	var $element = this.$element;
-    // Does this view have navbar buttons?
-    var $navbarButtons = view.$navbarButtons;
-    if ($navbarButtons.length > 0) {
-      // Append buttons for this view
-      $element.append($navbarButtons);
-    }
-    // Store the view specific nav buttons, so we can remove them easily when another view is presented
-    this.$viewSpecificNavButtons = $navbarButtons;
+
+    // Append buttons for this view
+    this.$element.append(this.$viewSpecificNavButtons = view.$navbarButtons);
     
     // Show/Hide the back button
     switch (action) {
@@ -83,11 +77,13 @@ Pushpop.NavigationBar.prototype = {
         }
         break;
       case 'pop':
-        if (this.viewStack.views.length > 1 && !view.hideNavBackButton) {
+        if (!view.hideNavBackButton && this.viewStack.views.length > 1) {
           this.$backButtonElement.addClass('pop active');
         } else {
           this.$backButtonElement.removeClass('pop active');
         }
+      default:
+        break;
     }
 	}
 };
