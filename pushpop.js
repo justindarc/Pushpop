@@ -200,20 +200,19 @@ Pushpop.ViewStack.prototype = {
     }
   },
   push: function(view, transitionOrCallback, callback) {
+    var oldActiveView = this.getActiveView();
+    var newActiveView = view;
+    
+    if (newActiveView === oldActiveView) return;
+    
     if (this.isTransitioning) {
       // Manually kick off transitionEnd event.  Chances are it should have fired, but didn't.
-      var activeView = this.getActiveView();
-      if (activeView) {
-        activeView.$element.trigger('transitionend');
-      } else {
-        return;
-      }
+      if (!oldActiveView) return;
+      
+      oldActiveView.$element.trigger('transitionend');
     }
     
     this.isTransitioning = true;
-    
-    var oldActiveView = this.getActiveView();
-    var newActiveView = view;
     
     var $element = this.$element;
     
@@ -289,14 +288,14 @@ Pushpop.ViewStack.prototype = {
     $newActiveViewElement.addClass('transition');
   },
   pop: function(viewOrTransition, transitionOrCallback, callback) {
+    var oldActiveView = this.getActiveView();
+    var newActiveView, transition;
+    
     if (this.isTransitioning) {
       // Manually kick off transitionEnd event.  Chances are it should have fired, but didn't.
-      var activeView = this.getActiveView();
-      if (activeView) {
-        activeView.$element.trigger('transitionend');
-      } else {
-        return;
-      }
+      if (!oldActiveView) return;
+      
+      oldActiveView.$element.trigger('transitionend');
     }
     
     this.isTransitioning = true;
@@ -304,12 +303,10 @@ Pushpop.ViewStack.prototype = {
     var views = this.views;
     if (views.length <= 1) return;
     
-    var oldActiveView = this.getActiveView();
-    var newActiveView;
-    
-		var transition;
     if (viewOrTransition && typeof viewOrTransition !== 'string') {
       newActiveView = viewOrTransition;
+      
+      if (newActiveView === oldActiveView) return;
       
       if (this.containsView(newActiveView)) {
         while (views.length > 1 && this.getActiveView() !== newActiveView) {
