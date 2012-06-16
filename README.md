@@ -21,6 +21,12 @@ Then, include the JavaScript with jQuery:
 
 See the included demo page for usage.
 
+Documentation
+-------------
+The documentation for this project is generated using the node-jsdoc-toolkit with the "bootdoc" Twitter Boostrap theme. In order to properly skip generating documentation for included libraries (i.e.: jQuery, Twitter Bootstrap), the toolkit should be executed as follows:
+
+$ app/run.js -a -r=2 -E="jquery|bootstrap|generate|tableview" -t=templates/bootdoc /path/to/pushpop
+
 Internet Explorer Support
 -------------------------
 There is currently no support for old versions of IE (6-9), however, support is planned in the near future.
