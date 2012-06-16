@@ -1,6 +1,7 @@
 ;'use strict';
 
-if (!window['Pushpop']) window.Pushpop = {};
+// The base Pushpop object.
+var Pushpop = window['Pushpop'] || {};
 
 Pushpop.NavigationBar = function(element) {    
   var $element = this.$element = $(element);

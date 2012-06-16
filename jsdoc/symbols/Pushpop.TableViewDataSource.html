@@ -73,6 +73,16 @@
 							</tr>
 						
 							<tr>
+								<td class="attributes"><i>{String}</i>&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#getDefaultReuseIdentifier">getDefaultReuseIdentifier</a></b>()
+									</div>
+									<div class="description">Returns the default reuse identifier that this data source will use when a
+    reuse identifier is not specified for a particular item.</div>
+								</td>
+							</tr>
+						
+							<tr>
 								<td class="attributes"><i>{Array}</i>&nbsp;</td>
 								<td class="nameDescription">
 									<div class="fixedFont"><b><a href="#getFilteredDataSet">getFilteredDataSet</a></b>()
@@ -114,6 +124,16 @@
 									<div class="fixedFont"><b><a href="#setDataSet">setDataSet</a></b>(dataSet)
 									</div>
 									<div class="description">Sets the in-memory data set this data source should provide to the table view.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes">&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#setDefaultReuseIdentifier">setDefaultReuseIdentifier</a></b>(reuseIdentifier)
+									</div>
+									<div class="description">Sets the default reuse identifier that this data source will use when a
+    reuse identifier is not specified for a particular item.</div>
 								</td>
 							</tr>
 						
@@ -296,6 +316,35 @@ NOTE: This may not be utilized by a custom data source.
 					
 					</div>
 				
+					<div class="well" id="getDefaultReuseIdentifier">
+					<div class="fixedFont">
+					<span class='title'>					
+						<span class="light ">{String}</span>
+						<b>getDefaultReuseIdentifier</b>()
+					</span>
+					
+					</div>
+					<div class="description">
+						Returns the default reuse identifier that this data source will use when a
+    reuse identifier is not specified for a particular item.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
 					<div class="well" id="getFilteredDataSet">
 					<div class="fixedFont">
 					<span class='title'>					
@@ -432,10 +481,50 @@ NOTE: This may not be utilized by a custom data source.
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>dataSet</b>
+									<span class="light fixedFont ">{Array}</span> <b>dataSet</b>
 									
 								</dt>
-								<dd></dd>
+								<dd>The set of data that this data source should provide to the table view.</dd>
+							
+							</dl>
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="setDefaultReuseIdentifier">
+					<div class="fixedFont">
+					<span class='title'>					
+						
+						<b>setDefaultReuseIdentifier</b>(reuseIdentifier)
+					</span>
+					
+					</div>
+					<div class="description">
+						Sets the default reuse identifier that this data source will use when a
+    reuse identifier is not specified for a particular item.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont ">{String}</span> <b>reuseIdentifier</b>
+									
+								</dt>
+								<dd>The reuse identifier to set as default.</dd>
 							
 							</dl>
 						
@@ -517,10 +606,10 @@ The filter function gets called for each item in the data set during a search. A
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>tableView</b>
+									<span class="light fixedFont ">{<a href="symbols/Pushpop.TableView.html">Pushpop.TableView</a>}</span> <b>tableView</b>
 									
 								</dt>
-								<dd></dd>
+								<dd>The TableView to bind this data source to.</dd>
 							
 							</dl>
 						

@@ -1,8 +1,6 @@
 ;'use strict';
 
-/**
-  The base Pushpop object.
-*/
+// The base Pushpop object.
 var Pushpop = window['Pushpop'] || {};
 
 /**
@@ -232,6 +230,9 @@ Pushpop.TableView = function TableView(element) {
   }
 };
 
+/**
+  Event types for Pushpop.TableView.
+*/
 Pushpop.TableView.EventType = {
   DidSelectRowAtIndex: 'Pushpop:TableView:DidSelectRowAtIndex',
   DidDeselectRowAtIndex: 'Pushpop:TableView:DidDeselectRowAtIndex',
