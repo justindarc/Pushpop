@@ -1,0 +1,114 @@
+.pp-modal-view-stack {
+  background: #333 url('../background.png');
+  position: absolute;
+  overflow: hidden;
+  padding: 0;
+  z-index: 99999;
+  visibility: hidden;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+  -webkit-box-shadow: 0 4px 20px 2px rgba(0, 0, 0, 0.6);
+  -moz-box-shadow: 0 4px 20px 2px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 4px 20px 2px rgba(0, 0, 0, 0.6);
+  -webkit-perspective: 2000px;
+  -moz-perspective: 2000px;
+  -ms-perspective: 2000px;
+  -o-perspective: 2000px;
+  perspective: 2000px;
+  -webkit-transform: translate(0, 0);
+  -moz-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  -o-transform: translate(0, 0);
+  transform: translate(0, 0);
+}
+
+.pp-modal-view-stack.pp-active {
+  visibility: visible;
+  -webkit-transition-delay: 0s;
+  -moz-transition-delay: 0s;
+  -ms-transition-delay: 0s;
+  -o-transition-delay: 0s;
+  transition-delay: 0s;
+}
+
+.pp-modal-view-stack.pp-modal-presentation-style-full-screen {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: 0;
+  width: auto;
+  height: auto;
+}
+
+.pp-modal-view-stack.pp-modal-presentation-style-page-sheet {
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  margin: 0 0 0 -384px;
+  width: 768px;
+  height: auto;
+}
+
+.pp-modal-view-stack.pp-modal-presentation-style-form-sheet {
+  top: 64px;
+  bottom: auto;
+  left: 50%;
+  margin: 0 0 0 -270px;
+  width: 540px;
+  height: 620px;
+}
+
+.pp-modal-view-stack.pp-modal-transition-style-cover-vertical {
+  margin-top: 100%;
+  -webkit-transition: visibility 0s linear 0.3s, margin 0.3s linear;
+  -moz-transition: visibility 0s linear 0.3s, margin 0.3s linear;
+  -ms-transition: visibility 0s linear 0.3s, margin 0.3s linear;
+  -o-transition: visibility 0s linear 0.3s, margin 0.3s linear;
+  transition: visibility 0s linear 0.3s, margin 0.3s linear;
+}
+
+.pp-modal-view-stack.pp-modal-transition-style-cover-vertical.pp-active {
+  margin-top: 0;
+  -webkit-transition-delay: 0s;
+  -moz-transition-delay: 0s;
+  -ms-transition-delay: 0s;
+  -o-transition-delay: 0s;
+  transition-delay: 0s;
+}
+
+.pp-modal-view-stack-backdrop {
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: 0;
+  width: auto;
+  height: auto;
+  z-index: 99998;
+  visibility: hidden;
+  opacity: 0;
+  -webkit-transform: translate(0, 0);
+  -moz-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  -o-transform: translate(0, 0);
+  transform: translate(0, 0);
+  -webkit-transition: visibility 0s linear 0.3s, opacity 0.3s linear;
+  -moz-transition: visibility 0s linear 0.3s, opacity 0.3s linear;
+  -ms-transition: visibility 0s linear 0.3s, opacity 0.3s linear;
+  -o-transition: visibility 0s linear 0.3s, opacity 0.3s linear;
+  transition: visibility 0s linear 0.3s, opacity 0.3s linear;
+}
+
+.pp-modal-view-stack.pp-active + .pp-modal-view-stack-backdrop {
+  visibility: visible;
+  opacity: 1;
+  -webkit-transition-delay: 0s;
+  -moz-transition-delay: 0s;
+  -ms-transition-delay: 0s;
+  -o-transition-delay: 0s;
+  transition-delay: 0s;
+}

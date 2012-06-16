@@ -18,9 +18,11 @@ Pushpop.SplitView = function SplitView(element) {
   
   var $window = $(window['addEventListener'] ? window : document.body);
   
+  // TODO: Implement responsive design and auto-collapse the split view into a
+  // single view stack on a mobile phone.
   $window.bind('resize', function(evt) {
-    console.log('here');
-  })
+    
+  });
 };
 
 Pushpop.SplitView.prototype = {

@@ -25,7 +25,15 @@ $.extend(Pushpop.EventType, {
   DidPresentView: 'Pushpop:DidPresentView'
 });
 
-Pushpop.View = function(element) {
+// Traverses the parents of the specified element and returns the closest view stack.
+Pushpop.getViewStackForElement = function(element) {
+  var $parents = $(element).parents();
+  var viewStack;
+  for (var i = 0, length = $parents.length; i < length; i++) if (!!(viewStack = $parents[i].viewStack) && viewStack instanceof Pushpop.ViewStack) return viewStack;
+  return null;
+};
+
+Pushpop.View = function View(element) {
   var $element = this.$element = $(element);
   element = this.element = $element[0];
   
@@ -44,8 +52,11 @@ Pushpop.View = function(element) {
 };
 
 Pushpop.View.prototype = {
+  constructor: Pushpop.View,
+  
   element: null,
   $element: null,
+  
   transition: null,
   title: null,
   $navbarButtons: null,
@@ -58,19 +69,16 @@ Pushpop.View.prototype = {
     this.title = value;
     this.$element.attr('data-view-title', value);
   },
-  getViewStack: function() {
-    var viewStack = this.$element.parents('.pp-view-stack')[0];
-    return (viewStack) ? viewStack.viewStack : null;
-  },
-  forceReflow: function() {
-    this.element.offsetWidth;
-  },
+  getViewStack: function() { return Pushpop.getViewStackForElement(this.$element); },
+  forceReflow: function() { this.element.offsetWidth; },
 	setBackButtonVisible: function(visible) {
 	  if (this.$navbarButtons.filter('.pp-barbutton-align-left').length === 0) this.hideNavBackButton = !visible;
 	},
 };
 
-Pushpop.ViewStack = function(element) {
+Pushpop.ViewStack = function ViewStack(element) {
+  if (!element) return;
+  
   var $element = this.$element = $(element);
   element = this.element = $element[0];
   
@@ -91,8 +99,11 @@ Pushpop.ViewStack = function(element) {
 };
 
 Pushpop.ViewStack.prototype = {
+  constructor: Pushpop.ViewStack,
+  
   element: null,
   $element: null,
+  
   views: null,
   rootView: null,
   isTransitioning: false,
@@ -398,51 +409,45 @@ Pushpop.ViewStack.prototype = {
 };
 
 $(function() {
-  var $views = $('.pp-view');
+  $('.pp-view').each(function(index, element) { new Pushpop.View(element); });
+  $('.pp-view-stack').each(function(index, element) { new Pushpop.ViewStack(element); });
   
-  $views.each(function(index, element) {
-    new Pushpop.View(element);
-  });
-  
-  var $viewStacks = $('.pp-view-stack');
-  
-  $viewStacks.each(function(index, element) {
-    new Pushpop.ViewStack(element);
-  });
-  
-  $('a.push').live('click', function(evt) {
-    var $this = $(this);
-    var href = $this.attr('href');
-    var $viewElement = $(href);
-    
-    var view = $viewElement[0];
-    if (view) view = view.view || new Pushpop.View($viewElement);
-    
-    var viewStack = view.getViewStack();
-    if (viewStack) viewStack.push(view, $this.attr('data-transition'));
-    
+  // TODO: Remove legacy .push class.
+  $('a.pp-push, a.push').live('click', function(evt) {
     evt.preventDefault();
-  });
-  
-  $('a.pop').live('click', function(evt) {
+    
     var $this = $(this);
     var href = $this.attr('href');
-    var viewStack;
+    var $viewElement, view, viewStack;
+    
+    $viewElement = $(href);
+    if ($viewElement.length === 0) return;
+    
+    view = $viewElement[0].view || new Pushpop.View($viewElement);
+    
+    viewStack = view.getViewStack();
+    if (viewStack) viewStack.push(view, $this.attr('data-transition'));
+  });
+  
+  // TODO: Remove legacy .pop class.
+  $('a.pp-pop, a.pop').live('click', function(evt) {
+    evt.preventDefault();
+    
+    var $this = $(this);
+    var href = $this.attr('href');
+    var $viewElement, view, viewStack;
     
     if (href === '#') {
-      viewStack = $this.parents('.pp-view-stack')[0];
-      viewStack = (viewStack) ? viewStack.viewStack : null;
+      viewStack = Pushpop.getViewStackForElement($this);
       if (viewStack) viewStack.pop($this.attr('data-transition'));
     } else {
-      var $viewElement = $(href);
-    
-      var view = $viewElement[0];
-      if (view) view = view.view || new Pushpop.View($viewElement);
+      $viewElement = $(href);
+      if ($viewElement.length === 0) return;
       
-      viewStack = view.getViewStack();
+      view = $viewElement[0].view || new Pushpop.View($viewElement);
+      
+      viewStack = view.getViewStack();      
       if (viewStack) viewStack.pop(view, $this.attr('data-transition'));
     }
-    
-    evt.preventDefault();
   });
 });
