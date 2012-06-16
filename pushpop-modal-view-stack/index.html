@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<title>Pushpop ModalViewStack Demo</title>
+	<!-- <link rel="stylesheet" type="text/css" href="../bootstrap/css/bootstrap.css"> -->
+	<link rel="stylesheet" type="text/css" href="../externals/scrollkit/scrollkit.css">
+	<link rel="stylesheet" type="text/css" href="../pushpop.css">
+	<link rel="stylesheet" type="text/css" href="../pushpop-table-view2/pushpop-table-view.css">
+	<link rel="stylesheet" type="text/css" href="../pushpop-navigationbar/pushpop-navigationbar.css">
+	<link rel="stylesheet" type="text/css" href="../pushpop-split-view/pushpop-split-view.css">
+	<link rel="stylesheet" type="text/css" href="pushpop-modal-view-stack.css">
+	<script type="text/javascript" src="../jquery-1.7.1.js"></script>
+	<script type="text/javascript" src="../externals/scrollkit/scrollkit.js"></script>
+	<script type="text/javascript" src="../pushpop.js"></script>
+	<script type="text/javascript" src="../pushpop-table-view2/pushpop-table-view.js"></script>
+	<script type="text/javascript" src="../pushpop-navigationbar/pushpop-navigationbar.js"></script>
+	<script type="text/javascript" src="../pushpop-split-view/pushpop-split-view.js"></script>
+	<script type="text/javascript" src="pushpop-modal-view-stack.js"></script>
+	<script type="text/javascript">
+    
+	</script>
+</head>
+<body>
+  <div class="pp-split-view">
+    <div class="pp-view-stack pp-split-view-stack-master">
+      <div class="pp-view sk-scroll-view" id="master-view-root" style="background: #7a8faa;">
+        <ul id="custom-cells-table-view" class="pp-table-view" data-contains-search-bar="true" data-set-url="../pushpop-table-view2/sample-data/big-data-20.json">
+          
+        </ul>
+      </div>
+      <div class="pp-view" id="master-view-other">
+        <a class="pp-button pp-pop" href="#">Back</a>
+        <p>This is some other "Master" view.</p>
+      </div>
+    </div>
+    <div class="pp-view-stack pp-split-view-stack-detail">
+      <div class="pp-view" id="detail-view-root">
+        <a class="pp-button pp-push" data-transition="slide-horizontal" href="#detail-view-other">Slide Horizontal</a>
+        <a class="pp-button pp-button-style-red pp-push" data-transition="slide-vertical" href="#detail-view-other">Slide Vertical</a>
+        <a class="pp-button pp-button-style-green pp-push" data-transition="flip-horizontal" href="#detail-view-other">Flip Horizontal</a>
+        <a class="pp-button pp-button-style-black pp-push" data-transition="flip-vertical" href="#detail-view-other">Flip Vertical</a>
+        <a class="pp-button pp-button-style-blue pp-push" data-transition="card-swap" href="#detail-view-other">Card Swap</a>
+        <a class="pp-button pp-push" data-transition="zoom" href="#detail-view-other">Zoom</a>
+        <a class="pp-button pp-push" data-transition="cross-fade" href="#detail-view-other">Cross Fade</a>
+        <a class="pp-button pp-present-modal" data-modal-presentation-style="page-sheet" href="#modal-view-1">Page Sheet Modal</a>
+        <label class="pp-switch" onclick>
+          <input type="checkbox"/>
+          <div class="pp-switch-inner">
+            <div class="pp-switch-slider">
+              <div class="pp-switch-on">ON</div>
+              <div class="pp-switch-off">OFF</div>
+              <div class="pp-switch-handle"></div>
+            </div>
+          </div>
+        </label>
+      </div>
+      <div class="pp-view" id="detail-view-other">
+        <a class="pp-button pp-pop" href="#">Back</a>
+        <p>This is some other "Detail" view.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pp-modal-view-stack">
+    <div class="pp-view" id="modal-view-1">
+      <a class="pp-button pp-dismiss-modal" href="#">Back</a>
+      <p>This is some modal view.</p>
+      <a class="pp-button pp-push" data-transition="slide-horizontal" href="#modal-view-2">Slide Horizontal</a>
+    </div>
+    <div class="pp-view" id="modal-view-2">
+      <a class="pp-button pp-pop" href="#">Back</a>
+      <p>This is some OTHER modal view!!.</p>
+    </div>
+  </div>
+</body>
+</html>
