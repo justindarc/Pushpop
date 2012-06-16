@@ -40,6 +40,8 @@ Pushpop.ModalViewStack = function ModalViewStack(element) {
   }
   
   if (!didInitTransitionStyle) this.setTransitionStyle(this.constructor.prototype._transitionStyle);
+  
+  this.setHidden(!$element.hasClass('pp-active'));
 };
 
 Pushpop.ModalViewStack.PresentationStyleType = {
@@ -56,15 +58,25 @@ Pushpop.ModalViewStack.prototype = new Pushpop.ViewStack();
 Pushpop.ModalViewStack.prototype.constructor = Pushpop.ModalViewStack;
 
 Pushpop.ModalViewStack.prototype.push = function(view, transitionOrCallback, callback) {
+  if (this.getHidden()) this.present();
   
   // Call the "super" method.
   Pushpop.ViewStack.prototype.push.apply(this, arguments);
 };
 
 Pushpop.ModalViewStack.prototype.pop = function(viewOrTransition, transitionOrCallback, callback) {
+  if (this.views.length <= 1) this.dismiss();
   
   // Call the "super" method.
   Pushpop.ViewStack.prototype.pop.apply(this, arguments);
+};
+
+Pushpop.ModalViewStack.prototype._hidden = true;
+
+Pushpop.ModalViewStack.prototype.getHidden = function() { return this._hidden; };
+
+Pushpop.ModalViewStack.prototype.setHidden = function(hidden) {
+  if (this._hidden = hidden) this.dismiss(); else this.present();
 };
 
 Pushpop.ModalViewStack.prototype.present = function() { this.$element.addClass('pp-active'); };
