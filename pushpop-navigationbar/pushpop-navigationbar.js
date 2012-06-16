@@ -14,7 +14,8 @@ Pushpop.NavigationBar = function(element) {
   
   var self = this;
 
-  var viewStack = this.viewStack = $element.parent('.pp-view-stack')[0].viewStack;
+  var viewStack = this.viewStack = Pushpop.getViewStackForElement(element);
+  if (!viewStack) return;
   
   var tapToTop = $element.attr('data-tap-to-top') || 'false';
   tapToTop = this.tapToTop = this.tapToTop || (tapToTop !== 'false');
@@ -30,10 +31,6 @@ Pushpop.NavigationBar = function(element) {
   
   var $backButtonElement = this.$backButtonElement = $('<a class="pp-barbutton pp-barbutton-align-left pp-barbutton-style-back" href="#">Back</a>').appendTo($element);
   
-  var activeView = viewStack.getActiveView();
-  this.setTitle(activeView.title);
-  this.loadNavbarButtons(activeView);
-  
   viewStack.$element.bind(Pushpop.EventType.WillPresentView, function(evt) {
     var view = evt.view;
     self.setTitle(view.title);
@@ -42,6 +39,12 @@ Pushpop.NavigationBar = function(element) {
   
   // Prevent dragging of the Navigation Bar.
   $element.bind('touchmove', function(evt) { return false; });
+  
+  var activeView = viewStack.getActiveView();
+  if (!activeView) return;
+  
+  this.setTitle(activeView.title);
+  this.loadNavbarButtons(activeView);
 };
 
 Pushpop.NavigationBar.prototype = {
