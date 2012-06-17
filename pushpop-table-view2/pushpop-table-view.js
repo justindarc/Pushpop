@@ -571,12 +571,15 @@ Pushpop.TableView.prototype = {
   @param {Array} [dataSet.id] The unique identifier for a specific record.
   @param {Array} [dataSet.value] The (sometimes) hidden value for a specific record.
   @param {Array} [dataSet.title] The title to be displayed in a TableViewCell for a specific record.
+  @param {String} [defaultReuseIdentifier] The optional reuse identifier to be used for rows that do
+  not specify a specific reuse identifier.
   @constructor
 */
-Pushpop.TableViewDataSource = function TableViewDataSource(dataSet) {
+Pushpop.TableViewDataSource = function TableViewDataSource(dataSet, defaultReuseIdentifier) {
   if (!dataSet || dataSet.constructor !== Array) return;
   
   this.setDataSet(dataSet);
+  this.setDefaultReuseIdentifier(defaultReuseIdentifier);
   
   // Default implementation if using an in-memory data set.
   this.getNumberOfRows = function() { return this.getFilteredDataSet().length; };

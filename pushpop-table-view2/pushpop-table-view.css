@@ -49,7 +49,7 @@ ul.pp-table-view > li.pp-table-view-selected-state {
 }
 
 ul.pp-table-view > li.pp-table-view-selected-state * {
-  color: #fff !important;
+  color: #fff;
 }
 
 /* Clearfix */
