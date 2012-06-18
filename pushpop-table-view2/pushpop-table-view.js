@@ -560,9 +560,15 @@ Pushpop.TableView.prototype = {
     Sets this TableView in or out of editing mode and optionally animates the transition.
     @param {Boolean} editing A flag indicating if the TableView should be in editing mode.
     @param {Boolean} [animated] An optional flag indicating if the transition in or out of
-    editing mode should be animated.
+    editing mode should be animated (default: true).
   */
-  setEditing: function(editing, animated) { this._editing = editing; }
+  setEditing: function(editing, animated) {
+    if (this._editing = editing) {
+      this.$element.addClass('pp-table-view-editing');
+    } else {
+      this.$element.removeClass('pp-table-view-editing');
+    }
+  }
 };
 
 /**
@@ -1196,4 +1202,23 @@ Pushpop.InlineTextInputTableViewCell.prototype.setSelected = function(value) {
 // Register the prototype for Pushpop.InlineTextInputTableViewCell as a reusable cell type.
 Pushpop.TableView.registerReusableCellPrototype(Pushpop.InlineTextInputTableViewCell.prototype);
 
-$(function() { $('.pp-table-view').each(function(index, element) { new Pushpop.TableView(element); }); });
+$(function() {
+  $('.pp-table-view').each(function(index, element) { new Pushpop.TableView(element); });
+  
+  // Set up table view "edit" buttons (ex.: in a navigation bar) to toggle the "editing"
+  // flag of the table view its "href" points to.
+  $(document.body).delegate('.pp-table-view-edit-button', 'click', function(evt) {
+    var $this = $(this);
+    var $tableViewElement = $($this.attr('href'));
+    if ($tableViewElement.length === 0) return;
+    
+    var tableView = $tableViewElement[0].tableView;
+    if (!tableView) return;
+    
+    var isEditing = !tableView.getEditing()
+    if (isEditing) $this.addClass('pp-barbutton-style-blue'); else $this.removeClass('pp-barbutton-style-blue');
+    tableView.setEditing(isEditing);
+    
+    evt.preventDefault();
+  });
+});
