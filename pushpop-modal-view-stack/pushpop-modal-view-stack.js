@@ -206,14 +206,18 @@ $(function() {
     var $viewElement, view, viewStack;
     
     if (href === '#') {
-      $viewElement = $this.parents('.pp-view').first();
+      if ($this.parent().hasClass('pp-navigationbar')) {
+        $viewElement = $this.parent().parent().children('.pp-view.active').first();
+      } else {
+        $viewElement = $this.parents('.pp-view').first();
+      }
     } else {
       $viewElement = $(href);
     }
     
-    if ($viewElement.length > 0) view = $viewElement[0].view;
+    if ($viewElement.length === 0) return;
     
-    view = view || new Pushpop.View($viewElement);
+    view = $viewElement[0].view || new Pushpop.View($viewElement);
     
     viewStack = view.getViewStack();      
     if (viewStack) viewStack.dismiss();

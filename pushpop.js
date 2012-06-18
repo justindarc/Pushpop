@@ -211,7 +211,7 @@ Pushpop.ViewStack.prototype = {
           var viewStack = element.viewStack;
           var activeView = viewStack.getActiveView();
           if (!activeView) return;
-
+        
           activeView.$element.trigger($.Event(Pushpop.EventType.DidDismissView, {
             view: activeView,
             action: 'parent-' + action
@@ -230,7 +230,7 @@ Pushpop.ViewStack.prototype = {
           var viewStack = element.viewStack;
           var activeView = viewStack.getActiveView();
           if (!activeView) return;
-
+        
           activeView.$element.trigger($.Event(Pushpop.EventType.DidPresentView, {
             view: activeView,
             action: 'parent-' + action
