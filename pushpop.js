@@ -116,6 +116,26 @@ Pushpop.View.prototype = {
 	setBackButtonVisible: function(visible) {
 	  if (this.$navbarButtons.filter('.pp-barbutton-align-left').length === 0) this.hideNavBackButton = !visible;
 	},
+	
+	/**
+	  Convenience accessor for jQuery's .bind() method.
+	*/
+	$bind: function() { this.$element.bind.apply(this.$element, arguments); },
+	
+	/**
+	  Convenience accessor for jQuery's .unbind() method.
+	*/
+	$unbind: function() { this.$element.unbind.apply(this.$element, arguments); },
+	
+	/**
+	  Convenience accessor for jQuery's .delegate() method.
+	*/
+	$delegate: function() { this.$element.delegate.apply(this.$element, arguments); },
+	
+	/**
+	  Convenience accessor for jQuery's .undelegate() method.
+	*/
+	$undelegate: function() { this.$element.undelegate.apply(this.$element, arguments); }
 };
 
 /**

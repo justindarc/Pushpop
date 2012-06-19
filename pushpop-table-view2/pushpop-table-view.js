@@ -568,7 +568,27 @@ Pushpop.TableView.prototype = {
     } else {
       this.$element.removeClass('pp-table-view-editing');
     }
-  }
+  },
+  
+	/**
+	  Convenience accessor for jQuery's .bind() method.
+	*/
+	$bind: function() { this.$element.bind.apply(this.$element, arguments); },
+	
+	/**
+	  Convenience accessor for jQuery's .unbind() method.
+	*/
+	$unbind: function() { this.$element.unbind.apply(this.$element, arguments); },
+	
+	/**
+	  Convenience accessor for jQuery's .delegate() method.
+	*/
+	$delegate: function() { this.$element.delegate.apply(this.$element, arguments); },
+	
+	/**
+	  Convenience accessor for jQuery's .undelegate() method.
+	*/
+	$undelegate: function() { this.$element.undelegate.apply(this.$element, arguments); }
 };
 
 /**
