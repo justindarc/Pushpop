@@ -943,7 +943,7 @@ Pushpop.TableViewCell.prototype = {
   */
   draw: function() {
     var data = this.getData();
-    var title = $.trim((data) ? data.title : '&nbsp;') || '&nbsp;';
+    var title = $.trim((data && data.title) ? data.title : '&nbsp;');
     this.$element.html(title + this.getAccessoryHtml());
   },
   
@@ -1105,8 +1105,8 @@ Pushpop.SubtitleTableViewCell.prototype.constructor = Pushpop.SubtitleTableViewC
 
 Pushpop.SubtitleTableViewCell.prototype.draw = function() {
   var data = this.getData();
-  var title = $.trim((data) ? data.title : '&nbsp;') || '&nbsp;';
-  var subtitle = $.trim((data) ? data.subtitle : '&nbsp;') || '&nbsp;';
+  var title = $.trim((data && data.title) ? data.title : '&nbsp;');
+  var subtitle = $.trim((data && data.subtitle) ? data.subtitle : '&nbsp;');
   this.$element.html('<h1>' + title + '</h1><h2>' + subtitle + '</h2>' + this.getAccessoryHtml());
 };
 
@@ -1134,8 +1134,8 @@ Pushpop.ValueTableViewCell.prototype.constructor = Pushpop.ValueTableViewCell;
 
 Pushpop.ValueTableViewCell.prototype.draw = function() {
   var data = this.getData();
-  var title = $.trim((data) ? data.title : '&nbsp;') || '&nbsp;';
-  var value = $.trim((data) ? data.value : '&nbsp;') || '&nbsp;';
+  var title = $.trim((data && data.title) ? data.title : '&nbsp;');
+  var value = $.trim((data && data.value) ? data.value : '&nbsp;');
   this.$element.html('<h1>' + title + '</h1><h2>' + value + '</h2>' + this.getAccessoryHtml());
 };
 
@@ -1163,8 +1163,8 @@ Pushpop.Value2TableViewCell.prototype.constructor = Pushpop.Value2TableViewCell;
 
 Pushpop.Value2TableViewCell.prototype.draw = function() {
   var data = this.getData();
-  var title = $.trim((data) ? data.title : '&nbsp;') || '&nbsp;';
-  var value = $.trim((data) ? data.value : '&nbsp;') || '&nbsp;';
+  var title = $.trim((data && data.title) ? data.title : '&nbsp;');
+  var value = $.trim((data && data.value) ? data.value : '&nbsp;');
   this.$element.html('<h1>' + title + '</h1><h2>' + value + '</h2>' + this.getAccessoryHtml());
 };
 
@@ -1197,8 +1197,8 @@ Pushpop.InlineTextInputTableViewCell.prototype.constructor = Pushpop.InlineTextI
 
 Pushpop.InlineTextInputTableViewCell.prototype.draw = function() {
   var data = this.getData();
-  var title = $.trim((data) ? data.title : '&nbsp;') || '&nbsp;';
-  var value = $.trim((data) ? data.value : '') || '';
+  var title = $.trim((data && data.title) ? data.title : '&nbsp;');
+  var value = $.trim((data && data.value) ? data.value : '');
   var isPassword = (data) ? (data.password || 'false') : 'false';
   isPassword = isPassword !== 'false';
   this.$element.html('<h1>' + title + '</h1><input type="' + (isPassword ? 'password' : 'text') + '" value="' + value + '"/>' + this.getAccessoryHtml());
