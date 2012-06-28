@@ -995,8 +995,9 @@ Pushpop.TableViewCell.prototype = {
   */
   setData: function(data) {
     this._data = data;
-    this.setValue((data && data.value) ? data.value : null);
-    if (data) this.draw();
+    if (!data) return;
+    if (data.value) this.setValue(data.value);
+    this.draw();
   },
   
   _value: null,
