@@ -9,14 +9,14 @@ Usage
 Simply drop the CSS onto any page:
 
 ``` html
-<link rel="stylesheet" type="text/css" href="pushpop.css"/>
+<link rel="stylesheet" href="pushpop.css"/>
 ```
 
 Then, include the JavaScript with jQuery:
 
 ``` html
-<script type="text/javascript" src="jquery-1.7.1.min.js"></script>
-<script type="text/javascript" src="pushpop.js"></script>
+<script src="jquery-1.7.1.min.js"></script>
+<script src="pushpop.js"></script>
 ```
 
 See the included demo page for usage.
