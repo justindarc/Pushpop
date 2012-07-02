@@ -46,99 +46,6 @@ Pushpop.getViewStackForElement = function(element) {
 };
 
 /**
-  Creates a new View.
-  @param {HTMLDivElement} element The <div/> element to initialize as a new View.
-  @constructor
-*/
-Pushpop.View = function View(element) {
-  var $element = this.$element = $(element);
-  element = this.element = $element[0];
-  
-  var view = element.view;
-  if (view) return view;
-  
-  element.view = this;
-  
-  this.title = $element.attr('data-view-title');
-  var $navbarButtonsContainer = $element.find('.pp-navigationbar-buttons');
-  var $navbarButtons = this.$navbarButtons = $navbarButtonsContainer.find('.pp-barbutton');
-  
-  // Hide the back button if data-hide-back-button="true" or if there is a left navigation bar
-  var dataHideBackButton = $navbarButtonsContainer.attr('data-hide-back-button');
-  this.hideNavBackButton = ((dataHideBackButton && dataHideBackButton !== 'false') || $navbarButtons.filter('.pp-barbutton-align-left').length > 0);
-};
-
-Pushpop.View.prototype = {
-  constructor: Pushpop.View,
-  
-  element: null,
-  $element: null,
-  
-  transition: null,
-  title: null,
-  $navbarButtons: null,
-  hideNavBackButton: false,
-  
-  /**
-    Sets the transition that should be used when pushing or popping to this view.
-    @param {String} value The name of the transition to be used when pushing or popping
-    to this view.
-  */
-  setTransition: function(value) {
-    this.transition = value;
-    this.$element.addClass(value);
-  },
-  
-  /**
-    Sets the title for this view.
-    @description The title is stored in the |data-view-title| attribute of this view's
-    element. NOTE: When a Pushpop.NavigationBar is used in conjunction with this view's
-    view stack, this view's title will appear in the navigation bar when it is the active
-    view.
-    @param {String} value The title for this view.
-  */
-  setTitle: function(value) {
-    this.title = value;
-    this.$element.attr('data-view-title', value);
-  },
-  
-  /**
-    Traverses the parents of this view's element and returns the closest Pushpop.ViewStack.
-    @type Pushpop.ViewStack
-  */
-  getViewStack: function() { return Pushpop.getViewStackForElement(this.$element); },
-  
-  /**
-    Forces a reflow in the browser for this view.
-  */
-  forceReflow: function() { this.element.offsetWidth; },
-  
-	setBackButtonVisible: function(visible) {
-	  if (this.$navbarButtons.filter('.pp-barbutton-align-left').length === 0) this.hideNavBackButton = !visible;
-	},
-	
-	/**
-	  Convenience accessor for jQuery's .bind() method.
-	*/
-	$bind: function() { this.$element.bind.apply(this.$element, arguments); },
-	
-	/**
-	  Convenience accessor for jQuery's .unbind() method.
-	*/
-	$unbind: function() { this.$element.unbind.apply(this.$element, arguments); },
-	
-	/**
-	  Convenience accessor for jQuery's .delegate() method.
-	*/
-	$delegate: function() { this.$element.delegate.apply(this.$element, arguments); },
-	
-	/**
-	  Convenience accessor for jQuery's .undelegate() method.
-	*/
-	$undelegate: function() { this.$element.undelegate.apply(this.$element, arguments); }
-};
-
-/**
   Creates a new ViewStack.
   @param {HTMLDivElement} element The <div/> element to initialize as a new ViewStack.
   @constructor
@@ -256,9 +163,12 @@ Pushpop.ViewStack.prototype = {
             action: 'parent-' + action
           }));
         });
-
+        
+        // Remove the previous active view from the DOM if it is marked for removal when popped.
+        if (action === 'pop' && oldActiveView.getShouldRemoveWhenPopped()) $oldActiveViewElement.remove();
+        
+        // Call the callback to execute when a push/pop transition completes if one exists.
 				if (!viewStack.callback) return;
-
 				viewStack.callback();
 				viewStack.callback = null;
         break;
@@ -508,12 +418,171 @@ Pushpop.ViewStack.prototype = {
     
     for (var i = viewCount - 1; i >= 0; i--) if (views[i] === view) return true;
     return false;
+  },
+  
+  /**
+    Creates a new view and pushes it to the view stack using the optionally specified transition.
+    Before pushing the view, a required callback is called that passes in the newly-created view to
+    give an opportunity to set up the view's content. If a transition is not specified, the default
+    will be used. A callback may optionally be provided to be called after the transition completes.
+    @description NOTE: By default, the newly-created view is marked for removal from the DOM when it
+    is popped.
+    @param {Function} beforePushCallback A callback function to be executed before the newly-created
+    view is pushed. The function is called with a single parameter passing the view to be pushed.
+    @param {String|Function} [transitionOrCallback] Either the name of the transition to use when
+    pushing the view or a callback function to be executed upon completion of the default transition.
+    If this parameter is omitted, the default transition is used.
+    @param {Function} [callback] A callback function to be executed upon completion of the specified
+    transition.
+  */
+  pushNewView: function(beforePushCallback, transitionOrCallback, callback) {
+    var $viewElement = $('<div class="pp-view"/>').appendTo(this.$element);
+    var view = new Pushpop.View($viewElement);
+    
+    view.setShouldRemoveWhenPopped(true);
+    
+    if (beforePushCallback && typeof beforePushCallback === 'function') beforePushCallback(view);
+    
+    this.push(view, transitionOrCallback, callback);
+  },
+  
+  /**
+    Creates a new view with a new table view and pushes it to the view stack using the optionally
+    specified transition. Before pushing the view, a required callback is called that passes in the
+    newly-created table view to give an opportunity to set up the table view's data source and other
+    properties. If a transition is not specified, the default will be used. A callback may optionally
+    be provided to be called after the transition completes.
+    @description NOTE: By default, the newly-created view containing the newly-created table view is
+    marked for removal from the DOM when it is popped.
+    @param {Function} beforePushCallback A callback function to be executed before the newly-created
+    view is pushed. The function is called with a single parameter passing the newly-created table
+    view contained in the view to be pushed.
+    @param {String|Function} [transitionOrCallback] Either the name of the transition to use when
+    pushing the view or a callback function to be executed upon completion of the default transition.
+    If this parameter is omitted, the default transition is used.
+    @param {Function} [callback] A callback function to be executed upon completion of the specified
+    transition.
+  */
+  pushNewTableView: function(beforePushCallback, transitionOrCallback, callback) {
+    var $viewElement = $('<div class="pp-view"/>').appendTo(this.$element);
+    var $scrollViewElement = $('<div class="sk-scroll-view" data-always-bounce-vertical="true"/>').appendTo($viewElement);
+    var $tableViewElement = $('<ul class="pp-table-view"/>').appendTo($scrollViewElement);
+    var view = new Pushpop.View($viewElement);
+    var scrollView = new SKScrollView($scrollViewElement);
+    var tableView = new Pushpop.TableView($tableViewElement);
+    
+    view.setShouldRemoveWhenPopped(true);
+    
+    if (beforePushCallback && typeof beforePushCallback === 'function') beforePushCallback(tableView);
+    
+    this.push(view, transitionOrCallback, callback);
   }
+};
+
+/**
+  Creates a new View.
+  @param {HTMLDivElement} element The <div/> element to initialize as a new View.
+  @constructor
+*/
+Pushpop.View = function View(element) {
+  var $element = this.$element = $(element);
+  element = this.element = $element[0];
+  
+  var view = element.view;
+  if (view) return view;
+  
+  element.view = this;
+  
+  this.title = $element.attr('data-view-title');
+  var $navbarButtonsContainer = $element.find('.pp-navigationbar-buttons');
+  var $navbarButtons = this.$navbarButtons = $navbarButtonsContainer.find('.pp-barbutton');
+  
+  // Hide the back button if data-hide-back-button="true" or if there is a left navigation bar
+  var dataHideBackButton = $navbarButtonsContainer.attr('data-hide-back-button');
+  this.hideNavBackButton = ((dataHideBackButton && dataHideBackButton !== 'false') || $navbarButtons.filter('.pp-barbutton-align-left').length > 0);
+};
+
+Pushpop.View.prototype = {
+  constructor: Pushpop.View,
+  
+  element: null,
+  $element: null,
+  
+  transition: null,
+  title: null,
+  $navbarButtons: null,
+  hideNavBackButton: false,
+  
+  /**
+    Sets the transition that should be used when pushing or popping to this view.
+    @param {String} value The name of the transition to be used when pushing or popping
+    to this view.
+  */
+  setTransition: function(value) {
+    this.transition = value;
+    this.$element.addClass(value);
+  },
+  
+  /**
+    Sets the title for this view.
+    @description The title is stored in the |data-view-title| attribute of this view's
+    element. NOTE: When a Pushpop.NavigationBar is used in conjunction with this view's
+    view stack, this view's title will appear in the navigation bar when it is the active
+    view.
+    @param {String} value The title for this view.
+  */
+  setTitle: function(value) {
+    this.title = value;
+    this.$element.attr('data-view-title', value);
+  },
+  
+  _shouldRemoveWhenPopped: false,
+  
+  getShouldRemoveWhenPopped: function() { return this._shouldRemoveWhenPopped; },
+  
+  setShouldRemoveWhenPopped: function(shouldRemoveWhenPopped) { this._shouldRemoveWhenPopped = shouldRemoveWhenPopped; },
+  
+  /**
+    Traverses the parents of this view's element and returns the closest Pushpop.ViewStack.
+    @type Pushpop.ViewStack
+  */
+  getViewStack: function() { return Pushpop.getViewStackForElement(this.$element); },
+  
+  /**
+    Forces a reflow in the browser for this view.
+  */
+  forceReflow: function() { this.element.offsetWidth; },
+  
+	setBackButtonVisible: function(visible) {
+	  if (this.$navbarButtons.filter('.pp-barbutton-align-left').length === 0) this.hideNavBackButton = !visible;
+	},
+	
+	/**
+	  Convenience accessor for jQuery's .bind() method.
+	*/
+	$bind: function() { this.$element.bind.apply(this.$element, arguments); },
+	
+	/**
+	  Convenience accessor for jQuery's .unbind() method.
+	*/
+	$unbind: function() { this.$element.unbind.apply(this.$element, arguments); },
+	
+	/**
+	  Convenience accessor for jQuery's .delegate() method.
+	*/
+	$delegate: function() { this.$element.delegate.apply(this.$element, arguments); },
+	
+	/**
+	  Convenience accessor for jQuery's .undelegate() method.
+	*/
+	$undelegate: function() { this.$element.undelegate.apply(this.$element, arguments); }
 };
 
 $(function() {
   $('.pp-view').each(function(index, element) { new Pushpop.View(element); });
   $('.pp-view-stack').each(function(index, element) { new Pushpop.ViewStack(element); });
+  
+  $(document).bind('touchstart', function() {});
   
   // TODO: Remove legacy .push class.
   $('a.pp-push, a.push').live('click', function(evt) {
