@@ -1,10 +1,15 @@
+/**
+  Pushpop.TableView
+  =================
+  pp-table-view
+*/
 ul.pp-table-view {
   background-color: #ddd;
   font-size: 17px;
   line-height: 1.2em;
   list-style: none;
   margin: 0;
-  padding: 1em;
+  padding: 0;
   -webkit-backface-visibility: hidden;
   -moz-backface-visibility: hidden;
   -ms-backface-visibility: hidden;
@@ -22,6 +27,16 @@ ul.pp-table-view {
   transition: margin-left 0.2s linear;
 }
 
+/* Clearfix */
+ul.pp-table-view > li::before,
+ul.pp-table-view > li::after { content: ''; display: table; }
+ul.pp-table-view > li::after { clear: both; }
+
+/**
+  Pushpop.TableView (Editing)
+  ===========================
+  pp-table-view-editing
+*/
 ul.pp-table-view.pp-table-view-editing {
   margin-left: 2em;
 }
@@ -63,48 +78,16 @@ ul.pp-table-view.pp-table-view-editing > li::after {
   transform: rotate(0deg);
 }
 
-ul.pp-table-view > li > ul.pp-table-view {
-  display: none;
+/**
+  Pushpop.TableView (Grouped Style)
+  =================================
+  pp-table-view-style-grouped
+*/
+ul.pp-table-view.pp-table-view-style-grouped {
+  padding: 1em;
 }
 
-ul.pp-table-view > li {
-  background-color: #f7f7f7;
-  border: 1px solid #cacaca;
-  border-top: 1px solid #fdfdfd;
-  color: #000;
-  line-height: 1.2em;
-  padding: 0.7em 0.6em 0.7em;
-  position: relative;
-  font-size: 1em;
-  font-weight: bold;
-  zoom: 1; /* Trigger "hasLayout" in IE */
-}
-
-ul.pp-table-view > li.pp-table-view-selected-state {
-  background: #058cf5; /* Old browsers */
-  background: -moz-linear-gradient(top, rgb(5, 140, 245) 0%, rgb(1, 93, 230) 100%); /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgb(5, 140, 245)), color-stop(100%, rgb(1, 93, 230))); /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(top, rgb(5, 140, 245) 0%, rgb(1, 93, 230) 100%); /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(top, rgb(5, 140, 245) 0%, rgb(1, 93, 230) 100%); /* Opera 11.10+ */
-  background: -ms-linear-gradient(top, rgb(5, 140, 245) 0%, rgb(1, 93, 230) 100%); /* IE10+ */
-  background: linear-gradient(top, rgb(5, 140, 245) 0%, rgb(1, 93, 230) 100%); /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#058cf5', endColorstr='#015de6', GradientType=0); /* IE6-9 */
-  border-top: 1px solid #058cf5;
-  color: #fff;
-  text-shadow: none;
-}
-
-ul.pp-table-view > li.pp-table-view-selected-state * {
-  color: #fff;
-}
-
-/* Clearfix */
-ul.pp-table-view > li::before,
-ul.pp-table-view > li::after { content: ''; display: table; }
-ul.pp-table-view > li::after { clear: both; }
-
-/* Headers and Footers */
-ul.pp-table-view > li:first-child, ul.pp-table-view > li.pp-table-view-header + li {
+ul.pp-table-view.pp-table-view-style-grouped > li:first-child {
   -webkit-border-radius: 0.65em 0.65em 0 0;
   -moz-border-radius-topleft: 0.65em;
   -moz-border-radius-topright: 0.65em;
@@ -113,7 +96,7 @@ ul.pp-table-view > li:first-child, ul.pp-table-view > li.pp-table-view-header + 
   border-radius: 0.65em 0.65em 0 0;
 }
 
-ul.pp-table-view > li:last-child, ul.pp-table-view > li.last-child {
+ul.pp-table-view.pp-table-view-style-grouped > li:last-child {
   -webkit-border-radius: 0 0 0.65em 0.65em;
   -moz-border-radius-topleft: 0;
   -moz-border-radius-topright: 0;
@@ -122,28 +105,20 @@ ul.pp-table-view > li:last-child, ul.pp-table-view > li.last-child {
   border-radius: 0 0 0.65em 0.65em;
 }
 
-ul.pp-table-view > li:last-child:first-child, ul.pp-table-view > li.last-child:first-child,
-ul.pp-table-view > li.pp-table-view-header + li:last-child, ul.pp-table-view > li.pp-table-view-header + li.last-child {
+ul.pp-table-view.pp-table-view-style-grouped > li:last-child:first-child {
   -webkit-border-radius: 0.65em;
   -moz-border-radius: 0.65em;
   border-radius: 0.65em;
 }
 
-ul.pp-table-view > li:first-child, ul.pp-table-view > li.pp-table-view-selected-state:first-child,
-ul.pp-table-view > li.pp-table-view-header + li, ul.pp-table-view > li.pp-table-view-header + li.pp-table-view-selected-state {
+ul.pp-table-view.pp-table-view-style-grouped > li:first-child,
+ul.pp-table-view.pp-table-view-style-grouped > li.pp-table-view-selected-state:first-child {
   border-top: 1px solid #cacaca;
-}
-
-ul.pp-table-view > li.pp-table-view-header.pp-table-view-selected-state {
-  background: none;
-  border-top: none;
-  color: #4c566c;
-  text-shadow: #fff 0 1px 0;
 }
 
 /**
   Pushpop.TableViewSearchBar
-  =============================
+  ==========================
   pp-table-view-search-bar
 */
 div.pp-table-view-search-bar {
@@ -414,15 +389,47 @@ div.pp-table-view-search-bar-overlay.pp-active {
 }
 
 /**
+  Pushpop.TableViewCell (Base Class)
+  ==================================
+  pp-table-view-cell
+*/
+ul.pp-table-view > li {
+  background-color: #f7f7f7;
+  border: 1px solid #cacaca;
+  border-top: 1px solid #fdfdfd;
+  color: #000;
+  line-height: 1.2em;
+  padding: 0.7em 0.6em 0.7em;
+  position: relative;
+  font-size: 1em;
+  font-weight: bold;
+  zoom: 1; /* Trigger "hasLayout" in IE */
+}
+
+ul.pp-table-view > li.pp-table-view-selected-state {
+  background: #058cf5; /* Old browsers */
+  background: -moz-linear-gradient(top, rgb(5, 140, 245) 0%, rgb(1, 93, 230) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgb(5, 140, 245)), color-stop(100%, rgb(1, 93, 230))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, rgb(5, 140, 245) 0%, rgb(1, 93, 230) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, rgb(5, 140, 245) 0%, rgb(1, 93, 230) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, rgb(5, 140, 245) 0%, rgb(1, 93, 230) 100%); /* IE10+ */
+  background: linear-gradient(top, rgb(5, 140, 245) 0%, rgb(1, 93, 230) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#058cf5', endColorstr='#015de6', GradientType=0); /* IE6-9 */
+  border-top: 1px solid #058cf5;
+  color: #fff;
+  text-shadow: none;
+}
+
+/**
   Pushpop.SubtitleTableViewCell
   =============================
   pp-subtitle-table-view-cell
 */
-ul.pp-table-view > li.pp-subtitle-table-view-cell {
-  padding: 0 0.65em;
+li.pp-subtitle-table-view-cell {
+  padding: 0 0.65em !important;
 }
 
-ul.pp-table-view > li.pp-subtitle-table-view-cell > h1 {
+li.pp-subtitle-table-view-cell > h1 {
   color: #000;
   display: block;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -433,7 +440,7 @@ ul.pp-table-view > li.pp-subtitle-table-view-cell > h1 {
   text-rendering: auto;
 }
 
-ul.pp-table-view > li.pp-subtitle-table-view-cell > h2 {
+li.pp-subtitle-table-view-cell > h2 {
   color: #808080;
   display: block;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -444,17 +451,22 @@ ul.pp-table-view > li.pp-subtitle-table-view-cell > h2 {
   text-rendering: auto;
 }
 
-/**
-  Pushpop.ValueTableViewCell
-  =============================
-  pp-value-table-view-cell
-*/
-ul.pp-table-view > li.pp-value-table-view-cell {
-  padding: 0.6em 0.6em 0.7em;
+li.pp-subtitle-table-view-cell.pp-table-view-selected-state > h1,
+li.pp-subtitle-table-view-cell.pp-table-view-selected-state > h2 {
+  color: #fff;
 }
 
-ul.pp-table-view > li.pp-value-table-view-cell > h1,
-ul.pp-table-view > li.pp-value-table-view-cell > h2 {
+/**
+  Pushpop.ValueTableViewCell
+  ==========================
+  pp-value-table-view-cell
+*/
+li.pp-value-table-view-cell {
+  padding: 0.6em 0.6em 0.7em !important;
+}
+
+li.pp-value-table-view-cell > h1,
+li.pp-value-table-view-cell > h2 {
   float: left;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1em;
@@ -463,37 +475,42 @@ ul.pp-table-view > li.pp-value-table-view-cell > h2 {
   text-rendering: auto;
 }
 
-ul.pp-table-view > li.pp-value-table-view-cell > h1 {
+li.pp-value-table-view-cell > h1 {
   color: #000;
   font-weight: bold;
   margin: 0;
 }
 
-ul.pp-table-view > li.pp-value-table-view-cell > h2 {
+li.pp-value-table-view-cell > h2 {
   color: #385487;
   font-weight: normal;
   margin: 0.1em 0 0;
   text-align: right;
 }
 
-/**
-  Pushpop.Value2TableViewCell
-  =============================
-  pp-value2-table-view-cell
-*/
-ul.pp-table-view > li.pp-value2-table-view-cell {
-  padding: 0.6em 0.6em 0.55em;
+li.pp-value-table-view-cell.pp-table-view-selected-state > h1,
+li.pp-value-table-view-cell.pp-table-view-selected-state > h2 {
+  color: #fff;
 }
 
-ul.pp-table-view > li.pp-value2-table-view-cell > h1,
-ul.pp-table-view > li.pp-value2-table-view-cell > h2 {
+/**
+  Pushpop.Value2TableViewCell
+  ===========================
+  pp-value2-table-view-cell
+*/
+li.pp-value2-table-view-cell {
+  padding: 0.6em 0.6em 0.55em !important;
+}
+
+li.pp-value2-table-view-cell > h1,
+li.pp-value2-table-view-cell > h2 {
   float: left;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: bold;
   text-rendering: auto;
 }
 
-ul.pp-table-view > li.pp-value2-table-view-cell > h1 {
+li.pp-value2-table-view-cell > h1 {
   color: #516691;
   font-size: 0.75em;
   line-height: 1.6em;
@@ -502,11 +519,11 @@ ul.pp-table-view > li.pp-value2-table-view-cell > h1 {
   text-align: right;
 }
 
-ul.pp-table-view > li.pp-value2-table-view-cell > h1::after {
+li.pp-value2-table-view-cell > h1::after {
   content: '\00a0\00a0'; /* Add spacer after the label text */
 }
 
-ul.pp-table-view > li.pp-value2-table-view-cell > h2 {
+li.pp-value2-table-view-cell > h2 {
   color: #000;
   font-size: 0.9em;
   line-height: 1.4em;
@@ -514,21 +531,26 @@ ul.pp-table-view > li.pp-value2-table-view-cell > h2 {
   width: 70%;
 }
 
+li.pp-value2-table-view-cell.pp-table-view-selected-state > h1,
+li.pp-value2-table-view-cell.pp-table-view-selected-state > h2 {
+  color: #fff;
+}
+
 /**
   Pushpop.InlineTextInputTableViewCell
   ====================================
   pp-inline-text-input-table-view-cell
 */
-ul.pp-table-view > li.pp-inline-text-input-table-view-cell {
-  padding: 0.55em 0.6em 0.55em;
+li.pp-inline-text-input-table-view-cell {
+  padding: 0.55em 0.6em 0.55em !important;
 }
 
-ul.pp-table-view > li.pp-inline-text-input-table-view-cell > h1,
-ul.pp-table-view > li.pp-inline-text-input-table-view-cell > input {
+li.pp-inline-text-input-table-view-cell > h1,
+li.pp-inline-text-input-table-view-cell > input {
   float: left;
 }
 
-ul.pp-table-view > li.pp-inline-text-input-table-view-cell > h1 {
+li.pp-inline-text-input-table-view-cell > h1 {
   color: #516691;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.75em;
@@ -540,11 +562,11 @@ ul.pp-table-view > li.pp-inline-text-input-table-view-cell > h1 {
   text-rendering: auto;
 }
 
-ul.pp-table-view > li.pp-inline-text-input-table-view-cell > h1::after {
+li.pp-inline-text-input-table-view-cell > h1::after {
   content: '\00a0\00a0'; /* Add spacer after the label text */
 }
 
-ul.pp-table-view > li.pp-inline-text-input-table-view-cell > input {
+li.pp-inline-text-input-table-view-cell > input {
   background: none;
   border: none;
   color: #000;
@@ -570,6 +592,11 @@ ul.pp-table-view > li.pp-inline-text-input-table-view-cell > input {
   -ms-transition: none;
   -o-transition: none;
   transition: none;
+}
+
+li.pp-value-table-view-cell.pp-table-view-selected-state > h1,
+li.pp-value-table-view-cell.pp-table-view-selected-state > input {
+  color: #fff;
 }
 
 /**
@@ -691,8 +718,12 @@ li.pp-table-view-selected-state > span.pp-table-view-cell-accessory-checkmark::b
 }
 
 /**
- * TableView Index
- */
+  **NOT YET IMPLEMENTED**
+  Pushpop.TableViewIndex
+  ======================
+  pp-table-view-index
+  **NOT YET IMPLEMENTED**
+*/
 div.pp-table-view-index {
   color: #555;
   font-weight: bold;

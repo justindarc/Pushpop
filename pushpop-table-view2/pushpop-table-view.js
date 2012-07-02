@@ -166,7 +166,6 @@ Pushpop.TableView = function TableView(element) {
       if (!isPendingSelection) return;
       isPendingSelection = false;
       
-      self.deselectAllRows();
       self.selectRowAtIndex(tableViewCell.getIndex());
     }, selectionTimeoutDuration);
   });
@@ -183,11 +182,7 @@ Pushpop.TableView = function TableView(element) {
     isPendingSelection = false;
     
     window.clearTimeout(selectionTimeout);
-  
-    var tableViewCell = this.tableViewCell;
-    
-    self.deselectAllRows();
-    self.selectRowAtIndex(tableViewCell.getIndex());
+    self.selectRowAtIndex(this.tableViewCell.getIndex());
   });
   
   // Create a new data source from a data set URL.
@@ -272,6 +267,30 @@ Pushpop.TableView.prototype = {
   _visibleHeight: 0,
   
   getVisibleHeight: function() { return (this._visibleHeight = (this._visibleHeight || this.scrollView.getSize().height)); },
+  
+  /**
+    Returns the view that contains this table view.
+    @description NOTE: If this table view is not contained within a view, this method will return null.
+    @type Pushpop.View
+  */
+  getView: function() {
+    var parents = this.$element.parents();
+    var view;
+    for (var i = 0, length = parents.length; i < length; i++) if (view = parents[i].view) return view;
+    return null;
+  },
+  
+  /**
+    Returns the view stack that contains this table view.
+    @description NOTE: If this table view is not contained within a view stack, this method will return null.
+    @type Pushpop.ViewStack
+  */
+  getViewStack: function() {
+    var parents = this.$element.parents();
+    var viewStack;
+    for (var i = 0, length = parents.length; i < length; i++) if (viewStack = parents[i].viewStack) return viewStack;
+    return null;
+  },
   
   _reusableCells: null,
   
@@ -376,6 +395,12 @@ Pushpop.TableView.prototype = {
     if the row is currently visible.
   */
   selectRowAtIndex: function(index, animated) {
+    var dataSource = this.getDataSource();
+    var shouldSelectRowAtIndex = dataSource.shouldSelectRowAtIndex(index);
+    if (!shouldSelectRowAtIndex) return;
+    
+    this.deselectAllRows();
+    
     var $element = this.$element;
     this._selectedRowIndexes.push(index);
     
@@ -605,7 +630,7 @@ Pushpop.TableViewDataSource = function TableViewDataSource(dataSet, defaultReuse
   if (!dataSet || dataSet.constructor !== Array) return;
   
   this.setDataSet(dataSet);
-  this.setDefaultReuseIdentifier(defaultReuseIdentifier);
+  this.setDefaultReuseIdentifier(defaultReuseIdentifier || this.getDefaultReuseIdentifier());
   
   // Default implementation if using an in-memory data set.
   this.getNumberOfRows = function() { return this.getFilteredDataSet().length; };
@@ -705,6 +730,10 @@ Pushpop.TableViewDataSource.prototype = {
   },
   
   _lastSearchString: null,
+  
+  shouldSelectRowAtIndex: function(index) {
+    return true;
+  },
   
   _tableView: null,
   
