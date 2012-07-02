@@ -166,7 +166,6 @@ Pushpop.TableView = function TableView(element) {
       if (!isPendingSelection) return;
       isPendingSelection = false;
       
-      self.deselectAllRows();
       self.selectRowAtIndex(tableViewCell.getIndex());
     }, selectionTimeoutDuration);
   });
@@ -183,11 +182,7 @@ Pushpop.TableView = function TableView(element) {
     isPendingSelection = false;
     
     window.clearTimeout(selectionTimeout);
-  
-    var tableViewCell = this.tableViewCell;
-    
-    self.deselectAllRows();
-    self.selectRowAtIndex(tableViewCell.getIndex());
+    self.selectRowAtIndex(this.tableViewCell.getIndex());
   });
   
   // Create a new data source from a data set URL.
@@ -403,6 +398,8 @@ Pushpop.TableView.prototype = {
     var dataSource = this.getDataSource();
     var shouldSelectRowAtIndex = dataSource.shouldSelectRowAtIndex(index);
     if (!shouldSelectRowAtIndex) return;
+    
+    this.deselectAllRows();
     
     var $element = this.$element;
     this._selectedRowIndexes.push(index);
