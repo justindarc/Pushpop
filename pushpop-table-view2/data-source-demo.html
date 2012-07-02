@@ -22,6 +22,7 @@
         var dataSource = new Pushpop.TableViewDataSource(dataSet);
         
         dataSource.setDefaultReuseIdentifier('pp-subtitle-table-view-cell');
+        dataSource.shouldSelectRowAtIndex = function(index) { return false; };
         tableView.setDataSource(dataSource);
       });
     });
