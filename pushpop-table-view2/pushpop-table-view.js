@@ -1024,15 +1024,46 @@ Pushpop.TableViewCell.prototype = {
   
   tableView: null,
   
+  _reuseIdentifier: 'pp-table-view-cell-default',
+  
   /**
-    Replaces this TableViewCell's HTML with new content based on the cell's data.
-    @description NOTE: When creating a custom cell type, this method should be
-    overridden to provide the appropriate HTML markup for the cell.
+    Returns a string containing this cell's reuse identifier.
+    @type String
   */
-  draw: function() {
+  getReuseIdentifier: function() { return this._reuseIdentifier; },
+  
+  /**
+    Returns a string containing HTML to be used to render the cell's contents based
+    on the cell's data.
+    @description NOTE: When creating a custom cell class, this method should be
+    overridden to provide the appropriate HTML markup for the cell.
+    @type String
+  */
+  getHtml: function() {
     var data = this.getData();
     var title = $.trim((data && data.title) ? data.title : '&nbsp;');
-    this.$element.html(title + this.getAccessoryHtml());
+    return title;
+  },
+  
+  /**
+    Returns a string containing HTML to be used to render the cell's accessories
+    based on the cell's accessory type.
+    @type String
+  */
+  getAccessoryHtml: function() {
+    var accessoryType = this.getAccessoryType();
+    return '<span class="' + 'pp-table-view-cell-accessory' + ((accessoryType) ? (' ' + accessoryType) : '') + '"/>';
+  },
+  
+  /**
+    Renders the cell using HTML provided by the getHtml() and getAccessoryHtml()
+    methods.
+    @description NOTE: In most circumstances, this method shouldn't need to be
+    overridden when creating a custom cell class. Typically, when creating a custom
+    cell class, only the getHtml() method should need to be overridden.
+  */
+  draw: function() {
+    this.$element.html(this.getHtml() + this.getAccessoryHtml());
   },
   
   /**
@@ -1088,6 +1119,14 @@ Pushpop.TableViewCell.prototype = {
     this.draw();
   },
   
+  _accessoryType: null,
+  
+  getAccessoryType: function() { return this._accessoryType; },
+  
+  setAccessoryType: function(accessoryType) {    
+    this._accessoryType = accessoryType;
+  },
+  
   _value: null,
   
   /**
@@ -1112,27 +1151,6 @@ Pushpop.TableViewCell.prototype = {
     var data = this.getData();
     if (data) data.value = value;
     this._value = value;
-  },
-  
-  _reuseIdentifier: 'pp-table-view-cell-default',
-  
-  /**
-    Returns a string containing this cell's reuse identifier.
-    @type String
-  */
-  getReuseIdentifier: function() { return this._reuseIdentifier; },
-  
-  _accessoryType: null,
-  
-  getAccessoryType: function() { return this._accessoryType; },
-  
-  setAccessoryType: function(accessoryType) {    
-    this._accessoryType = accessoryType;
-  },
-  
-  getAccessoryHtml: function() {
-    var accessoryType = this.getAccessoryType();
-    return '<span class="' + 'pp-table-view-cell-accessory' + ((accessoryType) ? (' ' + accessoryType) : '') + '"/>';
   },
   
   _index: -1,
@@ -1192,11 +1210,11 @@ Pushpop.SubtitleTableViewCell = function SubtitleTableViewCell(reuseIdentifier) 
 Pushpop.SubtitleTableViewCell.prototype = new Pushpop.TableViewCell('pp-subtitle-table-view-cell');
 Pushpop.SubtitleTableViewCell.prototype.constructor = Pushpop.SubtitleTableViewCell;
 
-Pushpop.SubtitleTableViewCell.prototype.draw = function() {
+Pushpop.SubtitleTableViewCell.prototype.getHtml = function() {
   var data = this.getData();
   var title = $.trim((data && data.title) ? data.title : '&nbsp;');
   var subtitle = $.trim((data && data.subtitle) ? data.subtitle : '&nbsp;');
-  this.$element.html('<h1>' + title + '</h1><h2>' + subtitle + '</h2>' + this.getAccessoryHtml());
+  return '<h1>' + title + '</h1><h2>' + subtitle + '</h2>';
 };
 
 // Register the prototype for Pushpop.SubtitleTableViewCell as a reusable cell type.
@@ -1221,11 +1239,11 @@ Pushpop.ValueTableViewCell = function ValueTableViewCell(reuseIdentifier) {
 Pushpop.ValueTableViewCell.prototype = new Pushpop.TableViewCell('pp-value-table-view-cell');
 Pushpop.ValueTableViewCell.prototype.constructor = Pushpop.ValueTableViewCell;
 
-Pushpop.ValueTableViewCell.prototype.draw = function() {
+Pushpop.ValueTableViewCell.prototype.getHtml = function() {
   var data = this.getData();
   var title = $.trim((data && data.title) ? data.title : '&nbsp;');
   var value = $.trim((data && data.value) ? data.value : '&nbsp;');
-  this.$element.html('<h1>' + title + '</h1><h2>' + value + '</h2>' + this.getAccessoryHtml());
+  return '<h1>' + title + '</h1><h2>' + value + '</h2>';
 };
 
 // Register the prototype for Pushpop.ValueTableViewCell as a reusable cell type.
@@ -1250,11 +1268,11 @@ Pushpop.Value2TableViewCell = function Value2TableViewCell(reuseIdentifier) {
 Pushpop.Value2TableViewCell.prototype = new Pushpop.TableViewCell('pp-value2-table-view-cell');
 Pushpop.Value2TableViewCell.prototype.constructor = Pushpop.Value2TableViewCell;
 
-Pushpop.Value2TableViewCell.prototype.draw = function() {
+Pushpop.Value2TableViewCell.prototype.getHtml = function() {
   var data = this.getData();
   var title = $.trim((data && data.title) ? data.title : '&nbsp;');
   var value = $.trim((data && data.value) ? data.value : '&nbsp;');
-  this.$element.html('<h1>' + title + '</h1><h2>' + value + '</h2>' + this.getAccessoryHtml());
+  return '<h1>' + title + '</h1><h2>' + value + '</h2>';
 };
 
 // Register the prototype for Pushpop.Value2TableViewCell as a reusable cell type.
@@ -1284,14 +1302,14 @@ Pushpop.InlineTextInputTableViewCell = function InlineTextInputTableViewCell(reu
 Pushpop.InlineTextInputTableViewCell.prototype = new Pushpop.TableViewCell('pp-inline-text-input-table-view-cell');
 Pushpop.InlineTextInputTableViewCell.prototype.constructor = Pushpop.InlineTextInputTableViewCell;
 
-Pushpop.InlineTextInputTableViewCell.prototype.draw = function() {
+Pushpop.InlineTextInputTableViewCell.prototype.getHtml = function() {
   var data = this.getData();
   var title = $.trim((data && data.title) ? data.title : '&nbsp;');
   var name = $.trim((data && data.name) ? data.name : '');
   var value = $.trim((data && data.value) ? data.value : '');
   var isPassword = (data) ? (data.password || 'false') : 'false';
   isPassword = isPassword !== 'false';
-  this.$element.html('<h1>' + title + '</h1><input type="' + (isPassword ? 'password' : 'text') + '" name="' + name + '" value="' + value + '"/>' + this.getAccessoryHtml());
+  return '<h1>' + title + '</h1><input type="' + (isPassword ? 'password' : 'text') + '" name="' + name + '" value="' + value + '"/>';
 };
 
 Pushpop.InlineTextInputTableViewCell.prototype.setSelected = function(value) {

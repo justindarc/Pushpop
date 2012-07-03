@@ -36,7 +36,7 @@
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href='#constructor'>Pushpop.TableViewDataSource</a></b>(dataSet)
+								<b><a href='#constructor'>Pushpop.TableViewDataSource</a></b>(dataSet, defaultReuseIdentifier)
 							</div>
 							<div class="description">Creates a new data source for a TableView.</div>
 						</td>
@@ -119,6 +119,25 @@
 							</tr>
 						
 							<tr>
+								<td class="attributes"><i>{Array}</i>&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#getValuesArray">getValuesArray</a></b>(keyFieldName, valueFieldName)
+									</div>
+									<div class="description">Returns an array containing the key/value pairs for all "values" contained within the data
+    source.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes"><i>{Object}</i>&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#getValuesObject">getValuesObject</a></b>(keyFieldName, valueFieldName)
+									</div>
+									<div class="description">Returns an object containing the data for all "values" contained within the data source.</div>
+								</td>
+							</tr>
+						
+							<tr>
 								<td class="attributes">&nbsp;</td>
 								<td class="nameDescription">
 									<div class="fixedFont"><b><a href="#setDataSet">setDataSet</a></b>(dataSet)
@@ -164,6 +183,15 @@
 								</td>
 							</tr>
 						
+							<tr>
+								<td class="attributes">&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#shouldSelectRowAtIndex">shouldSelectRowAtIndex</a></b>(index)
+									</div>
+									<div class="description"></div>
+								</td>
+							</tr>
+						
 						</tbody>
 					</table>
 												
@@ -182,7 +210,7 @@
 
 				
 				<div class="fixedFont">
-						<b>Pushpop.TableViewDataSource</b>(dataSet)
+						<b>Pushpop.TableViewDataSource</b>(dataSet, defaultReuseIdentifier)
 				</div>
 				
 				<div class="description">
@@ -221,6 +249,13 @@
 							</dt>
 								<dd>The title to be displayed in a TableViewCell for a specific record.</dd>
 						
+							<dt>
+								<span class="light fixedFont">{String}</span>  <b>defaultReuseIdentifier</b>
+								<i>Optional</i>
+							</dt>
+								<dd>The optional reuse identifier to be used for rows that do
+  not specify a specific reuse identifier.</dd>
+						
 						</dl>
 					
 					
@@ -252,6 +287,8 @@
 					</div>
 					<div class="description">
 						REQUIRED: Returns a TableViewCell for the specified index.
+NOTE: This is the default implementation and should be overridden for data
+    sources that are not driven directly from an in-memory data set.
 						
 						
 					</div>
@@ -413,6 +450,8 @@ NOTE: This may not be utilized by a custom data source.
 					</div>
 					<div class="description">
 						REQUIRED: Returns the number of rows provided by this data source.
+NOTE: This is the default implementation and should be overridden for data
+    sources that are not driven directly from an in-memory data set.
 						
 						
 					</div>
@@ -447,6 +486,105 @@ NOTE: This may not be utilized by a custom data source.
 					
 					
 					
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="getValuesArray">
+					<div class="fixedFont">
+					<span class='title'>					
+						<span class="light ">{Array}</span>
+						<b>getValuesArray</b>(keyFieldName, valueFieldName)
+					</span>
+					
+					</div>
+					<div class="description">
+						Returns an array containing the key/value pairs for all "values" contained within the data
+    source. This is typically used for retrieving form fields stored within a table view and
+    behaves similarly to jQuery's .serializeArray() function.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont ">{String}</span> <b>keyFieldName</b>
+									<i>Optional</i>
+								</dt>
+								<dd>The name of the field in the data source containing the
+    values' keys. If not specified, the default value is 'name'.</dd>
+							
+								<dt>
+									<span class="light fixedFont ">{String}</span> <b>valueFieldName</b>
+									<i>Optional</i>
+								</dt>
+								<dd>The name of the field in the data source containing the
+    values' values. If not specified, the default value is 'value.</dd>
+							
+							</dl>
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="getValuesObject">
+					<div class="fixedFont">
+					<span class='title'>					
+						<span class="light ">{Object}</span>
+						<b>getValuesObject</b>(keyFieldName, valueFieldName)
+					</span>
+					
+					</div>
+					<div class="description">
+						Returns an object containing the data for all "values" contained within the data source.
+    This is typically used for retrieving form fields stored within a table view.
+NOTE: If a field name occurs more than once, its values will be put into an
+    array.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont ">{String}</span> <b>keyFieldName</b>
+									<i>Optional</i>
+								</dt>
+								<dd>The name of the field in the data source containing the
+    values' keys. If not specified, the default value is 'name'.</dd>
+							
+								<dt>
+									<span class="light fixedFont ">{String}</span> <b>valueFieldName</b>
+									<i>Optional</i>
+								</dt>
+								<dd>The name of the field in the data source containing the
+    values' values. If not specified, the default value is 'value.</dd>
+							
+							</dl>
 						
 						
 						
@@ -664,6 +802,45 @@ The default implementation assumes that the data set is fully loaded into
 									<i>Optional</i>
 								</dt>
 								<dd>An optional boolean flag for forcing a case-sensitive search.</dd>
+							
+							</dl>
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="shouldSelectRowAtIndex">
+					<div class="fixedFont">
+					<span class='title'>					
+						
+						<b>shouldSelectRowAtIndex</b>(index)
+					</span>
+					
+					</div>
+					<div class="description">
+						
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>index</b>
+									
+								</dt>
+								<dd></dd>
 							
 							</dl>
 						

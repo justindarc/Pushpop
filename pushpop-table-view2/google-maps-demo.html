@@ -34,10 +34,10 @@
     // Override the constructor for new instances of MapsDirectionTableViewCell.
     MapsDirectionTableViewCell.prototype.constructor = MapsDirectionTableViewCell;
     
-    // Override the .draw() method.
-    MapsDirectionTableViewCell.prototype.draw = function() {
+    // Override the .getHtml() method.
+    MapsDirectionTableViewCell.prototype.getHtml = function() {
       var data = this.getData();
-      this.$element.html('<label>' + data.stepNumber + '</label><div><h2>Drive ' + data.distance.text + ' (approx. ' + data.duration.text + ') then</h2><h1>' + data.html_instructions + '</h1></div>');
+      return '<label>' + data.stepNumber + '</label><div><h2>Drive ' + data.distance.text + ' (approx. ' + data.duration.text + ') then</h2><h1>' + data.html_instructions + '</h1></div>';
     };
     
     // Register the prototype for MapsDirectionTableViewCell as a reusable cell type.

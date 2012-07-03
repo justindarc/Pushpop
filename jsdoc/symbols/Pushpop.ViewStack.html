@@ -100,6 +100,25 @@
 								</td>
 							</tr>
 						
+							<tr>
+								<td class="attributes">&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#pushNewTableView">pushNewTableView</a></b>(beforePushCallback, transitionOrCallback, callback)
+									</div>
+									<div class="description">Creates a new view with a new table view and pushes it to the view stack using the optionally
+    specified transition.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes">&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#pushNewView">pushNewView</a></b>(beforePushCallback, transitionOrCallback, callback)
+									</div>
+									<div class="description">Creates a new view and pushes it to the view stack using the optionally specified transition.</div>
+								</td>
+							</tr>
+						
 						</tbody>
 					</table>
 												
@@ -353,6 +372,128 @@
 									
 								</dt>
 								<dd>The view to be pushed to the view stack.</dd>
+							
+								<dt>
+									<span class="light fixedFont ">{String|<a href="symbols/Function.html">Function</a>}</span> <b>transitionOrCallback</b>
+									<i>Optional</i>
+								</dt>
+								<dd>Either the name of the transition to use when
+    pushing the view or a callback function to be executed upon completion of the default transition.
+    If this parameter is omitted, the default transition is used.</dd>
+							
+								<dt>
+									<span class="light fixedFont ">{<a href="symbols/Function.html">Function</a>}</span> <b>callback</b>
+									<i>Optional</i>
+								</dt>
+								<dd>A callback function to be executed upon completion of the specified
+    transition.</dd>
+							
+							</dl>
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="pushNewTableView">
+					<div class="fixedFont">
+					<span class='title'>					
+						
+						<b>pushNewTableView</b>(beforePushCallback, transitionOrCallback, callback)
+					</span>
+					
+					</div>
+					<div class="description">
+						Creates a new view with a new table view and pushes it to the view stack using the optionally
+    specified transition. Before pushing the view, a required callback is called that passes in the
+    newly-created table view to give an opportunity to set up the table view's data source and other
+    properties. If a transition is not specified, the default will be used. A callback may optionally
+    be provided to be called after the transition completes.
+NOTE: By default, the newly-created view containing the newly-created table view is
+    marked for removal from the DOM when it is popped.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont ">{<a href="symbols/Function.html">Function</a>}</span> <b>beforePushCallback</b>
+									
+								</dt>
+								<dd>A callback function to be executed before the newly-created
+    view is pushed. The function is called with a single parameter passing the newly-created table
+    view contained in the view to be pushed.</dd>
+							
+								<dt>
+									<span class="light fixedFont ">{String|<a href="symbols/Function.html">Function</a>}</span> <b>transitionOrCallback</b>
+									<i>Optional</i>
+								</dt>
+								<dd>Either the name of the transition to use when
+    pushing the view or a callback function to be executed upon completion of the default transition.
+    If this parameter is omitted, the default transition is used.</dd>
+							
+								<dt>
+									<span class="light fixedFont ">{<a href="symbols/Function.html">Function</a>}</span> <b>callback</b>
+									<i>Optional</i>
+								</dt>
+								<dd>A callback function to be executed upon completion of the specified
+    transition.</dd>
+							
+							</dl>
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="pushNewView">
+					<div class="fixedFont">
+					<span class='title'>					
+						
+						<b>pushNewView</b>(beforePushCallback, transitionOrCallback, callback)
+					</span>
+					
+					</div>
+					<div class="description">
+						Creates a new view and pushes it to the view stack using the optionally specified transition.
+    Before pushing the view, a required callback is called that passes in the newly-created view to
+    give an opportunity to set up the view's content. If a transition is not specified, the default
+    will be used. A callback may optionally be provided to be called after the transition completes.
+NOTE: By default, the newly-created view is marked for removal from the DOM when it
+    is popped.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont ">{<a href="symbols/Function.html">Function</a>}</span> <b>beforePushCallback</b>
+									
+								</dt>
+								<dd>A callback function to be executed before the newly-created
+    view is pushed. The function is called with a single parameter passing the view to be pushed.</dd>
 							
 								<dt>
 									<span class="light fixedFont ">{String|<a href="symbols/Function.html">Function</a>}</span> <b>transitionOrCallback</b>
