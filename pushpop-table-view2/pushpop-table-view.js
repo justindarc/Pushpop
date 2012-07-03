@@ -150,6 +150,31 @@ Pushpop.TableView = function TableView(element) {
     }));
   });
   
+  // Handle mouse/touch events to allow the user to tap editing accessory buttons.
+  var isPendingEditingAccessoryButtonTap = false;
+
+  $element.delegate('span.pp-table-view-cell-editing-accessory', !!('ontouchstart' in window) ? 'touchstart' : 'mousedown', function(evt) {
+    isPendingEditingAccessoryButtonTap = true;
+  });
+  
+  $element.delegate('span.pp-table-view-cell-editing-accessory', !!('ontouchmove' in window) ? 'touchmove' : 'mousemove', function(evt) {
+    if (!isPendingEditingAccessoryButtonTap) return;
+    isPendingEditingAccessoryButtonTap = false;
+  });
+  
+  $element.delegate('span.pp-table-view-cell-editing-accessory', !!('ontouchend' in window) ? 'touchend' : 'mouseup', function(evt) {
+    if (!isPendingEditingAccessoryButtonTap) return;
+    isPendingEditingAccessoryButtonTap = false;
+    
+    var tableViewCell = $(this).parent()[0].tableViewCell;
+    if (!tableViewCell) return;
+    
+    $element.trigger($.Event(Pushpop.TableView.EventType.EditingAccessoryButtonTappedForRowWithIndex, {
+      tableView: self,
+      index: tableViewCell.getIndex()
+    }));
+  });
+  
   // Handle mouse/touch events to allow the user to make row selections.
   var isPendingSelection = false, selectionTimeout = null;
 
@@ -231,7 +256,8 @@ Pushpop.TableView = function TableView(element) {
 Pushpop.TableView.EventType = {
   DidSelectRowAtIndex: 'Pushpop:TableView:DidSelectRowAtIndex',
   DidDeselectRowAtIndex: 'Pushpop:TableView:DidDeselectRowAtIndex',
-  AccessoryButtonTappedForRowWithIndex: 'Pushpop:TableView:AccessoryButtonTappedForRowWithIndex'
+  AccessoryButtonTappedForRowWithIndex: 'Pushpop:TableView:AccessoryButtonTappedForRowWithIndex',
+  EditingAccessoryButtonTappedForRowWithIndex: 'Pushpop:TableView:EditingAccessoryButtonTappedForRowWithIndex'
 };
 
 Pushpop.TableView._reusableCellPrototypes = {};
@@ -665,6 +691,7 @@ Pushpop.TableViewDataSource.prototype = {
     
     cell.setIndex(index);
     cell.setAccessoryType(data.accessoryType);
+    cell.setEditingAccessoryType(data.editingAccessoryType);
     cell.setData(data);
     
     return cell;
@@ -1016,6 +1043,12 @@ Pushpop.TableViewCell.AccessoryType = {
   Checkmark: 'pp-table-view-cell-accessory-checkmark'
 };
 
+Pushpop.TableViewCell.EditingAccessoryType = {
+  None: 'pp-table-view-cell-editing-accessory-none',
+  AddButton: 'pp-table-view-cell-editing-accessory-add-button',
+  DeleteButton: 'pp-table-view-cell-editing-accessory-delete-button'
+};
+
 Pushpop.TableViewCell.prototype = {
   constructor: Pushpop.TableViewCell,
   
@@ -1044,6 +1077,17 @@ Pushpop.TableViewCell.prototype = {
     var title = $.trim((data && data.title) ? data.title : '&nbsp;');
     return title;
   },
+
+  /**
+    Returns a string containing HTML to be used to render the cell's accessories
+    based on the cell's accessory type.
+    @type String
+  */
+  getEditingAccessoryHtml: function() {
+    var editingAccessoryType = this.getEditingAccessoryType();
+    if (!editingAccessoryType || editingAccessoryType === Pushpop.TableViewCell.EditingAccessoryType.None) return '';
+    return '<span class="pp-table-view-cell-editing-accessory ' + editingAccessoryType + '"/>';
+  },
   
   /**
     Returns a string containing HTML to be used to render the cell's accessories
@@ -1052,7 +1096,8 @@ Pushpop.TableViewCell.prototype = {
   */
   getAccessoryHtml: function() {
     var accessoryType = this.getAccessoryType();
-    return '<span class="' + 'pp-table-view-cell-accessory' + ((accessoryType) ? (' ' + accessoryType) : '') + '"/>';
+    if (!accessoryType || accessoryType === Pushpop.TableViewCell.AccessoryType.None) return '';
+    return '<span class="pp-table-view-cell-accessory ' + accessoryType + '"/>';
   },
   
   /**
@@ -1063,7 +1108,7 @@ Pushpop.TableViewCell.prototype = {
     cell class, only the getHtml() method should need to be overridden.
   */
   draw: function() {
-    this.$element.html(this.getHtml() + this.getAccessoryHtml());
+    this.$element.html(this.getEditingAccessoryHtml() + this.getHtml() + this.getAccessoryHtml());
   },
   
   /**
@@ -1095,6 +1140,7 @@ Pushpop.TableViewCell.prototype = {
     this.setSelected(false);
     this.setIndex(-1);
     this.setAccessoryType(null);
+    this.setEditingAccessoryType(null);
     this.setData(null);
   },
   
@@ -1125,6 +1171,14 @@ Pushpop.TableViewCell.prototype = {
   
   setAccessoryType: function(accessoryType) {    
     this._accessoryType = accessoryType;
+  },
+  
+  _editingAccessoryType: null,
+  
+  getEditingAccessoryType: function() { return this._editingAccessoryType; },
+  
+  setEditingAccessoryType: function(editingAccessoryType) {    
+    this._editingAccessoryType = editingAccessoryType;
   },
   
   _value: null,
