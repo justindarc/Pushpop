@@ -1,0 +1,65 @@
+/**
+  Pushpop.PickerTableView
+  =======================
+  pp-picker-table-view
+*/
+ul.pp-picker-table-view {
+  background-color: #ddd;
+  font-size: 17px;
+  line-height: 1.2em;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  -o-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  -o-transform: translate(0, 0);
+  transform: translate(0, 0);
+  -webkit-transition: margin-left 0.2s linear;
+  -moz-transition: margin-left 0.2s linear;
+  -ms-transition: margin-left 0.2s linear;
+  -o-transition: margin-left 0.2s linear;
+  transition: margin-left 0.2s linear;
+}
+
+/* Clearfix */
+ul.pp-picker-table-view > li::before,
+ul.pp-picker-table-view > li::after { content: ''; display: table; }
+ul.pp-picker-table-view > li::after { clear: both; }
+
+/**
+  Pushpop.TableViewCell (Base Class)
+  ==================================
+  pp-table-view-cell
+*/
+ul.pp-picker-table-view > li {
+  background-color: #f7f7f7;
+  border: 1px solid #cacaca;
+  border-top: 1px solid #fdfdfd;
+  color: #000;
+  line-height: 1.2em;
+  padding: 0.7em 0.6em 0.7em;
+  position: relative;
+  font-size: 1em;
+  font-weight: bold;
+  zoom: 1; /* Trigger "hasLayout" in IE */
+}
+
+ul.pp-picker-table-view > li.pp-table-view-selected-state {
+  background: #058cf5; /* Old browsers */
+  background: -moz-linear-gradient(top, rgb(5, 140, 245) 0%, rgb(1, 93, 230) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgb(5, 140, 245)), color-stop(100%, rgb(1, 93, 230))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, rgb(5, 140, 245) 0%, rgb(1, 93, 230) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, rgb(5, 140, 245) 0%, rgb(1, 93, 230) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, rgb(5, 140, 245) 0%, rgb(1, 93, 230) 100%); /* IE10+ */
+  background: linear-gradient(top, rgb(5, 140, 245) 0%, rgb(1, 93, 230) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#058cf5', endColorstr='#015de6', GradientType=0); /* IE6-9 */
+  border-top: 1px solid #058cf5;
+  color: #fff;
+  text-shadow: none;
+}

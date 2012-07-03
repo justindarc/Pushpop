@@ -79,15 +79,15 @@ ul.pp-table-view.pp-table-view-editing > li::after {
 }
 
 /**
-  Pushpop.TableView (Grouped Style)
-  =================================
+  Pushpop.TableViewStyleGrouped
+  =============================
   pp-table-view-style-grouped
 */
-ul.pp-table-view.pp-table-view-style-grouped {
+ul.pp-table-view-style-grouped {
   padding: 1em;
 }
 
-ul.pp-table-view.pp-table-view-style-grouped > li:first-child {
+ul.pp-table-view-style-grouped > li:first-child {
   -webkit-border-radius: 0.65em 0.65em 0 0;
   -moz-border-radius-topleft: 0.65em;
   -moz-border-radius-topright: 0.65em;
@@ -96,7 +96,7 @@ ul.pp-table-view.pp-table-view-style-grouped > li:first-child {
   border-radius: 0.65em 0.65em 0 0;
 }
 
-ul.pp-table-view.pp-table-view-style-grouped > li:last-child {
+ul.pp-table-view-style-grouped > li:last-child {
   -webkit-border-radius: 0 0 0.65em 0.65em;
   -moz-border-radius-topleft: 0;
   -moz-border-radius-topright: 0;
@@ -105,14 +105,14 @@ ul.pp-table-view.pp-table-view-style-grouped > li:last-child {
   border-radius: 0 0 0.65em 0.65em;
 }
 
-ul.pp-table-view.pp-table-view-style-grouped > li:last-child:first-child {
+ul.pp-table-view-style-grouped > li:last-child:first-child {
   -webkit-border-radius: 0.65em;
   -moz-border-radius: 0.65em;
   border-radius: 0.65em;
 }
 
-ul.pp-table-view.pp-table-view-style-grouped > li:first-child,
-ul.pp-table-view.pp-table-view-style-grouped > li.pp-table-view-selected-state:first-child {
+ul.pp-table-view-style-grouped > li:first-child,
+ul.pp-table-view-style-grouped > li.pp-table-view-selected-state:first-child {
   border-top: 1px solid #cacaca;
 }
 
