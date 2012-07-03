@@ -17,15 +17,22 @@
 	<script src="../pushpop-table-view.js"></script>
 	<script src="pushpop-picker-table-view.js"></script>
 	<script>
+    var carsPickerTableView;
     
+    $(function() {
+      carsPickerTableView = $('#cars-picker-table-view')[0].tableView;
+    });
 	</script>
 </head>
 <body>
-  <div class="pp-view-stack">
+  <div class="pp-view-stack" id="root-view-stack">
     <div class="pp-navigationbar" data-tap-to-top="true"></div>
-    <div class="pp-view sk-scroll-view" id="detail-view-root" data-view-title="PickerTableView Demo" data-always-bounce-vertical="true">
-      <ul class="pp-picker-table-view" data-contains-search-bar="true" data-set-url="sample-data/big-data-100.json">
-        
+    <div class="pp-view sk-scroll-view" id="root-view" data-view-title="PickerTableView Demo" data-always-bounce-vertical="true">
+      <ul class="pp-picker-table-view" id="cars-picker-table-view" data-contains-search-bar="true">
+        <li>A</li>
+        <li>B</li>
+        <li>C</li>
+        <li>D</li>
       </ul>
     </div>
   </div>

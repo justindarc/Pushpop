@@ -41,10 +41,11 @@
     // Override the constructor for new instances of MyCustomCell.
     MyCustomCell.prototype.constructor = MyCustomCell;
     
-    // Override the .draw() method.
-    MyCustomCell.prototype.draw = function() {
+    // Override the .getHtml() method.
+    MyCustomCell.prototype.getHtml = function() {
       var data = this.getData();
-      this.$element.html('*CUSTOM* ' + ((data) ? data.title : '') + ' *CUSTOM*');
+      var title = $.trim((data && data.title) ? data.title : '&nbsp;');
+      return '*CUSTOM* ' + title + ' *CUSTOM*';
     };
     
     // Register the prototype for MyCustomCell as a reusable cell type.

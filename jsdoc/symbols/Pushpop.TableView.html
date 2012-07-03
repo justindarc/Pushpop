@@ -55,6 +55,42 @@
 						<tbody>
 						
 							<tr>
+								<td class="attributes">&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#$bind">$bind</a></b>()
+									</div>
+									<div class="description">Convenience accessor for jQuery's .bind() method.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes">&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#$delegate">$delegate</a></b>()
+									</div>
+									<div class="description">Convenience accessor for jQuery's .delegate() method.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes">&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#$unbind">$unbind</a></b>()
+									</div>
+									<div class="description">Convenience accessor for jQuery's .unbind() method.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes">&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#$undelegate">$undelegate</a></b>()
+									</div>
+									<div class="description">Convenience accessor for jQuery's .undelegate() method.</div>
+								</td>
+							</tr>
+						
+							<tr>
 								<td class="attributes"><i>{<a href="symbols/Pushpop.TableViewCell.html">Pushpop.TableViewCell</a>}</i>&nbsp;</td>
 								<td class="nameDescription">
 									<div class="fixedFont"><b><a href="#dequeueReusableCellWithIdentifier">dequeueReusableCellWithIdentifier</a></b>(reuseIdentifier)
@@ -170,6 +206,24 @@
 									<div class="fixedFont"><b><a href="#getSearchBar">getSearchBar</a></b>()
 									</div>
 									<div class="description">Returns the TableViewSearchBar for this TableView if it contains one.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes"><i>{<a href="symbols/Pushpop.View.html">Pushpop.View</a>}</i>&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#getView">getView</a></b>()
+									</div>
+									<div class="description">Returns the view that contains this table view.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes"><i>{<a href="symbols/Pushpop.ViewStack.html">Pushpop.ViewStack</a>}</i>&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#getViewStack">getViewStack</a></b>()
+									</div>
+									<div class="description">Returns the view stack that contains this table view.</div>
 								</td>
 							</tr>
 						
@@ -351,6 +405,118 @@
 				<h3>
 					Method Detail
 				</h3>
+				
+					<div class="well" id="$bind">
+					<div class="fixedFont">
+					<span class='title'>					
+						
+						<b>$bind</b>()
+					</span>
+					
+					</div>
+					<div class="description">
+						Convenience accessor for jQuery's .bind() method.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="$delegate">
+					<div class="fixedFont">
+					<span class='title'>					
+						
+						<b>$delegate</b>()
+					</span>
+					
+					</div>
+					<div class="description">
+						Convenience accessor for jQuery's .delegate() method.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="$unbind">
+					<div class="fixedFont">
+					<span class='title'>					
+						
+						<b>$unbind</b>()
+					</span>
+					
+					</div>
+					<div class="description">
+						Convenience accessor for jQuery's .unbind() method.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="$undelegate">
+					<div class="fixedFont">
+					<span class='title'>					
+						
+						<b>$undelegate</b>()
+					</span>
+					
+					</div>
+					<div class="description">
+						Convenience accessor for jQuery's .undelegate() method.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
 				
 					<div class="well" id="dequeueReusableCellWithIdentifier">
 					<div class="fixedFont">
@@ -775,6 +941,64 @@ The object contains an array property for each "reuse identifier"
 					
 					</div>
 				
+					<div class="well" id="getView">
+					<div class="fixedFont">
+					<span class='title'>					
+						<span class="light ">{<a href="symbols/Pushpop.View.html">Pushpop.View</a>}</span>
+						<b>getView</b>()
+					</span>
+					
+					</div>
+					<div class="description">
+						Returns the view that contains this table view.
+NOTE: If this table view is not contained within a view, this method will return null.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="getViewStack">
+					<div class="fixedFont">
+					<span class='title'>					
+						<span class="light ">{<a href="symbols/Pushpop.ViewStack.html">Pushpop.ViewStack</a>}</span>
+						<b>getViewStack</b>()
+					</span>
+					
+					</div>
+					<div class="description">
+						Returns the view stack that contains this table view.
+NOTE: If this table view is not contained within a view stack, this method will return null.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
 					<div class="well" id="getVisibleCells">
 					<div class="fixedFont">
 					<span class='title'>					
@@ -1090,7 +1314,7 @@ NOTE: This method will not modify any other existing selections.
 									<i>Optional</i>
 								</dt>
 								<dd>An optional flag indicating if the transition in or out of
-    editing mode should be animated.</dd>
+    editing mode should be animated (default: true).</dd>
 							
 							</dl>
 						

@@ -59,16 +59,18 @@
 								<td class="nameDescription">
 									<div class="fixedFont"><b><a href="#draw">draw</a></b>()
 									</div>
-									<div class="description">Replaces this TableViewCell's HTML with new content based on the cell's data.</div>
+									<div class="description">Renders the cell using HTML provided by the getHtml() and getAccessoryHtml()
+    methods.</div>
 								</td>
 							</tr>
 						
 							<tr>
-								<td class="attributes">&nbsp;</td>
+								<td class="attributes"><i>{String}</i>&nbsp;</td>
 								<td class="nameDescription">
 									<div class="fixedFont"><b><a href="#getAccessoryHtml">getAccessoryHtml</a></b>()
 									</div>
-									<div class="description"></div>
+									<div class="description">Returns a string containing HTML to be used to render the cell's accessories
+    based on the cell's accessory type.</div>
 								</td>
 							</tr>
 						
@@ -87,6 +89,16 @@
 									<div class="fixedFont"><b><a href="#getData">getData</a></b>()
 									</div>
 									<div class="description">Returns the data of the item in the data source that corresponds to this cell.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes"><i>{String}</i>&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#getHtml">getHtml</a></b>()
+									</div>
+									<div class="description">Returns a string containing HTML to be used to render the cell's contents based
+    on the cell's data.</div>
 								</td>
 							</tr>
 						
@@ -253,9 +265,11 @@
 					
 					</div>
 					<div class="description">
-						Replaces this TableViewCell's HTML with new content based on the cell's data.
-NOTE: When creating a custom cell type, this method should be
-    overridden to provide the appropriate HTML markup for the cell.
+						Renders the cell using HTML provided by the getHtml() and getAccessoryHtml()
+    methods.
+NOTE: In most circumstances, this method shouldn't need to be
+    overridden when creating a custom cell class. Typically, when creating a custom
+    cell class, only the getHtml() method should need to be overridden.
 						
 						
 					</div>
@@ -277,13 +291,14 @@ NOTE: When creating a custom cell type, this method should be
 					<div class="well" id="getAccessoryHtml">
 					<div class="fixedFont">
 					<span class='title'>					
-						
+						<span class="light ">{String}</span>
 						<b>getAccessoryHtml</b>()
 					</span>
 					
 					</div>
 					<div class="description">
-						
+						Returns a string containing HTML to be used to render the cell's accessories
+    based on the cell's accessory type.
 						
 						
 					</div>
@@ -340,6 +355,37 @@ NOTE: When creating a custom cell type, this method should be
 					</div>
 					<div class="description">
 						Returns the data of the item in the data source that corresponds to this cell.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="getHtml">
+					<div class="fixedFont">
+					<span class='title'>					
+						<span class="light ">{String}</span>
+						<b>getHtml</b>()
+					</span>
+					
+					</div>
+					<div class="description">
+						Returns a string containing HTML to be used to render the cell's contents based
+    on the cell's data.
+NOTE: When creating a custom cell class, this method should be
+    overridden to provide the appropriate HTML markup for the cell.
 						
 						
 					</div>
