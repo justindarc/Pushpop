@@ -15,42 +15,71 @@
 	<script src="../pushpop-navigationbar/pushpop-navigationbar.js"></script>
 	<script src="pushpop-table-view.js"></script>
 	<script>
-	  $(function() {
-	    var $tableView = $('#accessories-table-view');
-	    var tableView = $tableView[0].tableView;
+	  $(function() {	    
+	    var tableView = $('#accessories-table-view')[0].tableView;
 	    
 	    var dataSet = [
         {
           title: 'Row 0',
-          accessoryType: null
+          accessoryType: null,
+          editingAccessoryType: 'pp-table-view-cell-editing-accessory-delete-button'
         },
         {
           title: 'Row 1',
-          accessoryType: 'pp-table-view-cell-accessory-disclosure-indicator'
+          accessoryType: 'pp-table-view-cell-accessory-disclosure-indicator',
+          editingAccessoryType: 'pp-table-view-cell-editing-accessory-delete-button'
         },
         {
           title: 'Row 2',
-          accessoryType: 'pp-table-view-cell-accessory-detail-disclosure-button'
+          accessoryType: 'pp-table-view-cell-accessory-detail-disclosure-button',
+          editingAccessoryType: 'pp-table-view-cell-editing-accessory-delete-button'
         },
         {
           title: 'Row 3',
-          accessoryType: 'pp-table-view-cell-accessory-checkmark'
+          accessoryType: 'pp-table-view-cell-accessory-checkmark',
+          editingAccessoryType: 'pp-table-view-cell-editing-accessory-delete-button'
+        },
+        {
+          title: 'Row 4',
+          accessoryType: null,
+          editingAccessoryType: 'pp-table-view-cell-editing-accessory-add-button'
         }
       ];
       
-      var dataSource = new Pushpop.TableViewDataSource(dataSet);
-      tableView.setDataSource(dataSource);
+      tableView.setDataSource(new Pushpop.TableViewDataSource(dataSet));
       
-      $tableView.bind(Pushpop.TableView.EventType.AccessoryButtonTappedForRowWithIndex, function(evt) {
-        window.alert('Accessory button tapped for row with index: ' + evt.index);
+      tableView.$bind(Pushpop.TableView.EventType.AccessoryButtonTappedForRowWithIndex, function(evt) {
+        window.alert('Accessory Button tapped for row with index: ' + evt.index);
       });
+      
+      tableView.$bind(Pushpop.TableView.EventType.EditingAccessoryButtonTappedForRowWithIndex, function(evt) {
+        window.alert('Editing Accessory Button tapped for row with index: ' + evt.index);
+      });
+      
+      var $rootNavigationBar = $('#root-navigation-bar');
+	    $rootNavigationBar.delegate('a', 'click', function(evt) {
+	      var $button = $(this);
+	      
+	      if (!$button.hasClass('pp-barbutton-style-blue')) {
+	        $button.addClass('pp-barbutton-style-blue');
+	        tableView.setEditing(true);
+	      }
+	      
+	      else {
+	        $button.removeClass('pp-barbutton-style-blue');
+	        tableView.setEditing(false);
+	      }
+	    });
 	  });
 	</script>
 </head>
 <body>
-  <div class="pp-view-stack">
-    <div class="pp-navigationbar" data-tap-to-top="true"></div>
-    <div class="pp-view sk-scroll-view" id="detail-view-root" data-view-title="TableView Accessories Demo" data-always-bounce-vertical="true">
+  <div class="pp-view-stack" id="root-view-stack">
+    <div class="pp-navigationbar" id="root-navigation-bar" data-tap-to-top="true"></div>
+    <div class="pp-view sk-scroll-view" id="root-view" data-view-title="TableView Accessories Demo" data-always-bounce-vertical="true">
+      <div class="pp-navigationbar-buttons">
+        <a class="pp-barbutton pp-barbutton-align-right active" href="#">Edit</a>
+      </div>
       <ul id="accessories-table-view" class="pp-table-view" data-contains-search-bar="true">
         
       </ul>
