@@ -9,7 +9,7 @@ var Pushpop = window['Pushpop'] || {};
   @constructor
 */
 Pushpop.TableView = function TableView(element) {
-  var $window = $(window['addEventListener'] ? window : document.body);
+  if (!element) return;
   
   var $element = this.$element = $(element);
   var element = this.element = $element[0];
@@ -631,22 +631,6 @@ Pushpop.TableViewDataSource = function TableViewDataSource(dataSet, defaultReuse
   
   this.setDataSet(dataSet);
   this.setDefaultReuseIdentifier(defaultReuseIdentifier || this.getDefaultReuseIdentifier());
-  
-  // Default implementation if using an in-memory data set.
-  this.getNumberOfRows = function() { return this.getFilteredDataSet().length; };
-  
-  // Default implementation if using an in-memory data set.
-  this.getCellForRowAtIndex = function(tableView, index) {
-    var data = this.getFilteredDataSet()[index];
-    var reuseIdentifier = data.reuseIdentifier || this.getDefaultReuseIdentifier();
-    var cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier);
-    
-    cell.setIndex(index);
-    cell.setAccessoryType(data.accessoryType);
-    cell.setData(data);
-    
-    return cell;
-  };
 };
 
 /**
@@ -660,17 +644,91 @@ Pushpop.TableViewDataSource.prototype = {
   
   /**
     REQUIRED: Returns the number of rows provided by this data source.
+    @description NOTE: This is the default implementation and should be overridden for data
+    sources that are not driven directly from an in-memory data set.
     @type Number
   */
-  getNumberOfRows: function() { return 0; },
+  getNumberOfRows: function() { return this.getFilteredDataSet().length; },
   
   /**
     REQUIRED: Returns a TableViewCell for the specified index.
+    @description NOTE: This is the default implementation and should be overridden for data
+    sources that are not driven directly from an in-memory data set.
     @param {Pushpop.TableView} tableView The TableView the TableViewCell should be returned for.
     @param {Number} index The index of the data to be used when populating the TableViewCell.
     @type Pushpop.TableViewCell
   */
-  getCellForRowAtIndex: function(tableView, index) { return null; },
+  getCellForRowAtIndex: function(tableView, index) {
+    var data = this.getFilteredDataSet()[index];
+    var reuseIdentifier = data.reuseIdentifier || this.getDefaultReuseIdentifier();
+    var cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier);
+    
+    cell.setIndex(index);
+    cell.setAccessoryType(data.accessoryType);
+    cell.setData(data);
+    
+    return cell;
+  },
+  
+  /**
+    Returns an array containing the key/value pairs for all "values" contained within the data
+    source. This is typically used for retrieving form fields stored within a table view.
+    @param {String} [keyFieldName] The name of the field in the data source containing the
+    values' keys. If not specified, the default value is 'name'.
+    @param {String} [valueFieldName] The name of the field in the data source containing the
+    values' values. If not specified, the default value is 'value.
+    @type Array
+  */
+  getValuesArray: function(keyFieldName, valueFieldName) {
+    var keyFieldName = keyFieldName || 'name';
+    var valueFieldName = valueFieldName || 'value';
+    var dataSet = this.getDataSet();
+    var valuesArray = [];
+    
+    var data, name, value;
+    for (var i = 0, length = dataSet.length; i < length; i++) {
+      data = dataSet[i];
+      name = data[keyFieldName];
+      value = data[valueFieldName];
+      
+      if (name && value !== undefined) valuesArray.push({
+        name: data[keyFieldName],
+        value: data[valueFieldName]
+      });
+    }
+    
+    return valuesArray;
+  },
+  
+  /**
+    Returns an object containing the data for all "values" contained within the data source.
+    This is typically used for retrieving form fields stored within a table view.
+    @description NOTE: If a field name occurs more than once, its values will be put into an
+    array.
+    @param {String} [keyFieldName] The name of the field in the data source containing the
+    values' keys. If not specified, the default value is 'name'.
+    @param {String} [valueFieldName] The name of the field in the data source containing the
+    values' values. If not specified, the default value is 'value.
+    @type Object
+  */
+  getValuesObject: function(keyFieldName, valueFieldName) {
+    var valuesArray = this.getValuesArray(keyFieldName, valueFieldName);
+    var valuesObject = {};
+    
+    var value;
+    for (var i = 0, length = valuesArray.length; i < length; i++) {
+      value = valuesArray[i];
+      
+      if (valuesObject[value.name] !== undefined) {
+        if (!valuesObject[value.name].push) valuesObject[value.name] = [valuesObject[value.name]];
+        valuesObject[value.name].push(value.value);
+      } else {
+        valuesObject[value.name] = value.value; 
+      }
+    }
+    
+    return valuesObject;
+  },
   
   /**
     OPTIONAL: Determines if the table should be reloaded following a change in the search string.
@@ -1228,10 +1286,11 @@ Pushpop.InlineTextInputTableViewCell.prototype.constructor = Pushpop.InlineTextI
 Pushpop.InlineTextInputTableViewCell.prototype.draw = function() {
   var data = this.getData();
   var title = $.trim((data && data.title) ? data.title : '&nbsp;');
+  var name = $.trim((data && data.name) ? data.name : '');
   var value = $.trim((data && data.value) ? data.value : '');
   var isPassword = (data) ? (data.password || 'false') : 'false';
   isPassword = isPassword !== 'false';
-  this.$element.html('<h1>' + title + '</h1><input type="' + (isPassword ? 'password' : 'text') + '" value="' + value + '"/>' + this.getAccessoryHtml());
+  this.$element.html('<h1>' + title + '</h1><input type="' + (isPassword ? 'password' : 'text') + '" name="' + name + '" value="' + value + '"/>' + this.getAccessoryHtml());
 };
 
 Pushpop.InlineTextInputTableViewCell.prototype.setSelected = function(value) {
