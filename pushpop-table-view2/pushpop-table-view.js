@@ -672,7 +672,8 @@ Pushpop.TableViewDataSource.prototype = {
   
   /**
     Returns an array containing the key/value pairs for all "values" contained within the data
-    source. This is typically used for retrieving form fields stored within a table view.
+    source. This is typically used for retrieving form fields stored within a table view and
+    behaves similarly to jQuery's .serializeArray() function.
     @param {String} [keyFieldName] The name of the field in the data source containing the
     values' keys. If not specified, the default value is 'name'.
     @param {String} [valueFieldName] The name of the field in the data source containing the
