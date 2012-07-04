@@ -16,12 +16,53 @@ Pushpop.PickerTableView = function PickerTableView(element) {
   // Put the table view in editing mode.
   this.$element.addClass('pp-table-view-editing');
   
+  // Replace the existing data source with a PickerTableViewDataSource.
   var dataSource = this.getDataSource();
   var dataSet = dataSource.getDataSet();
   var defaultReuseIdentifier = dataSource.getDefaultReuseIdentifier();
   
   dataSource = new Pushpop.PickerTableViewDataSource(dataSet, defaultReuseIdentifier);
   this.setDataSource(dataSource);
+  
+  var self = this;
+  
+  // Listen for the "picker cell" to be selected and push a new table view with the picker
+  // cell's data source to present a list of items to select from.
+  this.$bind(Pushpop.TableView.EventType.DidSelectRowAtIndex, function(evt) {
+    var dataSource = self.getDataSource();
+    var index = evt.index;
+    
+    var pickerCellDataSource = self.getPickerCellDataSource();
+    if (!pickerCellDataSource) return;
+    
+    var isPickerCell = (index === dataSource.getPickerCellIndex());
+    if (!isPickerCell) return;
+    
+    var viewStack = self.getViewStack();
+    if (!viewStack) return;
+    
+    viewStack.pushNewTableView(function(newTableView) {
+      newTableView.setSearchBar(new Pushpop.TableViewSearchBar(newTableView));
+      newTableView.setDataSource(pickerCellDataSource);
+      
+      newTableView.$bind(Pushpop.TableView.EventType.DidSelectRowAtIndex, function(evt) {
+        var item = pickerCellDataSource.getFilteredItemAtIndex(evt.index);
+        dataSource.addItem(item);
+        viewStack.pop();
+      });
+    });
+  });
+  
+  // Listen for tap events on the editing accessory buttons to add/remove items.
+  this.$bind(Pushpop.TableView.EventType.EditingAccessoryButtonTappedForRowWithIndex, function(evt) {
+    var dataSource = self.getDataSource();
+    var index = evt.index;
+    
+    var isPickerCell = (index === dataSource.getPickerCellIndex());
+    if (isPickerCell) return self.selectRowAtIndex(index);
+    
+    dataSource.removeItem(dataSource.getItemAtIndex(index));
+  });
 };
 
 // Create the prototype for the Pushpop.PickerTableView as a "sub-class" of Pushpop.TableView.
@@ -33,6 +74,14 @@ Pushpop.PickerTableView.prototype._editing = true;
 Pushpop.PickerTableView.prototype.setEditing = function(editing, animated) {
   if (!window['console']) return;
   window.console.warn('Attempting to change the editing mode of Pushpop.PickerTableView not allowed; Pushpop.PickerTableView must always be in editing mode');
+};
+
+Pushpop.PickerTableView.prototype._pickerCellDataSource = null;
+
+Pushpop.PickerTableView.prototype.getPickerCellDataSource = function() { return this._pickerCellDataSource; };
+
+Pushpop.PickerTableView.prototype.setPickerCellDataSource = function(pickerCellDataSource) {
+  this._pickerCellDataSource = pickerCellDataSource;
 };
 
 /**
@@ -66,7 +115,7 @@ Pushpop.PickerTableViewDataSource.prototype.constructor = Pushpop.PickerTableVie
   plus one.
   @type Number
 */
-Pushpop.PickerTableViewDataSource.prototype.getNumberOfRows = function() { return this.getFilteredDataSet().length + 1; },
+Pushpop.PickerTableViewDataSource.prototype.getNumberOfRows = function() { return this.getNumberOfFilteredItems() + 1; },
 
 /**
   REQUIRED: Returns a TableViewCell for the specified index.
@@ -79,22 +128,21 @@ Pushpop.PickerTableViewDataSource.prototype.getNumberOfRows = function() { retur
   @type Pushpop.TableViewCell
 */
 Pushpop.PickerTableViewDataSource.prototype.getCellForRowAtIndex = function(tableView, index) {
-  var numberOfRows = this.getNumberOfRows();
-  var isPickerCell = (index === numberOfRows - 1);
-  var data, reuseIdentifier, cell;
+  var isPickerCell = (index === this.getPickerCellIndex());
+  var item, reuseIdentifier, cell;
   
-  data = (isPickerCell) ? {
+  item = (isPickerCell) ? {
     title: this.getPickerCellTitle(),
     reuseIdentifier: this.getPickerCellReuseIdentifier()
-  } : this.getFilteredDataSet()[index];
+  } : this.getFilteredItemAtIndex(index);
   
-  reuseIdentifier = data.reuseIdentifier || this.getDefaultReuseIdentifier();
+  reuseIdentifier = item.reuseIdentifier || this.getDefaultReuseIdentifier();
   cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier);
   
   cell.setIndex(index);
-  cell.setAccessoryType(data.accessoryType);
+  cell.setAccessoryType(item.accessoryType);
   cell.setEditingAccessoryType(isPickerCell ? Pushpop.TableViewCell.EditingAccessoryType.AddButton : Pushpop.TableViewCell.EditingAccessoryType.DeleteButton);
-  cell.setData(data);
+  cell.setData(item);
   
   return cell;
 }
@@ -113,6 +161,27 @@ Pushpop.PickerTableViewDataSource.prototype.getPickerCellReuseIdentifier = funct
 
 Pushpop.PickerTableViewDataSource.prototype.setPickerCellReuseIdentifier = function(pickerCellReuseIdentifier) {
   this._pickerCellReuseIdentifier = pickerCellReuseIdentifier;
+};
+
+Pushpop.PickerTableViewDataSource.prototype.getPickerCellIndex = function() { return this.getNumberOfRows() - 1; };
+
+Pushpop.PickerTableViewDataSource.prototype.addItem = function(item) {
+  var numberOfItems = this.getNumberOfItems();
+  var dataSet = this.getDataSet();
+  for (var i = 0; i < numberOfItems; i++) if (this.getItemAtIndex(i) === item) return;
+  
+  dataSet.push(item);
+  this.setDataSet(dataSet);
+};
+
+Pushpop.PickerTableViewDataSource.prototype.removeItem = function(item) {
+  var numberOfItems = this.getNumberOfItems();
+  var dataSet = this.getDataSet();
+  for (var i = 0; i < numberOfItems; i++) if (this.getItemAtIndex(i) === item) {
+    dataSet.splice(i, 1);
+    this.setDataSet(dataSet);
+    return;
+  }
 };
 
 $(function() {

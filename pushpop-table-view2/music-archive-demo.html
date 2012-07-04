@@ -43,11 +43,8 @@
       
       $artistsTableView.bind(Pushpop.TableView.EventType.DidSelectRowAtIndex, function(evt) {
         var dataSource = evt.tableView.getDataSource();
-        var dataSet = dataSource.getFilteredDataSet();
-        var data = dataSet[evt.index];
-        
-        var query = 'collection%3A' + data.identifier;
-        var url = 'http://archive.org/advancedsearch.php?q=' + query + '&rows=99999&page=1&output=json&callback=?';
+        var item = dataSource.getFilteredItemAtIndex(evt.index);
+        var url = 'http://archive.org/advancedsearch.php?q=collection%3A' + item.identifier + '&rows=99999&page=1&output=json&callback=?';
         
         $.getJSON(url, function(responseData) {
           var dataSet = responseData.response.docs;
@@ -60,11 +57,8 @@
       
       $showsTableView.bind(Pushpop.TableView.EventType.DidSelectRowAtIndex, function(evt) {
         var dataSource = evt.tableView.getDataSource();
-        var dataSet = dataSource.getFilteredDataSet();
-        var data = dataSet[evt.index];
-        
-        var identifier = data.identifier;
-        var url = 'http://archive.org/details/' + identifier + '?output=json&callback=?';
+        var item = dataSource.getFilteredItemAtIndex(evt.index);
+        var url = 'http://archive.org/details/' + item.identifier + '?output=json&callback=?';
         
         $.getJSON(url, function(responseData) {
           var dataSet = [];
@@ -75,7 +69,7 @@
           for (var file in files) {
             if (!regExp.test(file)) continue;
             
-            files[file].filename = identifier + file;
+            files[file].filename = item.identifier + file;
             files[file].title = (files[file].title || ('Track ' + files[file].track) || '').replace(/\\/g, '');
             dataSet.push(files[file]);
           }
@@ -89,11 +83,8 @@
       
       $songsTableView.bind(Pushpop.TableView.EventType.DidSelectRowAtIndex, function(evt) {
         var dataSource = evt.tableView.getDataSource();
-        var dataSet = dataSource.getFilteredDataSet();
-        var data = dataSet[evt.index];
-        
-        var filename = data.filename;
-        var url = 'http://archive.org/download/' + filename; 
+        var item = dataSource.getFilteredItemAtIndex(evt.index);
+        var url = 'http://archive.org/download/' + item.filename; 
         
         if ($audio) $audio.remove();
         

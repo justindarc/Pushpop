@@ -181,7 +181,7 @@ Pushpop.TableView = function TableView(element) {
   $element.delegate('li', !!('ontouchstart' in window) ? 'touchstart' : 'mousedown', function(evt) {
     
     // Don't allow row to be selected if an accessory button is pending a tap.
-    if (isPendingAccessoryButtonTap) return;
+    if (isPendingAccessoryButtonTap || isPendingEditingAccessoryButtonTap) return;
     
     isPendingSelection = true;
     
@@ -674,7 +674,7 @@ Pushpop.TableViewDataSource.prototype = {
     sources that are not driven directly from an in-memory data set.
     @type Number
   */
-  getNumberOfRows: function() { return this.getFilteredDataSet().length; },
+  getNumberOfRows: function() { return this.getNumberOfFilteredItems(); },
   
   /**
     REQUIRED: Returns a TableViewCell for the specified index.
@@ -685,14 +685,14 @@ Pushpop.TableViewDataSource.prototype = {
     @type Pushpop.TableViewCell
   */
   getCellForRowAtIndex: function(tableView, index) {
-    var data = this.getFilteredDataSet()[index];
-    var reuseIdentifier = data.reuseIdentifier || this.getDefaultReuseIdentifier();
+    var item = this.getFilteredItemAtIndex(index);
+    var reuseIdentifier = item.reuseIdentifier || this.getDefaultReuseIdentifier();
     var cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier);
     
     cell.setIndex(index);
-    cell.setAccessoryType(data.accessoryType);
-    cell.setEditingAccessoryType(data.editingAccessoryType);
-    cell.setData(data);
+    cell.setAccessoryType(item.accessoryType);
+    cell.setEditingAccessoryType(item.editingAccessoryType);
+    cell.setData(item);
     
     return cell;
   },
@@ -710,18 +710,19 @@ Pushpop.TableViewDataSource.prototype = {
   getValuesArray: function(keyFieldName, valueFieldName) {
     var keyFieldName = keyFieldName || 'name';
     var valueFieldName = valueFieldName || 'value';
-    var dataSet = this.getDataSet();
-    var valuesArray = [];
     
-    var data, name, value;
-    for (var i = 0, length = dataSet.length; i < length; i++) {
-      data = dataSet[i];
-      name = data[keyFieldName];
-      value = data[valueFieldName];
+    var numberOfItems = this.getNumberOfItems();
+    var valuesArray = [];
+    var item, name, value;
+    
+    for (var i = 0; i < numberOfItems; i++) {
+      item = this.getItemAtIndex(i);
+      name = item[keyFieldName];
+      value = item[valueFieldName];
       
       if (name && value !== undefined) valuesArray.push({
-        name: data[keyFieldName],
-        value: data[valueFieldName]
+        name: item[keyFieldName],
+        value: item[valueFieldName]
       });
     }
     
@@ -867,7 +868,10 @@ Pushpop.TableViewDataSource.prototype = {
   */
   setDataSet: function(dataSet) {
     this._dataSet = dataSet;
-    this.shouldReloadTableForSearchString();
+    this.shouldReloadTableForSearchString()
+    
+    var tableView = this.getTableView();
+    if (tableView) tableView.reloadData();
   },
   
   _filteredDataSet: null,
@@ -878,6 +882,12 @@ Pushpop.TableViewDataSource.prototype = {
     @type Array
   */
   getFilteredDataSet: function() { return this._filteredDataSet; },
+  
+  getNumberOfItems: function() { return this.getDataSet().length; },
+  getItemAtIndex: function(index) { return this.getDataSet()[index]; },
+  
+  getNumberOfFilteredItems: function() { return this.getFilteredDataSet().length; },
+  getFilteredItemAtIndex: function(index) { return this.getFilteredDataSet()[index]; },
   
   _filterFunction: function(regExp, item) {
     
