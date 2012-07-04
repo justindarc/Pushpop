@@ -439,10 +439,36 @@ Pushpop.TableView.prototype = {
       }
     }
     
-    $element.trigger($.Event(Pushpop.TableView.EventType.DidSelectRowAtIndex, {
+    // If this table view specifies a child data source key, check and see if the
+    // selected item contains a child data source. If it does, automatically push
+    // a new dynamic table view using the child data source.
+    if (dataSource.rowHasChildDataSourceAtIndex(index)) {
+      var childDataSource = dataSource.getChildDataSourceForRowAtIndex(index);
+      var viewStack = this.getViewStack();
+      var self = this;
+      
+      if (childDataSource && viewStack) {
+        viewStack.pushNewTableView(function(childTableView) {
+          if (self.getSearchBar()) childTableView.setSearchBar(new Pushpop.TableViewSearchBar(childTableView));
+          childTableView.setDataSource(childDataSource);
+          childTableView.setParentTableView(self);
+        });
+        
+        this.triggerEventOnParentTableViews($.Event(Pushpop.TableView.EventType.DidSelectRowAtIndex, {
+          tableView: this,
+          index: index,
+          hasChildDataSource: true
+        }), true);
+        
+        return;
+      }
+    }
+    
+    this.triggerEventOnParentTableViews($.Event(Pushpop.TableView.EventType.DidSelectRowAtIndex, {
       tableView: this,
-      index: index
-    }));
+      index: index,
+      hasChildDataSource: false
+    }), true);
   },
   
   /**
@@ -544,6 +570,30 @@ Pushpop.TableView.prototype = {
     }
     
     this.resetScrollView();
+  },
+  
+  _parentTableView: null,
+  
+  getParentTableView: function() { return this._parentTableView; },
+  
+  setParentTableView: function(parentTableView) { this._parentTableView = parentTableView; },
+  
+  getParentTableViews: function() {
+    var parentTableViews = [];
+    var currentParentTableView = this.getParentTableView();
+    
+    while (currentParentTableView) {
+      parentTableViews.push(currentParentTableView);
+      currentParentTableView = currentParentTableView.getParentTableView();
+    }
+    
+    return parentTableViews;
+  },
+  
+  triggerEventOnParentTableViews: function(evt, includeSelf) {
+    var parentTableViews = this.getParentTableViews();
+    for (var i = 0, length = parentTableViews.length; i < length; i++) parentTableViews[i].$element.trigger(evt);
+    if (includeSelf) this.$element.trigger(evt);
   },
   
   _searchBar: null,
@@ -653,7 +703,7 @@ Pushpop.TableView.prototype = {
   @constructor
 */
 Pushpop.TableViewDataSource = function TableViewDataSource(dataSet, defaultReuseIdentifier) {
-  if (!dataSet || dataSet.constructor !== Array) return;
+  if (!dataSet || !(dataSet instanceof Array)) return;
   
   this.setDataSet(dataSet);
   this.setDefaultReuseIdentifier(defaultReuseIdentifier || this.getDefaultReuseIdentifier());
@@ -822,6 +872,28 @@ Pushpop.TableViewDataSource.prototype = {
     return true;
   },
   
+  rowHasChildDataSourceAtIndex: function(index) {
+    var key = this.getChildDataSourceKey();
+    if (!key) return;
+    
+    var item = this.getFilteredItemAtIndex(index);
+    return (item && item[key] && item[key] instanceof Array);
+  },
+  
+  getChildDataSourceForRowAtIndex: function(index) {
+    var key = this.getChildDataSourceKey();
+    if (!key) return null;
+    
+    var item = this.getFilteredItemAtIndex(index);
+    var childDataSet = item[key];
+    if (!childDataSet) return null;
+    
+    var childDataSource = new Pushpop.TableViewDataSource(childDataSet, this.getDefaultReuseIdentifier());
+    childDataSource.setChildDataSourceKey(key);
+    
+    return childDataSource;
+  },
+  
   _tableView: null,
   
   /**
@@ -873,6 +945,12 @@ Pushpop.TableViewDataSource.prototype = {
     var tableView = this.getTableView();
     if (tableView) tableView.reloadData();
   },
+  
+  _childDataSourceKey: null,
+  
+  getChildDataSourceKey: function() { return this._childDataSourceKey; },
+  
+  setChildDataSourceKey: function(childDataSourceKey) { this._childDataSourceKey = childDataSourceKey; },
   
   _filteredDataSet: null,
   

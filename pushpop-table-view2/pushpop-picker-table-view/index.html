@@ -23,15 +23,65 @@
       carsPickerTableView = $('#cars-picker-table-view')[0].tableView;
       
       var pickerCellDataSource = new Pushpop.TableViewDataSource([
-        { title: 'Item A', value: 'A' },
-        { title: 'Item B', value: 'B' },
-        { title: 'Item C', value: 'C' },
-        { title: 'Item D', value: 'D' },
-        { title: 'Item E', value: 'E' },
-        { title: 'Item F', value: 'F' },
-        { title: 'Item G', value: 'G' }
+        {
+          title: 'Item A', value: 'A',
+          childDataSource: [
+            {
+              title: 'Item A - 1', value: 'A-1',
+              childDataSource: [
+                { title: 'Item A - 1 - 1', value: 'A-1-1' },
+                { title: 'Item A - 1 - 2', value: 'A-1-2' }
+              ]
+            },
+            { title: 'Item A - 2', value: 'A-2' },
+            { title: 'Item A - 3', value: 'A-3' }
+          ]
+        },
+        {
+          title: 'Item B', value: 'B',
+          childDataSource: [
+            {
+              title: 'Item B - 1', value: 'B-1',
+              childDataSource: [
+                { title: 'Item B - 1 - 1', value: 'B-1-1' },
+                { title: 'Item B - 1 - 2', value: 'B-1-2' }
+              ]
+            },
+            { title: 'Item B - 2', value: 'B-2' },
+            { title: 'Item B - 3', value: 'B-3' }
+          ]
+        },
+        {
+          title: 'Item C', value: 'C',
+          childDataSource: [
+            {
+              title: 'Item C - 1', value: 'C-1',
+              childDataSource: [
+                { title: 'Item C - 1 - 1', value: 'C-1-1' },
+                { title: 'Item C - 1 - 2', value: 'C-1-2' }
+              ]
+            },
+            { title: 'Item C - 2', value: 'C-2' },
+            { title: 'Item C - 3', value: 'C-3' }
+          ]
+        },
+        {
+          title: 'Item D', value: 'D',
+          childDataSource: [
+            {
+              title: 'Item D - 1', value: 'D-1',
+              childDataSource: [
+                { title: 'Item D - 1 - 1', value: 'D-1-1' },
+                { title: 'Item D - 1 - 2', value: 'D-1-2' }
+              ]
+            },
+            { title: 'Item D - 2', value: 'D-2' },
+            { title: 'Item D - 3', value: 'D-3' }
+          ]
+        }
       ]);
       
+      pickerCellDataSource.setChildDataSourceKey('childDataSource');
       carsPickerTableView.setPickerCellDataSource(pickerCellDataSource);
     });
 	</script>
