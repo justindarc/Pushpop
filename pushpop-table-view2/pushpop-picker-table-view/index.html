@@ -21,6 +21,18 @@
     
     $(function() {
       carsPickerTableView = $('#cars-picker-table-view')[0].tableView;
+      
+      var pickerCellDataSource = new Pushpop.TableViewDataSource([
+        { title: 'Item A', value: 'A' },
+        { title: 'Item B', value: 'B' },
+        { title: 'Item C', value: 'C' },
+        { title: 'Item D', value: 'D' },
+        { title: 'Item E', value: 'E' },
+        { title: 'Item F', value: 'F' },
+        { title: 'Item G', value: 'G' }
+      ]);
+      
+      carsPickerTableView.setPickerCellDataSource(pickerCellDataSource);
     });
 	</script>
 </head>
@@ -29,10 +41,7 @@
     <div class="pp-navigationbar" data-tap-to-top="true"></div>
     <div class="pp-view sk-scroll-view" id="root-view" data-view-title="PickerTableView Demo" data-always-bounce-vertical="true">
       <ul class="pp-picker-table-view" id="cars-picker-table-view" data-contains-search-bar="true">
-        <li>A</li>
-        <li>B</li>
-        <li>C</li>
-        <li>D</li>
+        
       </ul>
     </div>
   </div>
