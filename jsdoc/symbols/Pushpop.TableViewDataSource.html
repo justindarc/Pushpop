@@ -59,7 +59,28 @@
 								<td class="nameDescription">
 									<div class="fixedFont"><b><a href="#getCellForRowAtIndex">getCellForRowAtIndex</a></b>(tableView, index)
 									</div>
-									<div class="description">REQUIRED: Returns a TableViewCell for the specified index.</div>
+									<div class="description">Returns a TableViewCell for the specified index.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes"><i>{<a href="symbols/Pushpop.TableViewDataSource.html">Pushpop.TableViewDataSource</a>}</i>&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#getChildDataSourceForRowAtIndex">getChildDataSourceForRowAtIndex</a></b>(index)
+									</div>
+									<div class="description">Creates and returns a new data source for the row at the specified index if the item at
+    that index contains a child data source as determined by the rowHadChildDataSourceAtIndex()
+    method.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes"><i>{String}</i>&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#getChildDataSourceKey">getChildDataSourceKey</a></b>()
+									</div>
+									<div class="description">Returns a string that specifies a key on this data source's objects that may contain
+    an array of data for a child data source.</div>
 								</td>
 							</tr>
 						
@@ -92,6 +113,16 @@
 							</tr>
 						
 							<tr>
+								<td class="attributes"><i>{Object}</i>&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#getFilteredItemAtIndex">getFilteredItemAtIndex</a></b>(index)
+									</div>
+									<div class="description">Returns the item at the specified index of the filtered data set contained within this
+    data source.</div>
+								</td>
+							</tr>
+						
+							<tr>
 								<td class="attributes"><i>{<a href="symbols/Function.html">Function</a>}</i>&nbsp;</td>
 								<td class="nameDescription">
 									<div class="fixedFont"><b><a href="#getFilterFunction">getFilterFunction</a></b>()
@@ -101,11 +132,39 @@
 							</tr>
 						
 							<tr>
+								<td class="attributes"><i>{Object}</i>&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#getItemAtIndex">getItemAtIndex</a></b>(index)
+									</div>
+									<div class="description">Returns the item at the specified index of the complete data set contained within this
+    data source.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes"><i>{Number}</i>&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#getNumberOfFilteredItems">getNumberOfFilteredItems</a></b>()
+									</div>
+									<div class="description">Returns the number of filtered items contained within this data source.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes"><i>{Number}</i>&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#getNumberOfItems">getNumberOfItems</a></b>()
+									</div>
+									<div class="description">Returns the total number of items contained within this data source.</div>
+								</td>
+							</tr>
+						
+							<tr>
 								<td class="attributes"><i>{Number}</i>&nbsp;</td>
 								<td class="nameDescription">
 									<div class="fixedFont"><b><a href="#getNumberOfRows">getNumberOfRows</a></b>()
 									</div>
-									<div class="description">REQUIRED: Returns the number of rows provided by this data source.</div>
+									<div class="description">Returns the number of rows provided by this data source.</div>
 								</td>
 							</tr>
 						
@@ -134,6 +193,26 @@
 									<div class="fixedFont"><b><a href="#getValuesObject">getValuesObject</a></b>(keyFieldName, valueFieldName)
 									</div>
 									<div class="description">Returns an object containing the data for all "values" contained within the data source.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes"><i>{Boolean}</i>&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#rowHasChildDataSourceAtIndex">rowHasChildDataSourceAtIndex</a></b>(index)
+									</div>
+									<div class="description">Returns a flag indicating whether or not the row at the specified index contains a child
+    data source.</div>
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="attributes">&nbsp;</td>
+								<td class="nameDescription">
+									<div class="fixedFont"><b><a href="#setChildDataSourceKey">setChildDataSourceKey</a></b>(childDataSourceKey)
+									</div>
+									<div class="description">Sets a string that specifies a key on this data source's objects that may contain
+    an array of data for a child data source.</div>
 								</td>
 							</tr>
 						
@@ -179,16 +258,17 @@
 								<td class="nameDescription">
 									<div class="fixedFont"><b><a href="#shouldReloadTableForSearchString">shouldReloadTableForSearchString</a></b>(searchString, isCaseSensitive)
 									</div>
-									<div class="description">OPTIONAL: Determines if the table should be reloaded following a change in the search string.</div>
+									<div class="description">Determines if the table should be reloaded following a change in the search string.</div>
 								</td>
 							</tr>
 						
 							<tr>
-								<td class="attributes">&nbsp;</td>
+								<td class="attributes"><i>{Boolean}</i>&nbsp;</td>
 								<td class="nameDescription">
 									<div class="fixedFont"><b><a href="#shouldSelectRowAtIndex">shouldSelectRowAtIndex</a></b>(index)
 									</div>
-									<div class="description"></div>
+									<div class="description">Returns a flag indicating whether or not the row at the specified index should be able
+    to be selected.</div>
 								</td>
 							</tr>
 						
@@ -286,7 +366,7 @@
 					
 					</div>
 					<div class="description">
-						REQUIRED: Returns a TableViewCell for the specified index.
+						Returns a TableViewCell for the specified index.
 NOTE: This is the default implementation and should be overridden for data
     sources that are not driven directly from an in-memory data set.
 						
@@ -312,6 +392,82 @@ NOTE: This is the default implementation and should be overridden for data
 								<dd>The index of the data to be used when populating the TableViewCell.</dd>
 							
 							</dl>
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="getChildDataSourceForRowAtIndex">
+					<div class="fixedFont">
+					<span class='title'>					
+						<span class="light ">{<a href="symbols/Pushpop.TableViewDataSource.html">Pushpop.TableViewDataSource</a>}</span>
+						<b>getChildDataSourceForRowAtIndex</b>(index)
+					</span>
+					
+					</div>
+					<div class="description">
+						Creates and returns a new data source for the row at the specified index if the item at
+    that index contains a child data source as determined by the rowHadChildDataSourceAtIndex()
+    method.
+NOTE: This is the default implementation and should be overridden for data
+    sources that are not driven directly from an in-memory data set. In the default implementation,
+    the |dataSourceKey| that is set using the setDataSourceKey() method is used to retrieve the
+    array of objects for that key on the item at the specified index. The array of child objects are
+    then used to create a new data source. The new data source is automatically given the same child
+    data source key in order to continue chaining nested data n-levels deep.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont ">{Number}</span> <b>index</b>
+									
+								</dt>
+								<dd>The index of the row to retrieve a child data source for.</dd>
+							
+							</dl>
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="getChildDataSourceKey">
+					<div class="fixedFont">
+					<span class='title'>					
+						<span class="light ">{String}</span>
+						<b>getChildDataSourceKey</b>()
+					</span>
+					
+					</div>
+					<div class="description">
+						Returns a string that specifies a key on this data source's objects that may contain
+    an array of data for a child data source.
+						
+						
+					</div>
+					
+					
+					
 						
 						
 						
@@ -411,6 +567,53 @@ NOTE: This may not be utilized by a custom data source.
 					
 					</div>
 				
+					<div class="well" id="getFilteredItemAtIndex">
+					<div class="fixedFont">
+					<span class='title'>					
+						<span class="light ">{Object}</span>
+						<b>getFilteredItemAtIndex</b>(index)
+					</span>
+					
+					</div>
+					<div class="description">
+						Returns the item at the specified index of the filtered data set contained within this
+    data source.
+NOTE: This method is called directly by the table view's rendering process.
+    It should yield the same data that is used by the getCellForRowAtIndex method in most cases.
+    IMPORTANT: When working with a data source that is driven from an in-memory data set,
+    this method should ALWAYS be used to access elements from the filtered data set. It is NOT
+    RECOMMENDED that the elements be accessed using "[ ]" notation on the filtered data set's
+    array directly.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont ">{Number}</span> <b>index</b>
+									
+								</dt>
+								<dd>The index of the item in the filtered data set to retrieve within
+    this data source.</dd>
+							
+							</dl>
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
 					<div class="well" id="getFilterFunction">
 					<div class="fixedFont">
 					<span class='title'>					
@@ -440,6 +643,122 @@ NOTE: This may not be utilized by a custom data source.
 					
 					</div>
 				
+					<div class="well" id="getItemAtIndex">
+					<div class="fixedFont">
+					<span class='title'>					
+						<span class="light ">{Object}</span>
+						<b>getItemAtIndex</b>(index)
+					</span>
+					
+					</div>
+					<div class="description">
+						Returns the item at the specified index of the complete data set contained within this
+    data source.
+NOTE: This method is not typically used during the table view's rendering
+    process. It is intended more for data-centric operations on this data source
+    (e.g.: searching, filtering).
+    IMPORTANT: When working with a data source that is driven from an in-memory data set,
+    this method should ALWAYS be used to access elements from the complete data set. It is NOT
+    RECOMMENDED that the elements be accessed using "[ ]" notation on the complete data set's
+    array directly.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont ">{Number}</span> <b>index</b>
+									
+								</dt>
+								<dd>The index of the item in the complete data set to retrieve within
+    this data source.</dd>
+							
+							</dl>
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="getNumberOfFilteredItems">
+					<div class="fixedFont">
+					<span class='title'>					
+						<span class="light ">{Number}</span>
+						<b>getNumberOfFilteredItems</b>()
+					</span>
+					
+					</div>
+					<div class="description">
+						Returns the number of filtered items contained within this data source.
+NOTE: This method is called directly by the table view's rendering process.
+    It should yield the same result as the getNumberOfRows method in most cases.
+    IMPORTANT: When working with a data source that is driven from an in-memory data set,
+    this method should ALWAYS be used to determine the length of the filtered data set. It is
+    NOT RECOMMENDED that the |length| property be accessed on the filtered data set's array
+    directly.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="getNumberOfItems">
+					<div class="fixedFont">
+					<span class='title'>					
+						<span class="light ">{Number}</span>
+						<b>getNumberOfItems</b>()
+					</span>
+					
+					</div>
+					<div class="description">
+						Returns the total number of items contained within this data source.
+NOTE: This method is not typically used during the table view's rendering
+    process. It is intended more for data-centric operations on this data source
+    (e.g.: searching, filtering).
+    IMPORTANT: When working with a data source that is driven from an in-memory data set,
+    this method should ALWAYS be used to determine the length of the complete data set. It is
+    NOT RECOMMENDED that the |length| property be accessed on the data set's array directly.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
 					<div class="well" id="getNumberOfRows">
 					<div class="fixedFont">
 					<span class='title'>					
@@ -449,7 +768,7 @@ NOTE: This may not be utilized by a custom data source.
 					
 					</div>
 					<div class="description">
-						REQUIRED: Returns the number of rows provided by this data source.
+						Returns the number of rows provided by this data source.
 NOTE: This is the default implementation and should be overridden for data
     sources that are not driven directly from an in-memory data set.
 						
@@ -583,6 +902,91 @@ NOTE: If a field name occurs more than once, its values will be put into an
 								</dt>
 								<dd>The name of the field in the data source containing the
     values' values. If not specified, the default value is 'value.</dd>
+							
+							</dl>
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="rowHasChildDataSourceAtIndex">
+					<div class="fixedFont">
+					<span class='title'>					
+						<span class="light ">{Boolean}</span>
+						<b>rowHasChildDataSourceAtIndex</b>(index)
+					</span>
+					
+					</div>
+					<div class="description">
+						Returns a flag indicating whether or not the row at the specified index contains a child
+    data source.
+NOTE: This is the default implementation and should be overridden for data
+    sources that are not driven directly from an in-memory data set. In the default implementation,
+    the |dataSourceKey| that is set using the setDataSourceKey() method is used to determine if an
+    array of objects exists for that key on the item at the specified index.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont ">{Number}</span> <b>index</b>
+									
+								</dt>
+								<dd>The index of the row to determine whether or not it contains a child data source.</dd>
+							
+							</dl>
+						
+						
+						
+						
+												
+						
+						
+						
+
+					
+					</div>
+				
+					<div class="well" id="setChildDataSourceKey">
+					<div class="fixedFont">
+					<span class='title'>					
+						
+						<b>setChildDataSourceKey</b>(childDataSourceKey)
+					</span>
+					
+					</div>
+					<div class="description">
+						Sets a string that specifies a key on this data source's objects that may contain
+    an array of data for a child data source.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont ">{String}</span> <b>childDataSourceKey</b>
+									
+								</dt>
+								<dd>A string containing a key on this data source's
+    objects that may contain a child data source.</dd>
 							
 							</dl>
 						
@@ -771,7 +1175,7 @@ The filter function gets called for each item in the data set during a search. A
 					
 					</div>
 					<div class="description">
-						OPTIONAL: Determines if the table should be reloaded following a change in the search string.
+						Determines if the table should be reloaded following a change in the search string.
 The default implementation assumes that the data set is fully loaded into
     memory and executes the current filter function against each item in the data set. If the
     filtered data set has changed since the last reload, it will return |true| which will force
@@ -819,13 +1223,16 @@ The default implementation assumes that the data set is fully loaded into
 					<div class="well" id="shouldSelectRowAtIndex">
 					<div class="fixedFont">
 					<span class='title'>					
-						
+						<span class="light ">{Boolean}</span>
 						<b>shouldSelectRowAtIndex</b>(index)
 					</span>
 					
 					</div>
 					<div class="description">
-						
+						Returns a flag indicating whether or not the row at the specified index should be able
+    to be selected.
+NOTE: This is the default implementation and should be overridden if certain
+    rows should not be able to be selected.
 						
 						
 					</div>
@@ -837,10 +1244,10 @@ The default implementation assumes that the data set is fully loaded into
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>index</b>
+									<span class="light fixedFont ">{Number}</span> <b>index</b>
 									
 								</dt>
-								<dd></dd>
+								<dd>The index of the row to determine whether or not it should be selectable.</dd>
 							
 							</dl>
 						
