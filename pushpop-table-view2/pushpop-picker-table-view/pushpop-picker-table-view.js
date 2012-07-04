@@ -13,19 +13,27 @@ Pushpop.PickerTableView = function PickerTableView(element) {
   // Call the "super" constructor.
   Pushpop.TableView.prototype.constructor.apply(this, arguments);
   
+  // Put the table view in editing mode.
+  this.$element.addClass('pp-table-view-editing');
+  
   var dataSource = this.getDataSource();
   var dataSet = dataSource.getDataSet();
   var defaultReuseIdentifier = dataSource.getDefaultReuseIdentifier();
   
   dataSource = new Pushpop.PickerTableViewDataSource(dataSet, defaultReuseIdentifier);
   this.setDataSource(dataSource);
-  
-  console.log(dataSource);
 };
 
 // Create the prototype for the Pushpop.PickerTableView as a "sub-class" of Pushpop.TableView.
 Pushpop.PickerTableView.prototype = new Pushpop.TableView();
 Pushpop.PickerTableView.prototype.constructor = Pushpop.PickerTableView;
+
+Pushpop.PickerTableView.prototype._editing = true;
+
+Pushpop.PickerTableView.prototype.setEditing = function(editing, animated) {
+  if (!window['console']) return;
+  window.console.warn('Attempting to change the editing mode of Pushpop.PickerTableView not allowed; Pushpop.PickerTableView must always be in editing mode');
+};
 
 /**
   Creates a new data source for a PickerTableView.
@@ -72,9 +80,10 @@ Pushpop.PickerTableViewDataSource.prototype.getNumberOfRows = function() { retur
 */
 Pushpop.PickerTableViewDataSource.prototype.getCellForRowAtIndex = function(tableView, index) {
   var numberOfRows = this.getNumberOfRows();
+  var isPickerCell = (index === numberOfRows - 1);
   var data, reuseIdentifier, cell;
   
-  data = (index === numberOfRows - 1) ? {
+  data = (isPickerCell) ? {
     title: this.getPickerCellTitle(),
     reuseIdentifier: this.getPickerCellReuseIdentifier()
   } : this.getFilteredDataSet()[index];
@@ -84,6 +93,7 @@ Pushpop.PickerTableViewDataSource.prototype.getCellForRowAtIndex = function(tabl
   
   cell.setIndex(index);
   cell.setAccessoryType(data.accessoryType);
+  cell.setEditingAccessoryType(isPickerCell ? Pushpop.TableViewCell.EditingAccessoryType.AddButton : Pushpop.TableViewCell.EditingAccessoryType.DeleteButton);
   cell.setData(data);
   
   return cell;
