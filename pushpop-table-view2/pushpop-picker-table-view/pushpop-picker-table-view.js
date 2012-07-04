@@ -41,14 +41,21 @@ Pushpop.PickerTableView = function PickerTableView(element) {
     var viewStack = self.getViewStack();
     if (!viewStack) return;
     
+    var view = self.getView();
+    if (!view) return;
+    
     viewStack.pushNewTableView(function(newTableView) {
       newTableView.setSearchBar(new Pushpop.TableViewSearchBar(newTableView));
       newTableView.setDataSource(pickerCellDataSource);
       
       newTableView.$bind(Pushpop.TableView.EventType.DidSelectRowAtIndex, function(evt) {
+        if (evt.hasChildDataSource) return;
+        
+        var tableView = evt.tableView;
+        var pickerCellDataSource = tableView.getDataSource();
         var item = pickerCellDataSource.getFilteredItemAtIndex(evt.index);
         dataSource.addItem(item);
-        viewStack.pop();
+        viewStack.pop(view);
       });
     });
   });
