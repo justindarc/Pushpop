@@ -413,9 +413,12 @@ Pushpop.TableView.prototype = {
   },
   
   /**
-    Selects the row at the specified index and optionally animates the selection if
-    the row is currently visible.
-    @description NOTE: This method will not modify any other existing selections.
+    Selects the row at the specified index and triggers the DidSelectRowAtIndex event on
+    this and all parent table view elements.
+    @description NOTE: If the row contains a child data source, this method will automatically
+    push a dynamic table view using the child data source. The DidSelectRowAtIndex event contains
+    a flag |hasChildDataSource| to indicate whether or not a new dynamic table view was pushed
+    prior to the event.
     @param {Number} index The index of a row in the data source to select.
     @param {Boolean} [animated] A flag indicating if the selection should be animated
     if the row is currently visible.
@@ -439,9 +442,7 @@ Pushpop.TableView.prototype = {
       }
     }
     
-    // If this table view specifies a child data source key, check and see if the
-    // selected item contains a child data source. If it does, automatically push
-    // a new dynamic table view using the child data source.
+    // If this row contains a child data source, automatically push a new dynamic table view with it.
     if (dataSource.rowHasChildDataSourceAtIndex(index)) {
       var childDataSource = dataSource.getChildDataSourceForRowAtIndex(index);
       var viewStack = this.getViewStack();
@@ -454,6 +455,7 @@ Pushpop.TableView.prototype = {
           childTableView.setParentTableView(self);
         });
         
+        // Trigger the DidSelectRowAtIndex event on this and all parent table view elements.
         this.triggerEventOnParentTableViews($.Event(Pushpop.TableView.EventType.DidSelectRowAtIndex, {
           tableView: this,
           index: index,
@@ -464,6 +466,7 @@ Pushpop.TableView.prototype = {
       }
     }
     
+    // Trigger the DidSelectRowAtIndex event on this and all parent table view elements.
     this.triggerEventOnParentTableViews($.Event(Pushpop.TableView.EventType.DidSelectRowAtIndex, {
       tableView: this,
       index: index,
@@ -574,10 +577,24 @@ Pushpop.TableView.prototype = {
   
   _parentTableView: null,
   
+  /**
+    Returns the parent table view if this table view has one.
+    @type Pushpop.TableView
+  */
   getParentTableView: function() { return this._parentTableView; },
   
+  /**
+    Sets the parent table view for this table view.
+    @description NOTE: To remove this table view from its parent, call this method
+    and pass in a |null| value.
+  */
   setParentTableView: function(parentTableView) { this._parentTableView = parentTableView; },
   
+  /**
+    Traverses the parent table views up the chain until it encounters a table view
+    with no parent then returns an array of Pushpop.TableView objects.
+    @type Array
+  */
   getParentTableViews: function() {
     var parentTableViews = [];
     var currentParentTableView = this.getParentTableView();
@@ -590,6 +607,13 @@ Pushpop.TableView.prototype = {
     return parentTableViews;
   },
   
+  /**
+    Triggers the specified event on the parent table view elements and optionally
+    also on this own table view's element.
+    @param {$.Event|String} evt The event to be triggered on the table view element(s).
+    @param {Boolean} [includeSelf] A flag indicating whether or not the event should
+    also be triggered on this table view's element.
+  */
   triggerEventOnParentTableViews: function(evt, includeSelf) {
     var parentTableViews = this.getParentTableViews();
     for (var i = 0, length = parentTableViews.length; i < length; i++) parentTableViews[i].$element.trigger(evt);
@@ -709,17 +733,11 @@ Pushpop.TableViewDataSource = function TableViewDataSource(dataSet, defaultReuse
   this.setDefaultReuseIdentifier(defaultReuseIdentifier || this.getDefaultReuseIdentifier());
 };
 
-/**
-  @description NOTE: In order to have a TableView with custom TableViewCells, a custom
-  TableViewDataSource must be implemented with at least the two required methods defined
-  in this prototype. A third optional method may also be implemented as defined in this
-  prototype.
-*/
 Pushpop.TableViewDataSource.prototype = {
   constructor: Pushpop.TableViewDataSource,
   
   /**
-    REQUIRED: Returns the number of rows provided by this data source.
+    Returns the number of rows provided by this data source.
     @description NOTE: This is the default implementation and should be overridden for data
     sources that are not driven directly from an in-memory data set.
     @type Number
@@ -727,7 +745,7 @@ Pushpop.TableViewDataSource.prototype = {
   getNumberOfRows: function() { return this.getNumberOfFilteredItems(); },
   
   /**
-    REQUIRED: Returns a TableViewCell for the specified index.
+    Returns a TableViewCell for the specified index.
     @description NOTE: This is the default implementation and should be overridden for data
     sources that are not driven directly from an in-memory data set.
     @param {Pushpop.TableView} tableView The TableView the TableViewCell should be returned for.
@@ -810,7 +828,7 @@ Pushpop.TableViewDataSource.prototype = {
   },
   
   /**
-    OPTIONAL: Determines if the table should be reloaded following a change in the search string.
+    Determines if the table should be reloaded following a change in the search string.
     @description The default implementation assumes that the data set is fully loaded into
     memory and executes the current filter function against each item in the data set. If the
     filtered data set has changed since the last reload, it will return |true| which will force
@@ -868,10 +886,26 @@ Pushpop.TableViewDataSource.prototype = {
   
   _lastSearchString: null,
   
-  shouldSelectRowAtIndex: function(index) {
-    return true;
-  },
+  /**
+    Returns a flag indicating whether or not the row at the specified index should be able
+    to be selected.
+    @description NOTE: This is the default implementation and should be overridden if certain
+    rows should not be able to be selected.
+    @param {Number} index The index of the row to determine whether or not it should be selectable.
+    @type Boolean
+  */
+  shouldSelectRowAtIndex: function(index) { return true; },
   
+  /**
+    Returns a flag indicating whether or not the row at the specified index contains a child
+    data source. 
+    @description NOTE: This is the default implementation and should be overridden for data
+    sources that are not driven directly from an in-memory data set. In the default implementation,
+    the |dataSourceKey| that is set using the setDataSourceKey() method is used to determine if an
+    array of objects exists for that key on the item at the specified index.
+    @param {Number} index The index of the row to determine whether or not it contains a child data source.
+    @type Boolean
+  */
   rowHasChildDataSourceAtIndex: function(index) {
     var key = this.getChildDataSourceKey();
     if (!key) return;
@@ -880,6 +914,19 @@ Pushpop.TableViewDataSource.prototype = {
     return (item && item[key] && item[key] instanceof Array);
   },
   
+  /**
+    Creates and returns a new data source for the row at the specified index if the item at
+    that index contains a child data source as determined by the rowHadChildDataSourceAtIndex()
+    method.
+    @description NOTE: This is the default implementation and should be overridden for data
+    sources that are not driven directly from an in-memory data set. In the default implementation,
+    the |dataSourceKey| that is set using the setDataSourceKey() method is used to retrieve the
+    array of objects for that key on the item at the specified index. The array of child objects are
+    then used to create a new data source. The new data source is automatically given the same child
+    data source key in order to continue chaining nested data n-levels deep.
+    @param {Number} index The index of the row to retrieve a child data source for.
+    @type Pushpop.TableViewDataSource
+  */
   getChildDataSourceForRowAtIndex: function(index) {
     var key = this.getChildDataSourceKey();
     if (!key) return null;
@@ -948,8 +995,19 @@ Pushpop.TableViewDataSource.prototype = {
   
   _childDataSourceKey: null,
   
+  /**
+    Returns a string that specifies a key on this data source's objects that may contain
+    an array of data for a child data source.
+    @type String
+  */
   getChildDataSourceKey: function() { return this._childDataSourceKey; },
   
+  /**
+    Sets a string that specifies a key on this data source's objects that may contain
+    an array of data for a child data source.
+    @param {String} childDataSourceKey A string containing a key on this data source's
+    objects that may contain a child data source.
+  */
   setChildDataSourceKey: function(childDataSourceKey) { this._childDataSourceKey = childDataSourceKey; },
   
   _filteredDataSet: null,
@@ -961,10 +1019,59 @@ Pushpop.TableViewDataSource.prototype = {
   */
   getFilteredDataSet: function() { return this._filteredDataSet; },
   
+  /**
+    Returns the total number of items contained within this data source.
+    @description NOTE: This method is not typically used during the table view's rendering
+    process. It is intended more for data-centric operations on this data source
+    (e.g.: searching, filtering).
+    IMPORTANT: When working with a data source that is driven from an in-memory data set,
+    this method should ALWAYS be used to determine the length of the complete data set. It is
+    NOT RECOMMENDED that the |length| property be accessed on the data set's array directly.
+    @type Number
+  */
   getNumberOfItems: function() { return this.getDataSet().length; },
+  
+  /**
+    Returns the item at the specified index of the complete data set contained within this
+    data source.
+    @description NOTE: This method is not typically used during the table view's rendering
+    process. It is intended more for data-centric operations on this data source
+    (e.g.: searching, filtering).
+    IMPORTANT: When working with a data source that is driven from an in-memory data set,
+    this method should ALWAYS be used to access elements from the complete data set. It is NOT
+    RECOMMENDED that the elements be accessed using "[ ]" notation on the complete data set's
+    array directly.
+    @param {Number} index The index of the item in the complete data set to retrieve within
+    this data source.
+    @type Object
+  */
   getItemAtIndex: function(index) { return this.getDataSet()[index]; },
   
+  /**
+    Returns the number of filtered items contained within this data source.
+    @description NOTE: This method is called directly by the table view's rendering process.
+    It should yield the same result as the getNumberOfRows method in most cases.
+    IMPORTANT: When working with a data source that is driven from an in-memory data set,
+    this method should ALWAYS be used to determine the length of the filtered data set. It is
+    NOT RECOMMENDED that the |length| property be accessed on the filtered data set's array
+    directly.
+    @type Number
+  */
   getNumberOfFilteredItems: function() { return this.getFilteredDataSet().length; },
+  
+  /**
+    Returns the item at the specified index of the filtered data set contained within this
+    data source.
+    @description NOTE: This method is called directly by the table view's rendering process.
+    It should yield the same data that is used by the getCellForRowAtIndex method in most cases.
+    IMPORTANT: When working with a data source that is driven from an in-memory data set,
+    this method should ALWAYS be used to access elements from the filtered data set. It is NOT
+    RECOMMENDED that the elements be accessed using "[ ]" notation on the filtered data set's
+    array directly.
+    @param {Number} index The index of the item in the filtered data set to retrieve within
+    this data source.
+    @type Object
+  */
   getFilteredItemAtIndex: function(index) { return this.getFilteredDataSet()[index]; },
   
   _filterFunction: function(regExp, item) {
@@ -1255,19 +1362,43 @@ Pushpop.TableViewCell.prototype = {
   
   _accessoryType: null,
   
+  /**
+    Returns the type of accessory to render for this cell. The types of available
+    accessories are specified in Pushpop.TableViewCell.AccessoryType.
+    @description NOTE: Table view cell accessories are rendered on the right-hand
+    side of the cell.
+    @type String
+  */
   getAccessoryType: function() { return this._accessoryType; },
   
-  setAccessoryType: function(accessoryType) {    
-    this._accessoryType = accessoryType;
-  },
+  /**
+    Sets the type of accessory to render for this cell. The types of available
+    accessories are specified in Pushpop.TableViewCell.AccessoryType.
+    @description NOTE: Table view cell accessories are rendered on the right-hand
+    side of the cell.
+    @param {String} accessoryType The type of accessory to render for this cell.
+  */
+  setAccessoryType: function(accessoryType) { this._accessoryType = accessoryType; },
   
   _editingAccessoryType: null,
   
+  /**
+    Returns the type of editing accessory to render for this cell. The types of available
+    editing accessories are specified in Pushpop.TableViewCell.EditingAccessoryType.
+    @description NOTE: Table view cell editing accessories are rendered on the left-hand
+    side of the cell.
+    @type String
+  */
   getEditingAccessoryType: function() { return this._editingAccessoryType; },
   
-  setEditingAccessoryType: function(editingAccessoryType) {    
-    this._editingAccessoryType = editingAccessoryType;
-  },
+  /**
+    Sets the type of editing accessory to render for this cell. The types of available
+    editing accessories are specified in Pushpop.TableViewCell.EditingAccessoryType.
+    @description NOTE: Table view cell editing accessories are rendered on the left-hand
+    side of the cell.
+    @param {String} editingAccessoryType The type of editing accessory to render for this cell.
+  */
+  setEditingAccessoryType: function(editingAccessoryType) { this._editingAccessoryType = editingAccessoryType; },
   
   _value: null,
   
