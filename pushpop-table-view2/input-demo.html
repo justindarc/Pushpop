@@ -7,35 +7,48 @@
 	<title>Pushpop TableView Input Demo</title>
 	<link rel="stylesheet" href="../externals/scrollkit/scrollkit.css">
 	<link rel="stylesheet" href="../pushpop.css">
+	<link rel="stylesheet" href="../pushpop-navigationbar/pushpop-navigationbar.css">
 	<link rel="stylesheet" href="pushpop-table-view.css">
 	<script src="../jquery-1.7.2.js"></script>
 	<script src="../externals/scrollkit/scrollkit.js"></script>
 	<script src="../pushpop.js"></script>
+	<script src="../pushpop-navigationbar/pushpop-navigationbar.js"></script>
 	<script src="pushpop-table-view.js"></script>
 	<script>
-	  $(function() {	    
-	    $('#input-table-view').bind(Pushpop.TableView.EventType.DidSelectRowAtIndex, function(evt) {
-	      if (evt.index !== 6) return;
-        
-        var dataSource = evt.tableView.getDataSource();
-        
+	  var inputTableView;
+	  
+	  $(function() {
+	    inputTableView = $('#input-table-view')[0].tableView;
+	    
+	    var $rootNavigationBar = $('#root-navigation-bar');
+	    $rootNavigationBar.delegate('a', 'click', function(evt) {
+	      var $button = $(this);
+	      if ($button.attr('href') !== '#submit') return;
+	      
+	      var dataSource = inputTableView.getDataSource();
         window.alert(JSON.stringify(dataSource.getValuesArray()));
         window.alert(JSON.stringify(dataSource.getValuesObject()));
+        
+        evt.preventDefault();
 	    });
 	  });
 	</script>
 </head>
 <body>
-  <div class="pp-view-stack">  
-    <div class="pp-view sk-scroll-view" id="detail-view-root" data-always-bounce-vertical="true">
-      <ul id="input-table-view" class="pp-table-view" data-contains-search-bar="true">
+  <div class="pp-view-stack" id="root-view-stack">
+    <div class="pp-navigationbar" id="root-navigation-bar" data-tap-to-top="true"></div>
+    <div class="pp-view sk-scroll-view" id="root-view" data-view-title="TableView Input Demo" data-always-bounce-vertical="true">
+      <div class="pp-navigationbar-buttons">
+        <a class="pp-barbutton pp-barbutton-align-right active" href="#submit">Submit</a>
+      </div>
+      <ul class="pp-table-view" id="input-table-view" data-contains-search-bar="true">
         <li data-reuse-identifier="pp-inline-text-input-table-view-cell" data-name="username" data-value="johnny.appleseed">username</li>
         <li data-reuse-identifier="pp-inline-text-input-table-view-cell" data-name="password" data-value="itsasecret" data-password="true">password</li>
+        <li data-reuse-identifier="pp-text-area-input-table-view-cell" data-name="description" data-value="johnny.appleseed Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.">description</li>
         <li data-reuse-identifier="pp-inline-text-input-table-view-cell" data-name="attribute_list" data-value="a">attribute list</li>
         <li data-reuse-identifier="pp-inline-text-input-table-view-cell" data-name="attribute_list" data-value="b">attribute list</li>
         <li data-reuse-identifier="pp-inline-text-input-table-view-cell" data-name="attribute_list" data-value="c">attribute list</li>
         <li data-reuse-identifier="pp-inline-text-input-table-view-cell" data-name="attribute_list" data-value="d">attribute list</li>
-        <li>Tap Here To Log In</li>
       </ul>
     </div>
   </div>

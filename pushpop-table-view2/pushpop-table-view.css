@@ -640,6 +640,69 @@ li.pp-value-table-view-cell.pp-table-view-selected-state > input {
 }
 
 /**
+  Pushpop.TextAreaInputTableViewCell
+  ==================================
+  pp-text-area-input-table-view-cell
+*/
+li.pp-text-area-input-table-view-cell {
+  padding: 0.6em 0.6em 0.55em !important;
+}
+
+li.pp-text-area-input-table-view-cell > h1,
+li.pp-text-area-input-table-view-cell > h2 {
+  float: left;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: bold;
+  text-rendering: auto;
+}
+
+li.pp-text-area-input-table-view-cell > h1 {
+  color: #516691;
+  font-size: 0.75em;
+  line-height: 1.6em;
+  margin: 0.25em 0 0;
+  width: 30%;
+  text-align: right;
+}
+
+li.pp-text-area-input-table-view-cell > h1::after {
+  content: '\00a0\00a0'; /* Add spacer after the label text */
+}
+
+li.pp-text-area-input-table-view-cell > h2 {
+  color: #000;
+  font-size: 0.9em;
+  line-height: 1.4em;
+  margin: 0.15em 0 0;
+  width: 70%;
+  position: absolute;
+  left: 30%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+li.pp-text-area-input-table-view-cell > h2::before {
+  content: '\00a0\00a0'; /* Add spacer after the label text */
+  font-size: 0.5em;
+}
+
+li.pp-text-area-input-table-view-cell.pp-table-view-selected-state > h1,
+li.pp-text-area-input-table-view-cell.pp-table-view-selected-state > h2 {
+  color: #fff;
+}
+
+textarea.pp-text-area-input-table-view-cell-textarea {
+  border: none;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 1.2em;
+  outline: none;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/**
   Pushpop.TableViewCell.AccessoryType
   ===================================
   pp-table-view-cell-accessory
