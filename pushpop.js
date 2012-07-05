@@ -575,7 +575,12 @@ Pushpop.View.prototype = {
 	/**
 	  Convenience accessor for jQuery's .undelegate() method.
 	*/
-	$undelegate: function() { this.$element.undelegate.apply(this.$element, arguments); }
+	$undelegate: function() { this.$element.undelegate.apply(this.$element, arguments); },
+	
+	/**
+	  Convenience accessor for jQuery's .trigger() method.
+	*/
+	$trigger: function() { this.$element.trigger.apply(this.$element, arguments); }
 };
 
 $(function() {

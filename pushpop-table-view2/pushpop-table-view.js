@@ -714,7 +714,12 @@ Pushpop.TableView.prototype = {
 	/**
 	  Convenience accessor for jQuery's .undelegate() method.
 	*/
-	$undelegate: function() { this.$element.undelegate.apply(this.$element, arguments); }
+	$undelegate: function() { this.$element.undelegate.apply(this.$element, arguments); },
+	
+	/**
+	  Convenience accessor for jQuery's .trigger() method.
+	*/
+	$trigger: function() { this.$element.trigger.apply(this.$element, arguments); }
 };
 
 /**
@@ -826,6 +831,23 @@ Pushpop.TableViewDataSource.prototype = {
     }
     
     return valuesObject;
+  },
+  
+  clearAllValues: function(valueFieldName) {
+    var valueFieldName = valueFieldName || 'value';
+    
+    var numberOfItems = this.getNumberOfItems();
+    var item, value;
+    
+    for (var i = 0; i < numberOfItems; i++) {
+      item = this.getItemAtIndex(i);
+      value = item[valueFieldName];
+      
+      if (value !== undefined) item[valueFieldName] = null;
+    }
+    
+    var tableView = this.getTableView();
+    if (tableView) tableView.reloadData();
   },
   
   /**

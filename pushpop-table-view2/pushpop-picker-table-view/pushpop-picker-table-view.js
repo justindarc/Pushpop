@@ -33,32 +33,41 @@ Pushpop.PickerTableView = function PickerTableView(element) {
     var dataSource = self.getDataSource();
     var index = evt.index;
     
-    var pickerCellDataSource = self.getPickerCellDataSource();
-    if (!pickerCellDataSource) return;
-    
     var isPickerCell = (index === dataSource.getPickerCellIndex());
     if (!isPickerCell) return;
     
     var viewStack = self.getViewStack();
-    if (!viewStack) return;
-    
     var view = self.getView();
-    if (!view) return;
     
-    viewStack.pushNewTableView(function(newTableView) {
-      newTableView.setSearchBar(new Pushpop.TableViewSearchBar(newTableView));
-      newTableView.setDataSource(pickerCellDataSource);
-      
-      newTableView.$bind(Pushpop.TableView.EventType.DidSelectRowAtIndex, function(evt) {
-        if (evt.hasChildDataSource) return;
+    if (!viewStack || !view) return;
+    
+    var pickerCellDataSource = self.getPickerCellDataSource();
+    var pickerCellView = self.getPickerCellView();
+    
+    if (pickerCellDataSource) {
+      viewStack.pushNewTableView(function(newTableView) {
+        newTableView.setSearchBar(new Pushpop.TableViewSearchBar(newTableView));
+        newTableView.setDataSource(pickerCellDataSource);
         
-        var tableView = evt.tableView;
-        var pickerCellDataSource = tableView.getDataSource();
-        var item = pickerCellDataSource.getFilteredItemAtIndex(evt.index);
-        dataSource.addItem(item);
-        viewStack.pop(view);
+        newTableView.$bind(Pushpop.TableView.EventType.DidSelectRowAtIndex, function(evt) {
+          if (evt.hasChildDataSource) return;
+        
+          var tableView = evt.tableView;
+          var pickerCellDataSource = tableView.getDataSource();
+          var item = pickerCellDataSource.getFilteredItemAtIndex(evt.index);
+        
+          newTableView.$trigger($.Event(Pushpop.PickerTableView.EventType.DidFinishSelectingItem, { item: item }));
+        });
+        
+        newTableView.getView().$bind(Pushpop.PickerTableView.EventType.DidFinishSelectingItem, function(evt) {
+          self.didFinishSelectingItem(evt.item);
+        });
       });
-    });
+    }
+    
+    else if (pickerCellView) {      
+      viewStack.push(pickerCellView);
+    }
   });
   
   // Listen for tap events on the editing accessory buttons to add items and to toggle
@@ -97,6 +106,10 @@ Pushpop.PickerTableView = function PickerTableView(element) {
   });
 };
 
+Pushpop.PickerTableView.EventType = {
+  DidFinishSelectingItem: 'Pushpop:PickerTableView:DidFinishSelectingItem'
+};
+
 // Create the prototype for the Pushpop.PickerTableView as a "sub-class" of Pushpop.TableView.
 Pushpop.PickerTableView.prototype = new Pushpop.TableView();
 Pushpop.PickerTableView.prototype.constructor = Pushpop.PickerTableView;
@@ -116,6 +129,18 @@ Pushpop.PickerTableView.prototype.setEditing = function(editing, animated) {
   window.console.warn('Attempting to change the editing mode of Pushpop.PickerTableView not allowed; Pushpop.PickerTableView must always be in editing mode');
 };
 
+Pushpop.PickerTableView.prototype.didFinishSelectingItem = function(item) {
+  var dataSource = this.getDataSource();
+  if (!dataSource) return;
+  
+  dataSource.addItem(item);
+  
+  var viewStack = this.getViewStack();
+  var view = this.getView();
+  
+  if (viewStack && view) viewStack.pop(view);
+};
+
 Pushpop.PickerTableView.prototype._pickerCellDataSource = null;
 
 /**
@@ -133,8 +158,22 @@ Pushpop.PickerTableView.prototype.getPickerCellDataSource = function() { return 
   @param {Pushpop.TableViewDataSource} dataSource The data source to bind to the table
   view containing a list of items to select from.
 */
-Pushpop.PickerTableView.prototype.setPickerCellDataSource = function(pickerCellDataSource) {
-  this._pickerCellDataSource = pickerCellDataSource;
+Pushpop.PickerTableView.prototype.setPickerCellDataSource = function(pickerCellDataSource) { this._pickerCellDataSource = pickerCellDataSource; };
+
+Pushpop.PickerTableView.prototype._pickerCellView = null;
+
+Pushpop.PickerTableView.prototype.getPickerCellView = function() { return this._pickerCellView; };
+
+Pushpop.PickerTableView.prototype.setPickerCellView = function(pickerCellView) {
+  var oldPickerCellView = this._pickerCellView;
+  if (oldPickerCellView) oldPickerCellView.$unbind(Pushpop.PickerTableView.EventType.DidFinishSelectingItem);
+  
+  this._pickerCellView = pickerCellView;
+  
+  var self = this;
+  pickerCellView.$bind(Pushpop.PickerTableView.EventType.DidFinishSelectingItem, function(evt) {
+    self.didFinishSelectingItem(evt.item);
+  });
 };
 
 /**
