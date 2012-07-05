@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<title>Pushpop Custom Picker View Demo</title>
+	<link rel="stylesheet" href="../../externals/scrollkit/scrollkit.css">
+	<link rel="stylesheet" href="../../pushpop.css">
+	<link rel="stylesheet" href="../../pushpop-navigationbar/pushpop-navigationbar.css">
+	<link rel="stylesheet" href="../pushpop-table-view.css">
+	<link rel="stylesheet" href="pushpop-picker-table-view.css">
+	<script src="../../jquery-1.7.2.js"></script>
+	<script src="../../externals/scrollkit/scrollkit.js"></script>
+	<script src="../../pushpop.js"></script>
+	<script src="../../pushpop-navigationbar/pushpop-navigationbar.js"></script>
+	<script src="../pushpop-table-view.js"></script>
+	<script src="pushpop-picker-table-view.js"></script>
+	<script>
+    var pickerTableView, formTableView;
+    
+    $(function() {
+      pickerTableView = $('#picker-table-view')[0].tableView;
+      formTableView = $('#form-table-view')[0].tableView;
+      
+      var formView = $('#form-view')[0].view;
+      pickerTableView.setPickerCellView(formView);
+      
+      var $rootNavigationBar = $('#root-navigation-bar');
+	    $rootNavigationBar.delegate('a', 'click', function(evt) {
+	      var $button = $(this);
+	      
+	      if ($button.attr('href') === '#save') {  	      
+          window.alert(JSON.stringify(pickerTableView.getDataSource().getValuesArray('user')));
+          window.alert(JSON.stringify(pickerTableView.getDataSource().getValuesObject('users')));
+        }
+        
+        else if ($button.attr('href') === '#done') {
+          var item = formTableView.getDataSource().getValuesObject();
+          item.title = item.full_name + ': ' + item.email;
+          item.value = $.extend({}, item);
+          
+          formView.$trigger($.Event(Pushpop.PickerTableView.EventType.DidFinishSelectingItem, { item: item }));
+          formTableView.getDataSource().clearAllValues();
+        }
+        
+        evt.preventDefault();
+	    });
+    });
+	</script>
+</head>
+<body>
+  <div class="pp-view-stack" id="root-view-stack">
+    <div class="pp-navigationbar" id="root-navigation-bar" data-tap-to-top="true"></div>
+    <div class="pp-view sk-scroll-view" id="root-view" data-view-title="Custom Picker View Demo" data-always-bounce-vertical="true">
+      <div class="pp-navigationbar-buttons">
+        <a class="pp-barbutton pp-barbutton-align-right active" href="#save">Save</a>
+      </div>
+      <ul class="pp-picker-table-view pp-table-view-style-grouped" id="picker-table-view" data-contains-search-bar="true">
+        
+      </ul>
+    </div>
+    <div class="pp-view sk-scroll-view" id="form-view" data-view-title="Add User" data-always-bounce-vertical="true">
+      <div class="pp-navigationbar-buttons">
+        <a class="pp-barbutton pp-barbutton-align-right pp-barbutton-style-blue active" href="#done">Done</a>
+      </div>
+      <ul class="pp-table-view pp-table-view-style-grouped" id="form-table-view">
+        <li data-reuse-identifier="pp-inline-text-input-table-view-cell" data-name="full_name" data-value="">full name</li>
+        <li data-reuse-identifier="pp-inline-text-input-table-view-cell" data-name="email" data-value="">email</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
