@@ -5,8 +5,9 @@ var Pushpop = window['Pushpop'] || {};
 
 /**
   Creates a new PickerTableView.
-  @param {HTMLDivElement} element The <div/> element to initialize as a new ModalViewStack.
+  @param {HTMLUListElement} element The UL element to initialize as a new PickerTableView.
   @constructor
+  @extends Pushpop.TableView
 */
 Pushpop.PickerTableView = function PickerTableView(element) {
   
@@ -78,6 +79,14 @@ Pushpop.PickerTableView.prototype.constructor = Pushpop.PickerTableView;
 
 Pushpop.PickerTableView.prototype._editing = true;
 
+/**
+  Used for setting the table view in or out of editing mode. However, In the case of a picker
+  table view, this method will invoke a warning since picker table views are permenantly in
+  editing mode.
+  @param {Boolean} editing A flag indicating if the TableView should be in editing mode.
+  @param {Boolean} [animated] An optional flag indicating if the transition in or out of
+  editing mode should be animated (default: true).
+*/
 Pushpop.PickerTableView.prototype.setEditing = function(editing, animated) {
   if (!window['console']) return;
   window.console.warn('Attempting to change the editing mode of Pushpop.PickerTableView not allowed; Pushpop.PickerTableView must always be in editing mode');
@@ -85,14 +94,29 @@ Pushpop.PickerTableView.prototype.setEditing = function(editing, animated) {
 
 Pushpop.PickerTableView.prototype._pickerCellDataSource = null;
 
+/**
+  Returns the data source to be used for the table view containing a list of items to select
+  from. The table view that this data source is bound to typically appears when the "Add"
+  cell is selected from this table view.
+  @type Pushpop.TableViewDataSource
+*/
 Pushpop.PickerTableView.prototype.getPickerCellDataSource = function() { return this._pickerCellDataSource; };
 
+/**
+  Sets the data source to be used for the table view containing a list of items to select
+  from. The table view that this data source will be bound to typically appears when the
+  "Add" cell is selected from this table view.
+  @param {Pushpop.TableViewDataSource} dataSource The data source to bind to the table
+  view containing a list of items to select from.
+*/
 Pushpop.PickerTableView.prototype.setPickerCellDataSource = function(pickerCellDataSource) {
   this._pickerCellDataSource = pickerCellDataSource;
 };
 
 /**
   Creates a new data source for a PickerTableView.
+  @description NOTE: This is not to be used as a data source for the list of items to select from.
+  This is to be used by a PickerTableView to store the list of items that have been selected.
   @param {Array} [dataSet] An optional array of data to initialize a default data source.
   @param {Array} [dataSet.id] The unique identifier for a specific record.
   @param {Array} [dataSet.value] The (sometimes) hidden value for a specific record.
@@ -100,6 +124,7 @@ Pushpop.PickerTableView.prototype.setPickerCellDataSource = function(pickerCellD
   @param {String} [defaultReuseIdentifier] The optional reuse identifier to be used for rows that do
   not specify a specific reuse identifier.
   @constructor
+  @extends Pushpop.TableViewDataSource
 */
 Pushpop.PickerTableViewDataSource = function PickerTableViewDataSource(dataSet, defaultReuseIdentifier, pickerCellTitle) {
   
@@ -115,7 +140,7 @@ Pushpop.PickerTableViewDataSource.prototype = new Pushpop.TableViewDataSource();
 Pushpop.PickerTableViewDataSource.prototype.constructor = Pushpop.PickerTableViewDataSource;
 
 /**
-  REQUIRED: Returns the number of rows provided by this data source.
+  Returns the number of rows provided by this data source.
   @description NOTE: This is the default implementation and should be overridden for data
   sources that are not driven directly from an in-memory data set. Also, in order to account
   for the picker cell, this method should always return the number of rows in the data source
@@ -125,7 +150,7 @@ Pushpop.PickerTableViewDataSource.prototype.constructor = Pushpop.PickerTableVie
 Pushpop.PickerTableViewDataSource.prototype.getNumberOfRows = function() { return this.getNumberOfFilteredItems() + 1; },
 
 /**
-  REQUIRED: Returns a TableViewCell for the specified index.
+  Returns a TableViewCell for the specified index.
   @description NOTE: This is the default implementation and should be overridden for data
   sources that are not driven directly from an in-memory data set. Also, in order to account
   for the picker cell, this method should always return the picker cell for the last available
@@ -156,22 +181,61 @@ Pushpop.PickerTableViewDataSource.prototype.getCellForRowAtIndex = function(tabl
 
 Pushpop.PickerTableViewDataSource.prototype._pickerCellTitle = 'Add Item';
 
+/**
+  Returns the title to be displayed for the "picker" cell.
+  @description NOTE: The "picker" cell is the cell that will push a new table view with a
+  list of items to select from when it is selected.
+  @type String
+*/
 Pushpop.PickerTableViewDataSource.prototype.getPickerCellTitle = function() { return this._pickerCellTitle; };
 
+/**
+  Sets the title to be displayed for the "picker" cell.
+  @description NOTE: The "picker" cell is the cell that will push a new table view with a
+  list of items to select from when it is selected.
+  @param {String} pickerCellTitle A string containing the title to be displayed for the
+  "picker" cell.
+*/
 Pushpop.PickerTableViewDataSource.prototype.setPickerCellTitle = function(pickerCellTitle) {
   this._pickerCellTitle = pickerCellTitle;
 };
 
 Pushpop.PickerTableViewDataSource.prototype._pickerCellReuseIdentifier = 'pp-table-view-cell-default';
 
+/**
+  Returns the default reuse identifier that this data source will use when a
+  reuse identifier is not specified in the data for the "picker" cell.
+  @description NOTE: The "picker" cell is the cell that will push a new table view with a
+  list of items to select from when it is selected.
+  @type String
+*/
 Pushpop.PickerTableViewDataSource.prototype.getPickerCellReuseIdentifier = function() { return this._pickerCellReuseIdentifier; };
 
+/**
+  Sets the default reuse identifier that this data source will use when a
+  reuse identifier is not specified in the data for the "picker" cell.
+  @description NOTE: The "picker" cell is the cell that will push a new table view with a
+  list of items to select from when it is selected.
+  @param {String} pickerCellReuseIdentifier The reuse identifier to set as default for the
+  "picker" cell.
+*/
 Pushpop.PickerTableViewDataSource.prototype.setPickerCellReuseIdentifier = function(pickerCellReuseIdentifier) {
   this._pickerCellReuseIdentifier = pickerCellReuseIdentifier;
 };
 
+/**
+  Returns the index for the "picker" cell. This is used to differentiate the "picker" cell
+  from the other cells representing the list of selected items.
+  @description NOTE: The "picker" cell is the cell that will push a new table view with a
+  list of items to select from when it is selected.
+  @type Number
+*/
 Pushpop.PickerTableViewDataSource.prototype.getPickerCellIndex = function() { return this.getNumberOfRows() - 1; };
 
+/**
+  Adds the specified item to the end of the list of items that have been selected.
+  @param {Object} item The item to add to the end of the list of items that have been selected.
+*/
 Pushpop.PickerTableViewDataSource.prototype.addItem = function(item) {
   var numberOfItems = this.getNumberOfItems();
   var dataSet = this.getDataSet();
@@ -181,6 +245,10 @@ Pushpop.PickerTableViewDataSource.prototype.addItem = function(item) {
   this.setDataSet(dataSet);
 };
 
+/**
+  Removes the specified item from the list of items that have been selected.
+  @param {Object} item The item to remove from the list of items that have been selected.
+*/
 Pushpop.PickerTableViewDataSource.prototype.removeItem = function(item) {
   var numberOfItems = this.getNumberOfItems();
   var dataSet = this.getDataSet();
@@ -191,6 +259,4 @@ Pushpop.PickerTableViewDataSource.prototype.removeItem = function(item) {
   }
 };
 
-$(function() {
-  $('.pp-picker-table-view').each(function(index, element) { new Pushpop.PickerTableView(element); });
-});
+$(function() { $('.pp-picker-table-view').each(function(index, element) { new Pushpop.PickerTableView(element); }); });

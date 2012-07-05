@@ -47,7 +47,7 @@ Pushpop.getViewStackForElement = function(element) {
 
 /**
   Creates a new ViewStack.
-  @param {HTMLDivElement} element The <div/> element to initialize as a new ViewStack.
+  @param {HTMLDivElement} element The DIV element to initialize as a new ViewStack.
   @constructor
 */
 Pushpop.ViewStack = function ViewStack(element) {
@@ -481,7 +481,7 @@ Pushpop.ViewStack.prototype = {
 
 /**
   Creates a new View.
-  @param {HTMLDivElement} element The <div/> element to initialize as a new View.
+  @param {HTMLDivElement} element The DIV element to initialize as a new View.
   @constructor
 */
 Pushpop.View = function View(element) {

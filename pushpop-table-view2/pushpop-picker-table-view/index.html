@@ -17,10 +17,10 @@
 	<script src="../pushpop-table-view.js"></script>
 	<script src="pushpop-picker-table-view.js"></script>
 	<script>
-    var carsPickerTableView;
+    var pickerTableView;
     
     $(function() {
-      carsPickerTableView = $('#cars-picker-table-view')[0].tableView;
+      pickerTableView = $('#picker-table-view')[0].tableView;
       
       var pickerCellDataSource = new Pushpop.TableViewDataSource([
         {
@@ -82,15 +82,28 @@
       ]);
       
       pickerCellDataSource.setChildDataSourceKey('childDataSource');
-      carsPickerTableView.setPickerCellDataSource(pickerCellDataSource);
+      pickerTableView.setPickerCellDataSource(pickerCellDataSource);
+      
+      var $rootNavigationBar = $('#root-navigation-bar');
+	    $rootNavigationBar.delegate('a', 'click', function(evt) {
+	      var $button = $(this);
+	      if ($button.attr('href') !== '#save') return;
+	      
+	      var dataSource = pickerTableView.getDataSource();
+        window.alert(JSON.stringify(dataSource.getValuesArray('items')));
+        window.alert(JSON.stringify(dataSource.getValuesObject('items')));
+	    });
     });
 	</script>
 </head>
 <body>
   <div class="pp-view-stack" id="root-view-stack">
-    <div class="pp-navigationbar" data-tap-to-top="true"></div>
+    <div class="pp-navigationbar" id="root-navigation-bar" data-tap-to-top="true"></div>
     <div class="pp-view sk-scroll-view" id="root-view" data-view-title="PickerTableView Demo" data-always-bounce-vertical="true">
-      <ul class="pp-picker-table-view" id="cars-picker-table-view" data-contains-search-bar="true">
+      <div class="pp-navigationbar-buttons">
+        <a class="pp-barbutton pp-barbutton-align-right active" href="#save">Save</a>
+      </div>
+      <ul class="pp-picker-table-view" id="picker-table-view" data-contains-search-bar="true">
         
       </ul>
     </div>

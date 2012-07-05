@@ -68,22 +68,22 @@ ul.pp-table-view > li::after { clear: both; }
   =============================
   pp-table-view-style-grouped
 */
-ul.pp-table-view-style-grouped {
+ul.pp-table-view.pp-table-view-style-grouped {
   background: #ddd;
   padding: 1em;
 }
 
-ul.pp-table-view-style-grouped::before {
+ul.pp-table-view.pp-table-view-style-grouped::before {
   background: #ddd;
   top: -1023px;
 }
 
-ul.pp-table-view-style-grouped::after {
+ul.pp-table-view.pp-table-view-style-grouped::after {
   background: #ddd;
   bottom: -1023px;
 }
 
-div.pp-table-view-search-bar + ul.pp-table-view-style-grouped::before {
+div.pp-table-view-search-bar + ul.pp-table-view.pp-table-view-style-grouped::before {
   background: #d6dde2;
   top: -1067px;
 }

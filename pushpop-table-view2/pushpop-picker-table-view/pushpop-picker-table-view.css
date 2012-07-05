@@ -4,18 +4,89 @@
   pp-picker-table-view
 */
 ul.pp-picker-table-view {
-  background-color: #ddd;
+  background: #f7f7f7;
   font-size: 17px;
   line-height: 1.2em;
   list-style: none;
+  position: relative;
   margin: 0;
   padding: 0;
+}
+
+ul.pp-picker-table-view::before {
+  background: #f7f7f7;
+  content: '';
+  position: absolute;
+  right: 0;
+  top: -1024px;
+  left: 0;
+  height: 1024px;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  -o-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  -o-transform: translate(0, 0);
+  transform: translate(0, 0);
+}
+
+ul.pp-picker-table-view::after {
+  background: #f7f7f7;
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: -1024px;
+  left: 0;
+  height: 1024px;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  -o-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  -o-transform: translate(0, 0);
+  transform: translate(0, 0);
+}
+
+div.pp-table-view-search-bar + ul.pp-picker-table-view::before {
+  background: #d6dde2;
+  top: -1067px;
 }
 
 /* Clearfix */
 ul.pp-picker-table-view > li::before,
 ul.pp-picker-table-view > li::after { content: ''; display: table; }
 ul.pp-picker-table-view > li::after { clear: both; }
+
+/**
+  Pushpop.TableViewStyleGrouped
+  =============================
+  pp-table-view-style-grouped
+*/
+ul.pp-picker-table-view.pp-table-view-style-grouped {
+  background: #ddd;
+  padding: 1em;
+}
+
+ul.pp-picker-table-view.pp-table-view-style-grouped::before {
+  background: #ddd;
+  top: -1023px;
+}
+
+ul.pp-picker-table-view.pp-table-view-style-grouped::after {
+  background: #ddd;
+  bottom: -1023px;
+}
+
+div.pp-table-view-search-bar + ul.pp-picker-table-view.pp-table-view-style-grouped::before {
+  background: #d6dde2;
+  top: -1067px;
+}
 
 /**
   Pushpop.TableViewCell (Base Class)

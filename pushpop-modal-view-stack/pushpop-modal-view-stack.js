@@ -5,8 +5,9 @@ var Pushpop = window['Pushpop'] || {};
 
 /**
   Creates a new ModalViewStack.
-  @param {HTMLDivElement} element The <div/> element to initialize as a new ModalViewStack.
+  @param {HTMLDivElement} element The DIV element to initialize as a new ModalViewStack.
   @constructor
+  @extends Pushpop.ViewStack
 */
 Pushpop.ModalViewStack = function ModalViewStack(element) {
   
