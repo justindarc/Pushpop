@@ -92,6 +92,8 @@
 	      var dataSource = pickerTableView.getDataSource();
         window.alert(JSON.stringify(dataSource.getValuesArray('items')));
         window.alert(JSON.stringify(dataSource.getValuesObject('items')));
+        
+        evt.preventDefault();
 	    });
     });
 	</script>

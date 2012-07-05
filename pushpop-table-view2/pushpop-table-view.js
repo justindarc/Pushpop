@@ -1609,6 +1609,78 @@ Pushpop.InlineTextInputTableViewCell.prototype.setSelected = function(value) {
 // Register the prototype for Pushpop.InlineTextInputTableViewCell as a reusable cell type.
 Pushpop.TableView.registerReusableCellPrototype(Pushpop.InlineTextInputTableViewCell.prototype);
 
+/**
+  Creates a new table view cell for a TableView with a small bold blue text label
+  and a long black bold text value. When this type of cell is tapped, a new view
+  is presented with a large text area for entering long strings of text.
+  @param {String} reuseIdentifier A string containing an identifier that is unique
+  to the group of cells that this cell should belong to.
+  @constructor
+  @extends Pushpop.TableViewCell
+*/
+Pushpop.TextAreaInputTableViewCell = function TextAreaInputTableViewCell(reuseIdentifier) {
+  
+  // Call the "super" constructor.
+  Pushpop.TableViewCell.prototype.constructor.apply(this, arguments);
+  
+  var self = this, $element = this.$element;
+  
+  // Assign a CSS class to this cell to add specific styles to it.
+  $element.addClass('pp-text-area-input-table-view-cell');
+};
+
+Pushpop.TextAreaInputTableViewCell.prototype = new Pushpop.TableViewCell('pp-text-area-input-table-view-cell');
+Pushpop.TextAreaInputTableViewCell.prototype.constructor = Pushpop.TextAreaInputTableViewCell;
+
+Pushpop.TextAreaInputTableViewCell.prototype.getHtml = function() {
+  var data = this.getData();
+  var title = $.trim((data && data.title) ? data.title : '&nbsp;');
+  var value = $.trim((data && data.value) ? data.value : '&nbsp;');
+  return '<h1>' + title + '</h1><h2>' + value + '</h2>';
+};
+
+Pushpop.TextAreaInputTableViewCell.prototype.setSelected = function(value) {
+  
+  // Call the "super" method.
+  Pushpop.TableViewCell.prototype.setSelected.apply(this, arguments);
+  
+  if (!value) return;
+  
+  var tableView = this.tableView;
+  var viewStack = tableView.getViewStack();
+  if (!viewStack) return;
+  
+  var data = this.getData();
+  if (!data) return;
+  
+  var title = data.title || '';
+  var name = data.name || '';
+  var value = data.value || '';
+  
+  var self = this;
+  
+  // Push a new view with a large text area input.
+  viewStack.pushNewView(function(newView) {
+    var $textarea = $('<textarea class="pp-text-area-input-table-view-cell-textarea" name="' + name + '">' + value + '</textarea>');
+    var $doneButton = $('<a class="pp-barbutton pp-barbutton-align-right pp-barbutton-style-blue active" href="#">Done</a>');
+    
+    $doneButton.bind('click', function(evt) {
+      evt.preventDefault();
+      
+      self.setValue($textarea.val());
+      tableView.reloadData();
+      viewStack.pop();
+    });
+    
+    newView.setTitle(title);
+    newView.$navbarButtons = $doneButton;
+    newView.$element.append($textarea);
+  });
+};
+
+// Register the prototype for Pushpop.TextAreaInputTableViewCell as a reusable cell type.
+Pushpop.TableView.registerReusableCellPrototype(Pushpop.TextAreaInputTableViewCell.prototype);
+
 $(function() {
   $('.pp-table-view').each(function(index, element) { new Pushpop.TableView(element); });
   
