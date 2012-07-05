@@ -61,13 +61,38 @@ Pushpop.PickerTableView = function PickerTableView(element) {
     });
   });
   
-  // Listen for tap events on the editing accessory buttons to add/remove items.
+  // Listen for tap events on the editing accessory buttons to add items and to toggle
+  // the confirmation button to delete an item.
   this.$bind(Pushpop.TableView.EventType.EditingAccessoryButtonTappedForRowWithIndex, function(evt) {
     var dataSource = self.getDataSource();
     var index = evt.index;
     
     var isPickerCell = (index === dataSource.getPickerCellIndex());
     if (isPickerCell) return self.selectRowAtIndex(index);
+    
+    // Disable all previously "active" delete buttons in this table view (e.g.: delete
+    // buttons waiting for confirmation).
+    var $editingAccessoryButton = evt.tableViewCell.$element.children('.pp-table-view-cell-editing-accessory').first();
+    evt.tableView.$element.find('span.pp-table-view-cell-editing-accessory.pp-active').each(function(index, element) {
+      if (element !== $editingAccessoryButton[0]) $(element).removeClass('pp-active');
+    });
+    
+    // Toggle the delete confirmation on the row that the editing accessory button was tapped.
+    $editingAccessoryButton.toggleClass('pp-active');
+    
+    //dataSource.removeItem(dataSource.getItemAtIndex(index));
+  });
+  
+  this.$bind(Pushpop.TableView.EventType.AccessoryButtonTappedForRowWithIndex, function(evt) {
+    var dataSource = self.getDataSource();
+    var index = evt.index;
+    
+    var isPickerCell = (index === dataSource.getPickerCellIndex());
+    if (isPickerCell) return;
+    
+    // Check that the accessory button that was tapped was a delete confirmation.
+    var $accessoryButton = evt.tableViewCell.$element.children('.pp-table-view-cell-accessory').first();
+    if (!$accessoryButton.hasClass('pp-table-view-cell-accessory-confirm-delete-button')) return;
     
     dataSource.removeItem(dataSource.getItemAtIndex(index));
   });
@@ -172,7 +197,7 @@ Pushpop.PickerTableViewDataSource.prototype.getCellForRowAtIndex = function(tabl
   cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier);
   
   cell.setIndex(index);
-  cell.setAccessoryType(item.accessoryType);
+  cell.setAccessoryType(isPickerCell ? Pushpop.TableViewCell.AccessoryType.DisclosureIndicator : Pushpop.TableViewCell.AccessoryType.ConfirmDeleteButton);
   cell.setEditingAccessoryType(isPickerCell ? Pushpop.TableViewCell.EditingAccessoryType.AddButton : Pushpop.TableViewCell.EditingAccessoryType.DeleteButton);
   cell.setData(item);
   

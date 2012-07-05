@@ -652,6 +652,16 @@ span.pp-table-view-cell-accessory {
   right: 0.35em;
   width: 2em;
   height: 2em;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  -o-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  -o-transform: translate(0, 0);
+  transform: translate(0, 0);
 }
 
 /**
@@ -699,7 +709,7 @@ span.pp-table-view-cell-accessory-detail-disclosure-button::before {
   content: '';
   display: block;
   position: absolute;
-  margin: -0.715em 0 0 -0.675em;
+  margin: -0.715em 0 0 -0.715em;
   top: 50%;
   left: 50%;
   width: 1.2em;
@@ -707,9 +717,9 @@ span.pp-table-view-cell-accessory-detail-disclosure-button::before {
   -webkit-border-radius: 1.2em;
   -moz-border-radius: 1.2em;
   border-radius: 1.2em;
-  -webkit-box-shadow: 0 0.1em 0.1em 0.1em rgba(0, 0, 0, 0.45);
-  -moz-box-shadow: 0 0.1em 0.1em 0.1em rgba(0, 0, 0, 0.45);
-  box-shadow: 0 0.1em 0.1em 0.1em rgba(0, 0, 0, 0.45);
+  -webkit-box-shadow: 0 0 0.1em 0.1em rgba(0, 0, 0, 0.45);
+  -moz-box-shadow: 0 0 0.1em 0.1em rgba(0, 0, 0, 0.45);
+  box-shadow: 0 0 0.1em 0.1em rgba(0, 0, 0, 0.45);
 }
 
 span.pp-table-view-cell-accessory-detail-disclosure-button::after {
@@ -718,7 +728,7 @@ span.pp-table-view-cell-accessory-detail-disclosure-button::after {
   content: '';
   display: block;
   position: absolute;
-  margin: -0.075em 0 0 -0.075em;
+  margin: -0.075em 0 0 -0.125em;
   top: 50%;
   left: 50%;
   width: 0.15em;
@@ -758,6 +768,79 @@ li.pp-table-view-selected-state > span.pp-table-view-cell-accessory-checkmark::b
 }
 
 /**
+  Pushpop.TableViewCell.AccessoryType.ConfirmDeleteButton
+  =======================================================
+  pp-table-view-cell-accessory-confirm-delete-button
+*/
+span.pp-table-view-cell-accessory-confirm-delete-button {
+  background: #ed8288; /* Old browsers */
+  background: -moz-linear-gradient(top,  #ed8288 0%, #c83640 50%, #be1623 51%, #bd1421 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ed8288), color-stop(50%,#c83640), color-stop(51%,#be1623), color-stop(100%,#bd1421)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #ed8288 0%,#c83640 50%,#be1623 51%,#bd1421 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #ed8288 0%,#c83640 50%,#be1623 51%,#bd1421 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #ed8288 0%,#c83640 50%,#be1623 51%,#bd1421 100%); /* IE10+ */
+  background: linear-gradient(top,  #ed8288 0%,#c83640 50%,#be1623 51%,#bd1421 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ed8288', endColorstr='#bd1421',GradientType=0 ); /* IE6-9 */
+	border: 1px solid rgba(0, 0, 0, 0.5);
+	cursor: pointer;
+	display: inline-block;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 0.7em;
+	font-weight: bold;
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: 0.3em 0 0.25em;
+	margin: 0.5em;
+	width: 4.25em;
+	zoom: 1; /* Trigger "hasLayout" in IE */
+	-webkit-border-radius: 0.5em;
+	-moz-border-radius: 0.5em;
+	border-radius: 0.5em;
+	-webkit-box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.3), inset 0 1px 0 0 rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.3), inset 0 1px 0 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.3), inset 0 1px 0 0 rgba(0, 0, 0, 0.1);
+  visibility: hidden;
+  opacity: 0;
+  -webkit-transition: visibility 0s linear 0.2s, opacity 0.2s linear;
+  -moz-transition: visibility 0s linear 0.2s, opacity 0.2s linear;
+  -ms-transition: visibility 0s linear 0.2s, opacity 0.2s linear;
+  -o-transition: visibility 0s linear 0.2s, opacity 0.2s linear;
+  transition: visibility 0s linear 0.2s, opacity 0.2s linear;
+}
+
+span.pp-table-view-cell-editing-accessory-delete-button.pp-active ~ span.pp-table-view-cell-accessory-confirm-delete-button {
+  visibility: visible;
+  opacity: 1;
+  -webkit-transition-delay: 0s;
+  -moz-transition-delay: 0s;
+  -ms-transition-delay: 0s;
+  -o-transition-delay: 0s;
+  transition-delay: 0s;
+}
+
+span.pp-table-view-cell-accessory-confirm-delete-button:active {
+  background: #a65960; /* Old browsers */
+  background: -moz-linear-gradient(top,  #a65960 0%, #94262f 50%, #8d141e 51%, #8d131e 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#a65960), color-stop(50%,#94262f), color-stop(51%,#8d141e), color-stop(100%,#8d131e)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #a65960 0%,#94262f 50%,#8d141e 51%,#8d131e 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #a65960 0%,#94262f 50%,#8d141e 51%,#8d131e 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #a65960 0%,#94262f 50%,#8d141e 51%,#8d131e 100%); /* IE10+ */
+  background: linear-gradient(top,  #a65960 0%,#94262f 50%,#8d141e 51%,#8d131e 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a65960', endColorstr='#8d131e',GradientType=0 ); /* IE6-9 */
+}
+
+span.pp-table-view-cell-accessory-confirm-delete-button::after {
+  color: #fff;
+  content: 'Delete';
+  display: inline-block;
+  text-align: center;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.75);
+	width: 4.25em;
+	line-height: 2em;
+}
+
+/**
   Pushpop.TableViewCell.EditingAccessoryType
   ===================================
   pp-table-view-cell-editing-accessory
@@ -772,6 +855,16 @@ span.pp-table-view-cell-editing-accessory {
   height: 2em;
   visibility: hidden;
   opacity: 0;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  -o-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  -o-transform: translate(0, 0);
+  transform: translate(0, 0);
   -webkit-transition: visibility 0s linear 0.2s, opacity 0.2s linear;
   -moz-transition: visibility 0s linear 0.2s, opacity 0.2s linear;
   -ms-transition: visibility 0s linear 0.2s, opacity 0.2s linear;
@@ -807,7 +900,7 @@ span.pp-table-view-cell-editing-accessory-add-button::before {
   content: '';
   display: block;
   position: absolute;
-  margin: -0.715em 0 0 -0.675em;
+  margin: -0.715em 0 0 -0.715em;
   top: 50%;
   left: 50%;
   width: 1.2em;
@@ -815,9 +908,9 @@ span.pp-table-view-cell-editing-accessory-add-button::before {
   -webkit-border-radius: 1.2em;
   -moz-border-radius: 1.2em;
   border-radius: 1.2em;
-  -webkit-box-shadow: 0 0.1em 0.1em 0.1em rgba(0, 0, 0, 0.45);
-  -moz-box-shadow: 0 0.1em 0.1em 0.1em rgba(0, 0, 0, 0.45);
-  box-shadow: 0 0.1em 0.1em 0.1em rgba(0, 0, 0, 0.45);
+  -webkit-box-shadow: 0 0 0.1em 0.1em rgba(0, 0, 0, 0.45);
+  -moz-box-shadow: 0 0 0.1em 0.1em rgba(0, 0, 0, 0.45);
+  box-shadow: 0 0 0.1em 0.1em rgba(0, 0, 0, 0.45);
 }
 
 span.pp-table-view-cell-editing-accessory-add-button::after {
@@ -825,7 +918,7 @@ span.pp-table-view-cell-editing-accessory-add-button::after {
   content: '+';
   display: block;
   position: absolute;
-  margin: -0.85em 0 0 -0.475em;
+  margin: -0.875em 0 0 -0.5em;
   top: 50%;
   left: 50%;
   width: 1em;
@@ -842,6 +935,19 @@ span.pp-table-view-cell-editing-accessory-add-button::after {
   =============================================
   pp-table-view-cell-accessory-delete-button
 */
+span.pp-table-view-cell-editing-accessory-delete-button {
+  -webkit-transition: visibility 0s linear 0.2s, opacity 0.2s linear, -webkit-transform 0.2s linear;
+  -moz-transition: visibility 0s linear 0.2s, opacity 0.2s linear, -moz-transform 0.2s linear;
+  -ms-transition: visibility 0s linear 0.2s, opacity 0.2s linear, -ms-transform 0.2s linear;
+  -o-transition: visibility 0s linear 0.2s, opacity 0.2s linear, -o-transform 0.2s linear;
+  transition: visibility 0s linear 0.2s, opacity 0.2s linear, transform 0.2s linear;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  -o-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+
 span.pp-table-view-cell-editing-accessory-delete-button::before {
   background: #bd1522; /* Old browsers */
   background: -moz-linear-gradient(top,  #d77077 0%, #bd1522 100%); /* FF3.6+ */
@@ -855,7 +961,7 @@ span.pp-table-view-cell-editing-accessory-delete-button::before {
   content: '';
   display: block;
   position: absolute;
-  margin: -0.715em 0 0 -0.675em;
+  margin: -0.715em 0 0 -0.715em;
   top: 50%;
   left: 50%;
   width: 1.2em;
@@ -863,9 +969,9 @@ span.pp-table-view-cell-editing-accessory-delete-button::before {
   -webkit-border-radius: 1.2em;
   -moz-border-radius: 1.2em;
   border-radius: 1.2em;
-  -webkit-box-shadow: 0 0.1em 0.1em 0.1em rgba(0, 0, 0, 0.45);
-  -moz-box-shadow: 0 0.1em 0.1em 0.1em rgba(0, 0, 0, 0.45);
-  box-shadow: 0 0.1em 0.1em 0.1em rgba(0, 0, 0, 0.45);
+  -webkit-box-shadow: 0 0 0.1em 0.1em rgba(0, 0, 0, 0.45);
+  -moz-box-shadow: 0 0 0.1em 0.1em rgba(0, 0, 0, 0.45);
+  box-shadow: 0 0 0.1em 0.1em rgba(0, 0, 0, 0.45);
 }
 
 span.pp-table-view-cell-editing-accessory-delete-button::after {
@@ -873,11 +979,19 @@ span.pp-table-view-cell-editing-accessory-delete-button::after {
   content: '';
   display: block;
   position: absolute;
-  margin: -0.1em 0 0 -0.4em;
+  margin: -0.1em 0 0 -0.425em;
   top: 50%;
   left: 50%;
   width: 0.85em;
   height: 0.2em;
+}
+
+span.pp-table-view-cell-editing-accessory-delete-button.pp-active {
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
+  transform: rotate(-90deg);
 }
 
 /**
