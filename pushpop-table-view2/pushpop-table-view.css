@@ -693,13 +693,19 @@ li.pp-text-area-input-table-view-cell.pp-table-view-selected-state > h2 {
 }
 
 textarea.pp-text-area-input-table-view-cell-textarea {
+  background: #fff;
   border: none;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1.2em;
   outline: none;
   margin: 0;
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: auto;
+  height: auto;
 }
 
 /**
