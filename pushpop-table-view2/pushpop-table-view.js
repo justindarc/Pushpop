@@ -146,6 +146,7 @@ Pushpop.TableView = function TableView(element) {
     
     $element.trigger($.Event(Pushpop.TableView.EventType.AccessoryButtonTappedForRowWithIndex, {
       tableView: self,
+      tableViewCell: tableViewCell,
       index: tableViewCell.getIndex()
     }));
   });
@@ -171,6 +172,7 @@ Pushpop.TableView = function TableView(element) {
     
     $element.trigger($.Event(Pushpop.TableView.EventType.EditingAccessoryButtonTappedForRowWithIndex, {
       tableView: self,
+      tableViewCell: tableViewCell,
       index: tableViewCell.getIndex()
     }));
   });
@@ -1234,7 +1236,8 @@ Pushpop.TableViewCell.AccessoryType = {
   None: 'pp-table-view-cell-accessory-none',
   DisclosureIndicator: 'pp-table-view-cell-accessory-disclosure-indicator',
   DetailDisclosureButton: 'pp-table-view-cell-accessory-detail-disclosure-button',
-  Checkmark: 'pp-table-view-cell-accessory-checkmark'
+  Checkmark: 'pp-table-view-cell-accessory-checkmark',
+  ConfirmDeleteButton: 'pp-table-view-cell-accessory-confirm-delete-button'
 };
 
 Pushpop.TableViewCell.EditingAccessoryType = {
