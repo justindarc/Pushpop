@@ -79,8 +79,6 @@ Pushpop.PickerTableView = function PickerTableView(element) {
     
     // Toggle the delete confirmation on the row that the editing accessory button was tapped.
     $editingAccessoryButton.toggleClass('pp-active');
-    
-    //dataSource.removeItem(dataSource.getItemAtIndex(index));
   });
   
   this.$bind(Pushpop.TableView.EventType.AccessoryButtonTappedForRowWithIndex, function(evt) {
@@ -94,6 +92,7 @@ Pushpop.PickerTableView = function PickerTableView(element) {
     var $accessoryButton = evt.tableViewCell.$element.children('.pp-table-view-cell-accessory').first();
     if (!$accessoryButton.hasClass('pp-table-view-cell-accessory-confirm-delete-button')) return;
     
+    // Remove the item from the data source.
     dataSource.removeItem(dataSource.getItemAtIndex(index));
   });
 };
