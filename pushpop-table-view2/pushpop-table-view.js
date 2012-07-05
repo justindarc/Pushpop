@@ -5,7 +5,7 @@ var Pushpop = window['Pushpop'] || {};
 
 /**
   Creates a new TableView.
-  @param {HTMLUListElement} element The <ul/> element to initialize as a new TableView.
+  @param {HTMLUListElement} element The UL element to initialize as a new TableView.
   @constructor
 */
 Pushpop.TableView = function TableView(element) {
@@ -681,8 +681,7 @@ Pushpop.TableView.prototype = {
   getEditing: function() { return this._editing; },
   
   /**
-    Sets the fixed row height for this TableView and reloads the data.
-    Sets this TableView in or out of editing mode and optionally animates the transition.
+    Used for setting the table view in or out of editing mode.
     @param {Boolean} editing A flag indicating if the TableView should be in editing mode.
     @param {Boolean} [animated] An optional flag indicating if the transition in or out of
     editing mode should be animated (default: true).
@@ -788,8 +787,8 @@ Pushpop.TableViewDataSource.prototype = {
       name = item[keyFieldName];
       value = item[valueFieldName];
       
-      if (name && value !== undefined) valuesArray.push({
-        name: item[keyFieldName],
+      if (value !== undefined) valuesArray.push({
+        name: item[keyFieldName] || keyFieldName,
         value: item[valueFieldName]
       });
     }
@@ -1470,6 +1469,7 @@ Pushpop.TableView.registerReusableCellPrototype(Pushpop.TableViewCell.prototype)
   @param {String} reuseIdentifier A string containing an identifier that is unique
   to the group of cells that this cell should belong to.
   @constructor
+  @extends Pushpop.TableViewCell
 */
 Pushpop.SubtitleTableViewCell = function SubtitleTableViewCell(reuseIdentifier) {
   
@@ -1499,6 +1499,7 @@ Pushpop.TableView.registerReusableCellPrototype(Pushpop.SubtitleTableViewCell.pr
   @param {String} reuseIdentifier A string containing an identifier that is unique
   to the group of cells that this cell should belong to.
   @constructor
+  @extends Pushpop.TableViewCell
 */
 Pushpop.ValueTableViewCell = function ValueTableViewCell(reuseIdentifier) {
   
@@ -1528,6 +1529,7 @@ Pushpop.TableView.registerReusableCellPrototype(Pushpop.ValueTableViewCell.proto
   @param {String} reuseIdentifier A string containing an identifier that is unique
   to the group of cells that this cell should belong to.
   @constructor
+  @extends Pushpop.TableViewCell
 */
 Pushpop.Value2TableViewCell = function Value2TableViewCell(reuseIdentifier) {
   
@@ -1557,6 +1559,7 @@ Pushpop.TableView.registerReusableCellPrototype(Pushpop.Value2TableViewCell.prot
   @param {String} reuseIdentifier A string containing an identifier that is unique
   to the group of cells that this cell should belong to.
   @constructor
+  @extends Pushpop.TableViewCell
 */
 Pushpop.InlineTextInputTableViewCell = function InlineTextInputTableViewCell(reuseIdentifier) {
   

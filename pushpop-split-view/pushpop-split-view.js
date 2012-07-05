@@ -5,7 +5,7 @@ var Pushpop = window['Pushpop'] || {};
 
 /**
   Creates a new SplitView.
-  @param {HTMLDivElement} element The <div/> element to initialize as a new SplitView.
+  @param {HTMLDivElement} element The DIV element to initialize as a new SplitView.
   @constructor
 */
 Pushpop.SplitView = function SplitView(element) {
