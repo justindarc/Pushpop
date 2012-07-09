@@ -29,6 +29,7 @@ Pushpop.TableView = function TableView(element) {
   var selectedRowIndexes = this._selectedRowIndexes = [];
   
   var scrollView = this.scrollView = scrollViewElement.scrollView;
+  var scrollContent = scrollView.getScrollContent();
   
   var containsSearchBar = $element.attr('data-contains-search-bar') || 'false';
   containsSearchBar = containsSearchBar !== 'false';
@@ -42,8 +43,9 @@ Pushpop.TableView = function TableView(element) {
   var topMargin = window.parseInt($element.css('margin-top'), 10);
   
   // Render table view cells "virtually" when the view is scrolled.
-  scrollView.$element.bind(SKScrollEventType.ScrollChange, function(evt) {
-    var offset = -scrollView.y;
+  scrollView.$element.bind(ScrollKit.ScrollView.EventType.ScrollChange, function(evt) {
+    var scrollOffset = scrollView.getScrollOffset();
+    var offset = -scrollOffset.y;
     if (offset < 0) return;
     
     var firstCellElement = $element.children('li:first-child')[0];
@@ -61,7 +63,7 @@ Pushpop.TableView = function TableView(element) {
     var lastCellIndex = firstCellIndex + visibleCellCount - 1;
     
     // Manually calculate offset instead of calling .offset().
-    var margin = scrollView.getMargin();
+    var margin = scrollContent.getMargin();
     var firstCellOffset = margin.top - offset;
     var lastCellOffset = firstCellOffset + (visibleCellCount * rowHeight);
     var delta = offset - lastOffset;
@@ -89,7 +91,7 @@ Pushpop.TableView = function TableView(element) {
         newMarginBottomDelta -= rowHeight;
       });
       
-      scrollView.setMargin({
+      scrollContent.setMargin({
         top: margin.top + newMarginTopDelta,
         bottom: margin.bottom + newMarginBottomDelta
       });
@@ -112,7 +114,7 @@ Pushpop.TableView = function TableView(element) {
         newMarginBottomDelta += rowHeight;
       });
       
-      scrollView.setMargin({
+      scrollContent.setMargin({
         top: margin.top + newMarginTopDelta,
         bottom: margin.bottom + newMarginBottomDelta
       });
@@ -120,10 +122,10 @@ Pushpop.TableView = function TableView(element) {
   });
   
   // Handle case when table view is scrolled to the top (e.g.: tapping top of navigation bar).
-  scrollView.$element.bind(SKScrollEventType.WillScrollToTop, function(evt) {    
+  scrollView.$element.bind(ScrollKit.ScrollView.EventType.WillScrollToTop, function(evt) {    
     var firstCellElement = $element.children('li:first-child')[0];
     if (firstCellElement) firstCellElement.tableViewCell.setIndex(0);
-  }).bind(SKScrollEventType.DidScrollToTop, function(evt) { self.reloadData(); });
+  }).bind(ScrollKit.ScrollView.EventType.DidScrollToTop, function(evt) { self.reloadData(); });
   
   // Handle mouse/touch events to allow the user to tap accessory buttons.
   var isPendingAccessoryButtonTap = false;
@@ -540,10 +542,10 @@ Pushpop.TableView.prototype = {
     var scrollView = this.scrollView;
     
     // Scroll to the top of the table view without animating.
-    scrollView.setContentOffset({ x: 0, y: 0 }, false);
+    scrollView.setScrollOffset({ x: 0, y: 0 });
     
     // Set the scroll view margin.
-    scrollView.setMargin({
+    scrollView.getScrollContent().setMargin({
       top: 0,
       bottom: hiddenCellCount * this.getRowHeight()
     });
@@ -587,6 +589,7 @@ Pushpop.TableView.prototype = {
   
   /**
     Sets the parent table view for this table view.
+    @param {Pushpop.TableView} parentTableView The table view to set as the parent for this table view.
     @description NOTE: To remove this table view from its parent, call this method
     and pass in a |null| value.
   */

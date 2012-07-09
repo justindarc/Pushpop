@@ -26,7 +26,7 @@ Pushpop.NavigationBar = function(element) {
     
     var activeView = viewStack.getActiveView();
     var scrollView = activeView.element.scrollView;
-    if (scrollView && !scrollView.isScrolling) scrollView.scrollToTop(true);
+    if (scrollView && !scrollView.isScrolling) scrollView.scrollToTop();
   });
   
   var $backButtonElement = this.$backButtonElement = $('<a class="pp-barbutton pp-barbutton-align-left pp-barbutton-style-back" href="#">Back</a>').appendTo($element);
