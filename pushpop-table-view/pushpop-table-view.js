@@ -235,12 +235,15 @@ Pushpop.TableView = function TableView(element) {
         var data = { title: $(element).html() };
         
         var attributes = element.attributes;
-        var attribute, attributeName;
+        var attribute, attributeName, attributeValue;
         for (var i = 0, length = attributes.length; i < length; i++) {
           attribute = attributes[i];
           attributeName = attribute.name;
+          attributeValue = attribute.value;
           
-          if (attributeName.indexOf('data-') === 0) data[camelCase(attributeName.substring(5))] = attribute.value;
+          try { attributeValue = JSON.parse(attributeValue); } catch (ex) {}
+          
+          if (attributeName.indexOf('data-') === 0) data[camelCase(attributeName.substring(5))] = attributeValue;
         }
         
         if (!data['reuseIdentifier']) data.reuseIdentifier = 'pp-table-view-cell-default';
@@ -1383,7 +1386,11 @@ Pushpop.TableViewCell.prototype = {
   setData: function(data) {
     this._data = data;
     if (!data) return;
-    if (data.value) this.setValue(data.value);
+    if (data.value) {
+      this.setValue(data.value);
+      return;
+    }
+    
     this.draw();
   },
   
@@ -1451,6 +1458,7 @@ Pushpop.TableViewCell.prototype = {
     var data = this.getData();
     if (data) data.value = value;
     this._value = value;
+    this.draw();
   },
   
   _index: -1,
@@ -1664,6 +1672,8 @@ Pushpop.TextAreaInputTableViewCell.prototype.getHtml = function() {
   return '<h1>' + title + '</h1><h2>' + value + '</h2>';
 };
 
+Pushpop.TextAreaInputTableViewCell.prototype.getAccessoryType = function() { return this._accessoryType || Pushpop.TableViewCell.AccessoryType.DisclosureIndicator; };
+
 Pushpop.TextAreaInputTableViewCell.prototype.setSelected = function(value) {
   
   // Call the "super" method.
@@ -1705,6 +1715,84 @@ Pushpop.TextAreaInputTableViewCell.prototype.setSelected = function(value) {
 
 // Register the prototype for Pushpop.TextAreaInputTableViewCell as a reusable cell type.
 Pushpop.TableView.registerReusableCellPrototype(Pushpop.TextAreaInputTableViewCell.prototype);
+
+/**
+  Creates a new table view cell for a TableView with a small bold blue text label
+  and a long black bold text value. When this type of cell is tapped, a table view
+  is presented that contains the cell's "child" data source with a list of options
+  to pick from.
+  @description NOTE: The data for the "child" data source must be contained in a
+  property in this cell's data called |childDataSource|.
+  @param {String} reuseIdentifier A string containing an identifier that is unique
+  to the group of cells that this cell should belong to.
+  @constructor
+  @extends Pushpop.TableViewCell
+*/
+Pushpop.SelectInputTableViewCell = function SelectInputTableViewCell(reuseIdentifier) {
+  
+  // Call the "super" constructor.
+  Pushpop.TableViewCell.prototype.constructor.apply(this, arguments);
+  
+  var self = this, $element = this.$element;
+  
+  // Assign a CSS class to this cell to add specific styles to it.
+  $element.addClass('pp-select-input-table-view-cell');
+};
+
+Pushpop.SelectInputTableViewCell.prototype = new Pushpop.TableViewCell('pp-select-input-table-view-cell');
+Pushpop.SelectInputTableViewCell.prototype.constructor = Pushpop.SelectInputTableViewCell;
+
+Pushpop.SelectInputTableViewCell.prototype.getHtml = function() {
+  var data = this.getData();
+  var title = $.trim((data && data.title) ? data.title : '&nbsp;');
+  var value = $.trim((data && data.value) ? ((data.value.title) ? data.value.title : data.value) : '&nbsp;');
+  return '<h1>' + title + '</h1><h2>' + value + '</h2>';
+};
+
+Pushpop.SelectInputTableViewCell.prototype.getAccessoryType = function() { return this._accessoryType || Pushpop.TableViewCell.AccessoryType.DisclosureIndicator; };
+
+Pushpop.SelectInputTableViewCell.prototype.setSelected = function(value) {
+  
+  // Call the "super" method.
+  Pushpop.TableViewCell.prototype.setSelected.apply(this, arguments);
+  
+  if (!value) return;
+  
+  var tableView = this.tableView;
+  
+  var viewStack = tableView.getViewStack();
+  if (!viewStack) return;
+  
+  var view = tableView.getView();
+  if (!view) return;
+  
+  var data = this.getData();
+  if (!data) return;
+  
+  var childDataSource = new Pushpop.TableViewDataSource(data.childDataSource);
+  
+  var self = this;
+  
+  // Push a new view with a large text area input.
+  viewStack.pushNewTableView(function(newTableView) {
+    newTableView.setSearchBar(new Pushpop.TableViewSearchBar(newTableView));
+    newTableView.setDataSource(childDataSource);
+    
+    newTableView.$bind(Pushpop.TableView.EventType.DidSelectRowAtIndex, function(evt) {
+      if (evt.hasChildDataSource) return;
+      
+      var tableView = evt.tableView;
+      var dataSource = tableView.getDataSource();
+      var item = dataSource.getFilteredItemAtIndex(evt.index);
+      
+      self.setValue(item);
+      viewStack.pop(view);
+    });
+  });
+};
+
+// Register the prototype for Pushpop.SelectInputTableViewCell as a reusable cell type.
+Pushpop.TableView.registerReusableCellPrototype(Pushpop.SelectInputTableViewCell.prototype);
 
 $(function() {
   $('.pp-table-view').each(function(index, element) { new Pushpop.TableView(element); });
