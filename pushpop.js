@@ -468,7 +468,7 @@ Pushpop.ViewStack.prototype = {
     var $scrollViewElement = $('<div class="sk-scroll-view" data-always-bounce-vertical="true"/>').appendTo($viewElement);
     var $tableViewElement = $('<ul class="pp-table-view"/>').appendTo($scrollViewElement);
     var view = new Pushpop.View($viewElement);
-    var scrollView = new SKScrollView($scrollViewElement);
+    var scrollView = new ScrollKit.ScrollView($scrollViewElement);
     var tableView = new Pushpop.TableView($tableViewElement);
     
     view.setShouldRemoveWhenPopped(true);
