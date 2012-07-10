@@ -859,6 +859,8 @@ Pushpop.TableViewDataSource.prototype = {
     values' values. If not specified, the default value is 'value.
   */
   setValuesFromObject: function(object, keyFieldName, valueFieldName) {
+    if (!object) return;
+    
     var keyFieldName = keyFieldName || 'name';
     var valueFieldName = valueFieldName || 'value';
     
