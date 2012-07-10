@@ -1608,7 +1608,10 @@ Pushpop.InlineTextInputTableViewCell = function InlineTextInputTableViewCell(reu
   $element.addClass('pp-inline-text-input-table-view-cell');
   
   // Attach an event handler to this cell to update its value when the input changes.
-  $element.delegate('input', 'keyup change', function(evt) { self.setValue($(this).val()); });
+  $element.delegate('input', 'keyup change', function(evt) {
+    var data = self.getData();
+    if (data) data.value = $(this).val();
+  });
 };
 
 Pushpop.InlineTextInputTableViewCell.prototype = new Pushpop.TableViewCell('pp-inline-text-input-table-view-cell');
