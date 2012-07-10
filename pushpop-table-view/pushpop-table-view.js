@@ -146,10 +146,13 @@ Pushpop.TableView = function TableView(element) {
     var tableViewCell = $(this).parent()[0].tableViewCell;
     if (!tableViewCell) return;
     
+    var index = tableViewCell.getIndex();
+    
     $element.trigger($.Event(Pushpop.TableView.EventType.AccessoryButtonTappedForRowWithIndex, {
       tableView: self,
       tableViewCell: tableViewCell,
-      index: tableViewCell.getIndex()
+      index: index,
+      item: self.getDataSource().getItemAtIndex(index)
     }));
   });
   
@@ -172,10 +175,13 @@ Pushpop.TableView = function TableView(element) {
     var tableViewCell = $(this).parent()[0].tableViewCell;
     if (!tableViewCell) return;
     
+    var index = tableViewCell.getIndex();
+    
     $element.trigger($.Event(Pushpop.TableView.EventType.EditingAccessoryButtonTappedForRowWithIndex, {
       tableView: self,
       tableViewCell: tableViewCell,
-      index: tableViewCell.getIndex()
+      index: index,
+      item: self.getDataSource().getItemAtIndex(index)
     }));
   });
   
@@ -466,6 +472,7 @@ Pushpop.TableView.prototype = {
         this.triggerEventOnParentTableViews($.Event(Pushpop.TableView.EventType.DidSelectRowAtIndex, {
           tableView: this,
           index: index,
+          item: dataSource.getItemAtIndex(index),
           hasChildDataSource: true
         }), true);
         
@@ -477,6 +484,7 @@ Pushpop.TableView.prototype = {
     this.triggerEventOnParentTableViews($.Event(Pushpop.TableView.EventType.DidSelectRowAtIndex, {
       tableView: this,
       index: index,
+      item: dataSource.getItemAtIndex(index),
       hasChildDataSource: false
     }), true);
   },
@@ -767,11 +775,13 @@ Pushpop.TableViewDataSource.prototype = {
   getCellForRowAtIndex: function(tableView, index) {
     var item = this.getFilteredItemAtIndex(index);
     var reuseIdentifier = item.reuseIdentifier || this.getDefaultReuseIdentifier();
+    var accessoryType = item.accessoryType || this.getDefaultAccessoryType();
+    var editingAccessoryType = item.editingAccessoryType || this.getDefaultEditingAccessoryType();
     var cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier);
     
     cell.setIndex(index);
-    cell.setAccessoryType(item.accessoryType);
-    cell.setEditingAccessoryType(item.editingAccessoryType);
+    cell.setAccessoryType(accessoryType);
+    cell.setEditingAccessoryType(editingAccessoryType);
     cell.setData(item);
     
     return cell;
@@ -996,9 +1006,49 @@ Pushpop.TableViewDataSource.prototype = {
   /**
     Sets the default reuse identifier that this data source will use when a
     reuse identifier is not specified for a particular item.
-    @param {String} reuseIdentifier The reuse identifier to set as default.
+    @param {String} defaultReuseIdentifier The reuse identifier to set as default.
   */
-  setDefaultReuseIdentifier: function(reuseIdentifier) { this._defaultReuseIdentifier = reuseIdentifier; },
+  setDefaultReuseIdentifier: function(defaultReuseIdentifier) { this._defaultReuseIdentifier = defaultReuseIdentifier; },
+  
+  _defaultAccessoryType: 'pp-table-view-cell-accessory-none',
+  
+  /**
+    Returns the default accessory type that this data source will use when an
+    accessory type is not specified for a particular item.
+    @description NOTE: The available accessory types are defined by the
+    Pushpop.TableViewCell.AccessoryType singleton.
+    @type String
+  */
+  getDefaultAccessoryType: function() { return this._defaultAccessoryType; },
+  
+  /**
+    Sets the default accessory type that this data source will use when an
+    accessory type is not specified for a particular item.
+    @description NOTE: The available accessory types are defined by the
+    Pushpop.TableViewCell.AccessoryType singleton.
+    @param {String} defaultAccessoryType The accessory type to set as default.
+  */
+  setDefaultAccessoryType: function(defaultAccessoryType) { this._defaultAccessoryType = defaultAccessoryType; },
+  
+  _defaultEditingAccessoryType: 'pp-table-view-cell-editing-accessory-none',
+  
+  /**
+    Returns the default editing accessory type that this data source will use when an
+    editing accessory type is not specified for a particular item.
+    @description NOTE: The available editing accessory types are defined by the
+    Pushpop.TableViewCell.EditingAccessoryType singleton.
+    @type String
+  */
+  getDefaultEditingAccessoryType: function() { return this._defaultEditingAccessoryType; },
+  
+  /**
+    Sets the default editing accessory type that this data source will use when an
+    editing accessory type is not specified for a particular item.
+    @description NOTE: The available editing accessory types are defined by the
+    Pushpop.TableViewCell.EditingAccessoryType singleton.
+    @param {String} defaultEditingAccessoryType The editing accessory type to set as default.
+  */
+  setDefaultEditingAccessoryType: function(defaultEditingAccessoryType) { this._defaultEditingAccessoryType = defaultEditingAccessoryType; },
   
   _dataSet: null,
   

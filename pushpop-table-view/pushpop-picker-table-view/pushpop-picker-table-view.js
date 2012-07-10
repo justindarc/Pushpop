@@ -242,6 +242,27 @@ Pushpop.PickerTableViewDataSource.prototype.getCellForRowAtIndex = function(tabl
   return cell;
 }
 
+/**
+  Returns an object containing the data for all "values" contained within the data source.
+  This is typically used for retrieving form fields stored within a table view.
+  @description NOTE: If a field name occurs more than once, its values will be put into an
+  array.
+  @param {String} [keyFieldName] The name of the field in the data source containing the
+  values' keys. If not specified, the default value is 'name'.
+  @param {String} [valueFieldName] The name of the field in the data source containing the
+  values' values. If not specified, the default value is 'value.
+  @type Object
+*/
+Pushpop.PickerTableViewDataSource.prototype.getValuesObject = function(keyFieldName, valueFieldName) {
+  
+  // Call the "super" method.
+  var valuesObject = Pushpop.TableViewDataSource.prototype.getValuesObject.apply(this, arguments);
+  
+  if (keyFieldName && valuesObject[keyFieldName] && !(valuesObject[keyFieldName] instanceof Array)) valuesObject[keyFieldName] = [valuesObject[keyFieldName]];
+  
+  return valuesObject;
+};
+
 Pushpop.PickerTableViewDataSource.prototype._pickerCellTitle = 'Add Item';
 
 /**

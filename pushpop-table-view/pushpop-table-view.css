@@ -606,7 +606,8 @@ li.pp-inline-text-input-table-view-cell > h1::after {
   content: '\00a0\00a0'; /* Add spacer after the label text */
 }
 
-li.pp-inline-text-input-table-view-cell > input {
+li.pp-inline-text-input-table-view-cell > input,
+li.pp-inline-text-input-table-view-cell > input:focus {
   background: none;
   border: none;
   color: #000;
