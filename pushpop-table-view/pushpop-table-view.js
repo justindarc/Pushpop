@@ -849,6 +849,34 @@ Pushpop.TableViewDataSource.prototype = {
     return valuesObject;
   },
   
+  /**
+    Sets the "values" for the items contained within the data source from an object containing
+    key/value pairs.
+    @param {Object} object The object to map key/value pairs from.
+    @param {String} [keyFieldName] The name of the field in the data source containing the
+    values' keys. If not specified, the default value is 'name'.
+    @param {String} [valueFieldName] The name of the field in the data source containing the
+    values' values. If not specified, the default value is 'value.
+  */
+  setValuesFromObject: function(object, keyFieldName, valueFieldName) {
+    var keyFieldName = keyFieldName || 'name';
+    var valueFieldName = valueFieldName || 'value';
+    
+    var numberOfItems = this.getNumberOfItems();
+    var i, item;
+    
+    for (var key in object) {
+      for (i = 0; i < numberOfItems; i++) {
+        item = this.getItemAtIndex(i);
+        
+        if (item[keyFieldName] === key) {
+          item[valueFieldName] = object[key];
+          break;
+        }
+      }
+    }
+  },
+  
   clearAllValues: function(valueFieldName) {
     var valueFieldName = valueFieldName || 'value';
     
@@ -1842,6 +1870,28 @@ Pushpop.SelectInputTableViewCell.prototype.setSelected = function(value) {
       viewStack.pop(view);
     });
   });
+};
+
+Pushpop.SelectInputTableViewCell.prototype.setValue = function(value) {
+  var data = this.getData();
+  var value = value;
+  var childDataSource;
+  
+  if (data) {
+    if (!(value instanceof Object) && (childDataSource = data.childDataSource)) {
+      for (var i = 0, length = childDataSource.length; i < length; i++) {
+        if (childDataSource[i].value === value) {
+          value = childDataSource[i];
+          break;
+        }
+      }
+    }
+    
+    data.value = value;
+  }
+  
+  this._value = value;
+  this.draw();
 };
 
 // Register the prototype for Pushpop.SelectInputTableViewCell as a reusable cell type.
