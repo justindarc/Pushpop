@@ -41,7 +41,7 @@
           item.value = $.extend({}, item);
           
           formView.$trigger($.Event(Pushpop.PickerTableView.EventType.DidFinishSelectingItem, { item: item }));
-          formTableView.getDataSource().clearAllValues();
+          formTableView.getDataSource().clearValues();
         }
         
         evt.preventDefault();

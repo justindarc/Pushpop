@@ -877,9 +877,12 @@ Pushpop.TableViewDataSource.prototype = {
         }
       }
     }
+    
+    var tableView = this.getTableView();
+    if (tableView) tableView.reloadData();
   },
   
-  clearAllValues: function(valueFieldName) {
+  clearValues: function(valueFieldName) {
     var valueFieldName = valueFieldName || 'value';
     
     var numberOfItems = this.getNumberOfItems();
