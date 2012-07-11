@@ -1492,7 +1492,7 @@ Pushpop.TableViewCell.prototype = {
     side of the cell.
     @param {String} accessoryType The type of accessory to render for this cell.
   */
-  setAccessoryType: function(accessoryType) { this._accessoryType = accessoryType; },
+  setAccessoryType: function(accessoryType) { this._accessoryType = (accessoryType !== Pushpop.TableViewCell.AccessoryType.None) ? accessoryType : null; },
   
   _editingAccessoryType: null,
   
@@ -1512,7 +1512,7 @@ Pushpop.TableViewCell.prototype = {
     side of the cell.
     @param {String} editingAccessoryType The type of editing accessory to render for this cell.
   */
-  setEditingAccessoryType: function(editingAccessoryType) { this._editingAccessoryType = editingAccessoryType; },
+  setEditingAccessoryType: function(editingAccessoryType) { this._editingAccessoryType = (editingAccessoryType !== Pushpop.TableViewCell.EditingAccessoryType.None) ? editingAccessoryType : null; },
   
   _value: null,
   
