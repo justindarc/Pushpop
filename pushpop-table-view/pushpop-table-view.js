@@ -1695,7 +1695,9 @@ Pushpop.InlineTextInputTableViewCell = function InlineTextInputTableViewCell(reu
   // Attach an event handler to this cell to update its value when the input changes.
   $element.delegate('input', 'keyup change', function(evt) {
     var data = self.getData();
-    if (data) data.value = $(this).val();
+    var value = $(this).val();
+    if (data) data.value = value;
+    this._value = value;
   });
 };
 
