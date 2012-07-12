@@ -882,17 +882,19 @@ Pushpop.TableViewDataSource.prototype = {
     if (tableView) tableView.reloadData();
   },
   
-  clearValues: function(valueFieldName) {
+  clearValues: function(valueFieldName, defaultValueFieldName) {
     var valueFieldName = valueFieldName || 'value';
+    var defaultValueFieldName = defaultValueFieldName || 'defaultValue';
     
     var numberOfItems = this.getNumberOfItems();
-    var item, value;
+    var item, value, defaultValue;
     
     for (var i = 0; i < numberOfItems; i++) {
       item = this.getItemAtIndex(i);
       value = item[valueFieldName];
+      defaultValue = item[defaultValueFieldName] || null;
       
-      if (value !== undefined) item[valueFieldName] = null;
+      if (value !== undefined || defaultValue) item[valueFieldName] = defaultValue;
     }
     
     var tableView = this.getTableView();
@@ -1904,21 +1906,4 @@ Pushpop.TableView.registerReusableCellPrototype(Pushpop.SelectInputTableViewCell
 
 $(function() {
   $('.pp-table-view').each(function(index, element) { new Pushpop.TableView(element); });
-  
-  // Set up table view "edit" buttons (ex.: in a navigation bar) to toggle the "editing"
-  // flag of the table view its "href" points to.
-  $(document.body).delegate('.pp-table-view-edit-button', 'click', function(evt) {
-    var $this = $(this);
-    var $tableViewElement = $($this.attr('href'));
-    if ($tableViewElement.length === 0) return;
-    
-    var tableView = $tableViewElement[0].tableView;
-    if (!tableView) return;
-    
-    var isEditing = !tableView.getEditing()
-    if (isEditing) $this.addClass('pp-barbutton-style-blue'); else $this.removeClass('pp-barbutton-style-blue');
-    tableView.setEditing(isEditing);
-    
-    evt.preventDefault();
-  });
 });
