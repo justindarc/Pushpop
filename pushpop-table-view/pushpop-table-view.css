@@ -412,18 +412,13 @@ div.pp-table-view-search-bar-overlay.pp-active {
 /**
   Pushpop.TableViewCell (Base Class)
   ==================================
-  pp-table-view-cell
+  pp-table-view-cell-default
 */
 ul.pp-table-view > li {
   background-color: #f7f7f7;
   border: 1px solid #cacaca;
   border-top: 1px solid #fdfdfd;
-  color: #000;
-  line-height: 1.2em;
-  padding: 0.7em 0.6em;
   position: relative;
-  font-size: 1em;
-  font-weight: bold;
   zoom: 1; /* Trigger "hasLayout" in IE */
   -webkit-backface-visibility: hidden;
   -moz-backface-visibility: hidden;
@@ -440,6 +435,14 @@ ul.pp-table-view > li {
   -ms-transition: padding 0.2s linear;
   -o-transition: padding 0.2s linear;
   transition: padding 0.2s linear;
+}
+
+li.pp-table-view-cell-default {
+  color: #000;
+  font-size: 1em;
+  font-weight: bold;
+  line-height: 1.2em;
+  padding: 0.7em 0.6em;
 }
 
 ul.pp-table-view.pp-table-view-editing > li {
@@ -466,7 +469,7 @@ ul.pp-table-view > li.pp-table-view-selected-state {
   pp-subtitle-table-view-cell
 */
 li.pp-subtitle-table-view-cell {
-  padding: 0 0.65em !important;
+  padding: 0 0.65em;
 }
 
 li.pp-subtitle-table-view-cell > h1 {
@@ -502,7 +505,7 @@ li.pp-subtitle-table-view-cell.pp-table-view-selected-state > h2 {
   pp-value-table-view-cell
 */
 li.pp-value-table-view-cell {
-  padding: 0.6em 0.6em 0.7em !important;
+  padding: 0.6em 0.6em 0.7em;
 }
 
 li.pp-value-table-view-cell > h1,
@@ -539,7 +542,7 @@ li.pp-value-table-view-cell.pp-table-view-selected-state > h2 {
   pp-value2-table-view-cell
 */
 li.pp-value2-table-view-cell {
-  padding: 0.6em 0.6em 0.55em !important;
+  padding: 0.6em 0.6em 0.55em;
 }
 
 li.pp-value2-table-view-cell > h1,
@@ -582,7 +585,7 @@ li.pp-value2-table-view-cell.pp-table-view-selected-state > h2 {
   pp-inline-text-input-table-view-cell
 */
 li.pp-inline-text-input-table-view-cell {
-  padding: 0.55em 0.6em 0.55em !important;
+  padding: 0.55em 0.6em 0.55em;
 }
 
 li.pp-inline-text-input-table-view-cell > h1,
@@ -646,7 +649,7 @@ li.pp-value-table-view-cell.pp-table-view-selected-state > input {
   pp-text-area-input-table-view-cell
 */
 li.pp-text-area-input-table-view-cell {
-  padding: 0.6em 0.6em 0.55em !important;
+  padding: 0.6em 0.6em 0.55em;
 }
 
 li.pp-text-area-input-table-view-cell > h1,
@@ -716,7 +719,7 @@ textarea.pp-text-area-input-table-view-cell-textarea {
   pp-select-input-table-view-cell
 */
 li.pp-select-input-table-view-cell {
-  padding: 0.6em 0.6em 0.55em !important;
+  padding: 0.6em 0.6em 0.55em;
 }
 
 li.pp-select-input-table-view-cell > h1,

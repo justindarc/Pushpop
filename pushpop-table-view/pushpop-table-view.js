@@ -1343,6 +1343,8 @@ Pushpop.TableViewCell = function TableViewCell(reuseIdentifier) {
   var element = this.element = $element[0];
   
   element.tableViewCell = this;
+  
+  $element.addClass(reuseIdentifier);
 };
 
 Pushpop.TableViewCell.AccessoryType = {
@@ -1596,9 +1598,6 @@ Pushpop.SubtitleTableViewCell = function SubtitleTableViewCell(reuseIdentifier) 
   
   // Call the "super" constructor.
   Pushpop.TableViewCell.prototype.constructor.apply(this, arguments);
-  
-  // Assign a CSS class to this cell to add specific styles to it.
-  this.$element.addClass('pp-subtitle-table-view-cell');
 };
 
 Pushpop.SubtitleTableViewCell.prototype = new Pushpop.TableViewCell('pp-subtitle-table-view-cell');
@@ -1626,9 +1625,6 @@ Pushpop.ValueTableViewCell = function ValueTableViewCell(reuseIdentifier) {
   
   // Call the "super" constructor.
   Pushpop.TableViewCell.prototype.constructor.apply(this, arguments);
-  
-  // Assign a CSS class to this cell to add specific styles to it.
-  this.$element.addClass('pp-value-table-view-cell');
 };
 
 Pushpop.ValueTableViewCell.prototype = new Pushpop.TableViewCell('pp-value-table-view-cell');
@@ -1656,9 +1652,6 @@ Pushpop.Value2TableViewCell = function Value2TableViewCell(reuseIdentifier) {
   
   // Call the "super" constructor.
   Pushpop.TableViewCell.prototype.constructor.apply(this, arguments);
-  
-  // Assign a CSS class to this cell to add specific styles to it.
-  this.$element.addClass('pp-value2-table-view-cell');
 };
 
 Pushpop.Value2TableViewCell.prototype = new Pushpop.TableViewCell('pp-value2-table-view-cell');
@@ -1687,13 +1680,10 @@ Pushpop.InlineTextInputTableViewCell = function InlineTextInputTableViewCell(reu
   // Call the "super" constructor.
   Pushpop.TableViewCell.prototype.constructor.apply(this, arguments);
   
-  var self = this, $element = this.$element;
-  
-  // Assign a CSS class to this cell to add specific styles to it.
-  $element.addClass('pp-inline-text-input-table-view-cell');
+  var self = this;
   
   // Attach an event handler to this cell to update its value when the input changes.
-  $element.delegate('input', 'keyup change', function(evt) {
+  this.$element.delegate('input', 'keyup change', function(evt) {
     var data = self.getData();
     var value = $(this).val();
     if (data) data.value = value;
@@ -1745,11 +1735,6 @@ Pushpop.TextAreaInputTableViewCell = function TextAreaInputTableViewCell(reuseId
   
   // Call the "super" constructor.
   Pushpop.TableViewCell.prototype.constructor.apply(this, arguments);
-  
-  var self = this, $element = this.$element;
-  
-  // Assign a CSS class to this cell to add specific styles to it.
-  $element.addClass('pp-text-area-input-table-view-cell');
 };
 
 Pushpop.TextAreaInputTableViewCell.prototype = new Pushpop.TableViewCell('pp-text-area-input-table-view-cell');
@@ -1822,11 +1807,6 @@ Pushpop.SelectInputTableViewCell = function SelectInputTableViewCell(reuseIdenti
   
   // Call the "super" constructor.
   Pushpop.TableViewCell.prototype.constructor.apply(this, arguments);
-  
-  var self = this, $element = this.$element;
-  
-  // Assign a CSS class to this cell to add specific styles to it.
-  $element.addClass('pp-select-input-table-view-cell');
 };
 
 Pushpop.SelectInputTableViewCell.prototype = new Pushpop.TableViewCell('pp-select-input-table-view-cell');
