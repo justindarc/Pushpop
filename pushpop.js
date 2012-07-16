@@ -485,6 +485,8 @@ Pushpop.ViewStack.prototype = {
   @constructor
 */
 Pushpop.View = function View(element) {
+  if (!element) return;
+  
   var $element = this.$element = $(element);
   element = this.element = $element[0];
   

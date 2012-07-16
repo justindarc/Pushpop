@@ -9,28 +9,26 @@ var Pushpop = window['Pushpop'] || {};
   @constructor
 */
 Pushpop.SplitView = function SplitView(element) {
-  var $element = this.$element = $(element);
-  var element = this.element = $element[0];
   
-  var splitView = element.splitView;
-  if (splitView) return splitView;
+  // Call the "super" constructor.
+  Pushpop.View.prototype.constructor.apply(this, arguments);
   
-  element.splitView = this;
-  
-  var $window = $(window['addEventListener'] ? window : document.body);
+  this.$element.addClass('pp-view');
   
   // TODO: Implement responsive design and auto-collapse the split view into a
   // single view stack on a mobile phone.
-  $window.bind('resize', function(evt) {
-    
-  });
 };
 
-Pushpop.SplitView.prototype = {
-  constructor: Pushpop.SplitView,
-  
-  element: null,
-  $element: null
+// Create the prototype for the Pushpop.SplitView as a "sub-class" of Pushpop.View.
+Pushpop.SplitView.prototype = new Pushpop.View();
+Pushpop.SplitView.prototype.constructor = Pushpop.SplitView;
+
+Pushpop.SplitView.prototype.getMasterViewStack = function() {
+  return this.$element.children('.pp-split-view-stack-master')[0].viewStack;
+};
+
+Pushpop.SplitView.prototype.getDetailViewStack = function() {
+  return this.$element.children('.pp-split-view-stack-detail')[0].viewStack;
 };
 
 $(function() { $('.pp-split-view').each(function(index, element) { new Pushpop.SplitView(element); }); });
