@@ -66,7 +66,8 @@ Pushpop.NavigationBar.prototype = {
     if (action === 'parent-push' || action === 'parent-pop') return;
     
 	  // Clear any nav buttons currently in the navbar (other than the back button)
-	  if (this.$viewSpecificNavButtons) this.$viewSpecificNavButtons.remove();
+	  // NOTE: Using .detach() will preserve any attached event handlers.
+	  if (this.$viewSpecificNavButtons) this.$viewSpecificNavButtons.detach();
 
     // Append buttons for this view
     this.$element.append(this.$viewSpecificNavButtons = view.$navbarButtons);

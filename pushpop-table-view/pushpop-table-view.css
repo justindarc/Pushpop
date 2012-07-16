@@ -768,6 +768,60 @@ li.pp-select-input-table-view-cell.pp-table-view-selected-state > h2 {
 }
 
 /**
+  Pushpop.DateInputTableViewCell
+  ==============================
+  pp-select-date-table-view-cell
+*/
+li.pp-date-input-table-view-cell {
+  padding: 0.6em 0.6em 0.55em;
+}
+
+li.pp-date-input-table-view-cell > h1,
+li.pp-date-input-table-view-cell > h2 {
+  float: left;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: bold;
+  text-rendering: auto;
+}
+
+li.pp-date-input-table-view-cell > h1 {
+  color: #516691;
+  font-size: 0.75em;
+  line-height: 1.6em;
+  margin: 0.25em 0 0;
+  width: 30%;
+  text-align: right;
+}
+
+li.pp-date-input-table-view-cell > h1::after {
+  content: '\00a0\00a0'; /* Add spacer after the label text */
+}
+
+li.pp-date-input-table-view-cell > h2 {
+  color: #000;
+  font-size: 0.9em;
+  line-height: 1.4em;
+  margin: 0.15em 0 0;
+  position: absolute;
+  left: 30%;
+  right: 2em;
+  width: auto;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+li.pp-date-input-table-view-cell > h2::before {
+  content: '\00a0\00a0'; /* Add spacer after the label text */
+  font-size: 0.5em;
+}
+
+li.pp-date-input-table-view-cell.pp-table-view-selected-state > h1,
+li.pp-date-input-table-view-cell.pp-table-view-selected-state > h2 {
+  color: #fff;
+}
+
+/**
   Pushpop.TableViewCell.AccessoryType
   ===================================
   pp-table-view-cell-accessory
