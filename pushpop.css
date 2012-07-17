@@ -87,9 +87,6 @@ div.pp-navigationbar-buttons {
   }
 }
 
-/* NOTE: Use of .topbar has been removed in Bootstrap 2.x. */
-.navbar ~ .pp-view-stack, .topbar ~ .pp-view-stack { top: 40px; }
-
 /**
   Pushpop.Button
   ==============
