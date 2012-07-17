@@ -63,7 +63,7 @@ Pushpop.ViewStack = function ViewStack(element) {
   
   var views = this.views = [];
   
-  var $rootViewElement = $element.children('.pp-view.root, .pp-view').first().addClass('active');
+  var $rootViewElement = $element.children('.pp-view, .pp-split-view').first().addClass('active');
   var rootViewElement = $rootViewElement[0];
   
   if (!rootViewElement) return;

@@ -17,46 +17,45 @@
 	<script src="../pushpop-table-view/pushpop-table-view.js"></script>
 	<script src="../pushpop-navigationbar/pushpop-navigationbar.js"></script>
 	<script src="pushpop-split-view.js"></script>
-	<script>
-    
-	</script>
 </head>
 <body>
-  <div class="pp-split-view">
-    <div class="pp-view-stack pp-split-view-stack-master">
-      <div class="pp-view sk-scroll-view" id="master-view-root" style="background: #7a8faa;">
-        <ul id="custom-cells-table-view" class="pp-table-view" data-contains-search-bar="true" data-set-url="../pushpop-table-view/sample-data/big-data-20.json">
+  <div class="pp-view-stack" id="root-view-stack">
+    <div class="pp-split-view">
+      <div class="pp-view-stack pp-split-view-stack-master" id="master-view-stack">
+        <div class="pp-view sk-scroll-view" id="master-view-root" style="background: #7a8faa;">
+          <ul id="custom-cells-table-view" class="pp-table-view" data-contains-search-bar="true" data-set-url="../pushpop-table-view/sample-data/big-data-20.json">
           
-        </ul>
+          </ul>
+        </div>
+        <div class="pp-view" id="master-view-other">
+          <a class="pp-button pop" href="#">Back</a>
+          <p>This is some other "Master" view.</p>
+        </div>
       </div>
-      <div class="pp-view" id="master-view-other">
-        <a class="pp-button pop" href="#">Back</a>
-        <p>This is some other "Master" view.</p>
-      </div>
-    </div>
-    <div class="pp-view-stack pp-split-view-stack-detail">
-      <div class="pp-view" id="detail-view-root">
-        <a class="pp-button push" data-transition="slide-horizontal" href="#detail-view-other">Slide Horizontal</a>
-        <a class="pp-button pp-button-style-red push" data-transition="slide-vertical" href="#detail-view-other">Slide Vertical</a>
-        <a class="pp-button pp-button-style-green push" data-transition="flip-horizontal" href="#detail-view-other">Flip Horizontal</a>
-        <a class="pp-button pp-button-style-black push" data-transition="flip-vertical" href="#detail-view-other">Flip Vertical</a>
-        <a class="pp-button pp-button-style-blue push" data-transition="card-swap" href="#detail-view-other">Card Swap</a>
-        <a class="pp-button push" data-transition="zoom" href="#detail-view-other">Zoom</a>
-        <a class="pp-button push" data-transition="cross-fade" href="#detail-view-other">Cross Fade</a>
-        <label class="pp-switch" onclick>
-          <input type="checkbox"/>
-          <div class="pp-switch-inner">
-            <div class="pp-switch-slider">
-              <div class="pp-switch-on">ON</div>
-              <div class="pp-switch-off">OFF</div>
-              <div class="pp-switch-handle"></div>
+      <div class="pp-view-stack pp-split-view-stack-detail" id="detail-view-stack">
+        <div class="pp-view" id="detail-view-root">
+          <a class="pp-button push" data-transition="slide-horizontal" href="#detail-view-other">Slide Horizontal</a>
+          <a class="pp-button pp-button-style-red push" data-transition="slide-vertical" href="#detail-view-other">Slide Vertical</a>
+          <a class="pp-button pp-button-style-green push" data-transition="flip-horizontal" href="#detail-view-other">Flip Horizontal</a>
+          <a class="pp-button pp-button-style-black push" data-transition="flip-vertical" href="#detail-view-other">Flip Vertical</a>
+          <a class="pp-button pp-button-style-blue push" data-transition="card-swap" href="#detail-view-other">Card Swap</a>
+          <a class="pp-button push" data-transition="zoom" href="#detail-view-other">Zoom</a>
+          <a class="pp-button push" data-transition="cross-fade" href="#detail-view-other">Cross Fade</a>
+          <label class="pp-switch" onclick>
+            <input type="checkbox"/>
+            <div class="pp-switch-inner">
+              <div class="pp-switch-slider">
+                <div class="pp-switch-on">ON</div>
+                <div class="pp-switch-off">OFF</div>
+                <div class="pp-switch-handle"></div>
+              </div>
             </div>
-          </div>
-        </label>
-      </div>
-      <div class="pp-view" id="detail-view-other">
-        <a class="pp-button pop" href="#">Back</a>
-        <p>This is some other "Detail" view.</p>
+          </label>
+        </div>
+        <div class="pp-view" id="detail-view-other">
+          <a class="pp-button pop" href="#">Back</a>
+          <p>This is some other "Detail" view.</p>
+        </div>
       </div>
     </div>
   </div>
