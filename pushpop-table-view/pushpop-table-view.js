@@ -1949,7 +1949,10 @@ Pushpop.DateInputTableViewCell.prototype.setSelected = function(value) {
     { value: 11, title: 'November'  }, { value: 12, title: 'December' }
   ];
   
-  var dateParts = this.getValue().split('-');
+  var dateParts = this.getValue(), currentDate = new Date();
+  if (!dateParts || (typeof dateParts !== 'string')) dateParts = currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1) + '-' + currentDate.getDate();
+  dateParts = dateParts.split('-');
+  
   var year = window.parseInt(dateParts[0], 10);
   var month = window.parseInt(dateParts[1], 10);
   var day = window.parseInt(dateParts[2], 10);
