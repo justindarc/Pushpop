@@ -2068,7 +2068,7 @@ Pushpop.TimeInputTableViewCell.prototype.setSelected = function(value) {
   for (i = 0; i <= 59; i++) minuteDataSource.push({ value: (i < 10 ? '0' : '') + i, title: (i < 10 ? '0' : '') + i });
   
   var timeParts = this.getValue(), currentTime = new Date();
-  if (!timeParts || (typeof timeParts !== 'string')) timeParts = currentTime.getHours() + ':' + currentDate.getMinutes();
+  if (!timeParts || (typeof timeParts !== 'string')) timeParts = currentTime.getHours() + ':' + currentTime.getMinutes();
   timeParts = timeParts.split(':');
   
   var hour = window.parseInt(timeParts[0], 10);
