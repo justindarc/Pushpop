@@ -205,6 +205,7 @@ Pushpop.TableView = function TableView(element) {
       if (!isPendingSelection) return;
       isPendingSelection = false;
       
+      tableViewCell.didReceiveTap();
       self.selectRowAtIndex(tableViewCell.getIndex());
     }, selectionTimeoutDuration);
   });
@@ -220,7 +221,11 @@ Pushpop.TableView = function TableView(element) {
     if (!isPendingSelection) return;
     isPendingSelection = false;
     
+    var tableViewCell = this.tableViewCell;
+    
     window.clearTimeout(selectionTimeout);
+    
+    tableViewCell.didReceiveTap();
     self.selectRowAtIndex(this.tableViewCell.getIndex());
   });
   
@@ -1432,6 +1437,14 @@ Pushpop.TableViewCell.prototype = {
   },
   
   /**
+    Performs any necessary actions when this cell has been tapped.
+    @description NOTE: The default implementation does nothing. This method is
+    intended to be overridden by custom table view cells that require an action
+    to be taken upon tapping the cell (e.g.: pushing a new view).
+  */
+  didReceiveTap: function() {},
+  
+  /**
     Removes this TableViewCell from the TableView's visible cells, resets its
     data and prepares it to be reused by the TableView by placing it in the
     reusable cells queue.
@@ -1588,7 +1601,7 @@ Pushpop.TableViewCell.prototype = {
     } else {
       this.$element.removeClass('pp-table-view-selected-state');
     }
-  },
+  }
 };
 
 // Register the prototype for Pushpop.TableViewCell as a reusable cell type.
@@ -1712,19 +1725,9 @@ Pushpop.InlineTextInputTableViewCell.prototype.getHtml = function() {
   return '<h1>' + title + '</h1><input type="' + (isPassword ? 'password' : 'text') + '" name="' + name + '" value="' + value + '"/>';
 };
 
-Pushpop.InlineTextInputTableViewCell.prototype.setSelected = function(value) {
-  
-  // Call the "super" method.
-  Pushpop.TableViewCell.prototype.setSelected.apply(this, arguments);
-  
+Pushpop.InlineTextInputTableViewCell.prototype.didReceiveTap = function() {
   var $element = this.$element;
-  
-  if (value) {
-    $element.children('input').focus();
-    window.setTimeout(function() { $element.removeClass('pp-table-view-selected-state'); }, 100);
-  } else {
-    $element.children('input').blur();
-  }
+  window.setTimeout(function() { $element.removeClass('pp-table-view-selected-state'); }, 100);
 };
 
 // Register the prototype for Pushpop.InlineTextInputTableViewCell as a reusable cell type.
@@ -1757,13 +1760,7 @@ Pushpop.TextAreaInputTableViewCell.prototype.getHtml = function() {
 
 Pushpop.TextAreaInputTableViewCell.prototype.getAccessoryType = function() { return this._accessoryType || Pushpop.TableViewCell.AccessoryType.DisclosureIndicator; };
 
-Pushpop.TextAreaInputTableViewCell.prototype.setSelected = function(value) {
-  
-  // Call the "super" method.
-  Pushpop.TableViewCell.prototype.setSelected.apply(this, arguments);
-  
-  if (!value) return;
-  
+Pushpop.TextAreaInputTableViewCell.prototype.didReceiveTap = function() {  
   var tableView = this.tableView;
   var viewStack = tableView.getViewStack();
   if (!viewStack) return;
@@ -1829,13 +1826,7 @@ Pushpop.SelectInputTableViewCell.prototype.getHtml = function() {
 
 Pushpop.SelectInputTableViewCell.prototype.getAccessoryType = function() { return this._accessoryType || Pushpop.TableViewCell.AccessoryType.DisclosureIndicator; };
 
-Pushpop.SelectInputTableViewCell.prototype.setSelected = function(value) {
-  
-  // Call the "super" method.
-  Pushpop.TableViewCell.prototype.setSelected.apply(this, arguments);
-  
-  if (!value) return;
-  
+Pushpop.SelectInputTableViewCell.prototype.didReceiveTap = function() {
   var tableView = this.tableView;
   
   var viewStack = tableView.getViewStack();
@@ -1921,13 +1912,7 @@ Pushpop.DateInputTableViewCell.prototype.getHtml = function() {
 
 Pushpop.DateInputTableViewCell.prototype.getAccessoryType = function() { return this._accessoryType || Pushpop.TableViewCell.AccessoryType.DisclosureIndicator; };
 
-Pushpop.DateInputTableViewCell.prototype.setSelected = function(value) {
-  
-  // Call the "super" method.
-  Pushpop.TableViewCell.prototype.setSelected.apply(this, arguments);
-  
-  if (!value) return;
-  
+Pushpop.DateInputTableViewCell.prototype.didReceiveTap = function() {
   var tableView = this.tableView;
   
   var viewStack = tableView.getViewStack();
@@ -2048,13 +2033,7 @@ Pushpop.TimeInputTableViewCell.prototype.getHtml = function() {
 
 Pushpop.TimeInputTableViewCell.prototype.getAccessoryType = function() { return this._accessoryType || Pushpop.TableViewCell.AccessoryType.DisclosureIndicator; };
 
-Pushpop.TimeInputTableViewCell.prototype.setSelected = function(value) {
-  
-  // Call the "super" method.
-  Pushpop.TableViewCell.prototype.setSelected.apply(this, arguments);
-  
-  if (!value) return;
-  
+Pushpop.TimeInputTableViewCell.prototype.didReceiveTap = function() {
   var tableView = this.tableView;
   
   var viewStack = tableView.getViewStack();
