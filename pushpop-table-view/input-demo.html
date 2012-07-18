@@ -19,6 +19,9 @@
 	  
 	  $(function() {
 	    inputTableView = $('#input-table-view')[0].tableView;
+	    inputTableView.$bind(Pushpop.TableView.EventType.DidChangeValueForItemInDataSource, function(evt) {
+	      console.log(evt);
+	    });
 	    
 	    var $rootNavigationBar = $('#root-navigation-bar');
 	    $rootNavigationBar.delegate('a', 'click', function(evt) {
