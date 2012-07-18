@@ -127,10 +127,6 @@ Pushpop.TableView = function TableView(element) {
     if (firstCellElement) firstCellElement.tableViewCell.setIndex(0);
   }).bind(ScrollKit.ScrollView.EventType.DidScrollToTop, function(evt) { self.reloadData(); });
   
-  // Reload the data when this table view's view has been presented.
-  var view = this.getView();
-  if (view) view.$bind(Pushpop.EventType.DidPresentView, function(evt) { self.reloadData(); });
-  
   // Handle mouse/touch events to allow the user to tap accessory buttons.
   var isPendingAccessoryButtonTap = false;
 
