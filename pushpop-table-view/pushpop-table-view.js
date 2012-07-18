@@ -774,9 +774,7 @@ Pushpop.TableView.prototype = {
   @constructor
 */
 Pushpop.TableViewDataSource = function TableViewDataSource(dataSet, defaultReuseIdentifier) {
-  if (!dataSet || !(dataSet instanceof Array)) return;
-  
-  this.setDataSet(dataSet);
+  this.setDataSet(dataSet || []);
   this.setDefaultReuseIdentifier(defaultReuseIdentifier || this.getDefaultReuseIdentifier());
 };
 
@@ -1186,31 +1184,7 @@ Pushpop.TableViewDataSource.prototype = {
     this data source.
     @type Object
   */
-  getItemAtIndex: function(index) {
-    var item = this.getDataSet()[index];
-    if (item && (!item.setValueForKey || (typeof item.setValueForKey !== 'function'))) {
-      var self = this;
-      
-      item.setValueForKey = function(key, value) {
-        var previousValue = item[key];
-        if (previousValue === value) return;
-        
-        item[key] = value;
-        
-        var tableView = self.getTableView();
-        tableView.$trigger($.Event(Pushpop.TableView.EventType.DidChangeValueForItemInDataSource, {
-          tableView: tableView,
-          dataSource: self,
-          item: item,
-          key: key,
-          value: value,
-          previousValue: previousValue
-        }));
-      };
-    }
-    
-    return item;
-  },
+  getItemAtIndex: function(index) { return this.getDataSet()[index]; },
   
   /**
     Returns the number of filtered items contained within this data source.
@@ -1237,30 +1211,25 @@ Pushpop.TableViewDataSource.prototype = {
     this data source.
     @type Object
   */
-  getFilteredItemAtIndex: function(index) {
-    var item = this.getFilteredDataSet()[index];
-    if (item && (!item.setValueForKey || (typeof item.setValueForKey !== 'function'))) {
-      var self = this;
-      
-      item.setValueForKey = function(key, value) {
-        var previousValue = item[key];
-        if (previousValue === value) return;
-        
-        item[key] = value;
-        
-        var tableView = self.getTableView();
-        tableView.$trigger($.Event(Pushpop.TableView.EventType.DidChangeValueForItemInDataSource, {
-          tableView: tableView,
-          dataSource: self,
-          item: item,
-          key: key,
-          value: value,
-          previousValue: previousValue
-        }));
-      };
-    }
+  getFilteredItemAtIndex: function(index) { return this.getFilteredDataSet()[index]; },
+  
+  setValueForKeyOnItem: function(item, key, value) {
+    if (!item || !key) return;
     
-    return item;
+    var previousValue = item[key];
+    if (previousValue === value) return;
+    
+    item[key] = value;
+    
+    var tableView = this.getTableView();
+    tableView.$trigger($.Event(Pushpop.TableView.EventType.DidChangeValueForItemInDataSource, {
+      tableView: tableView,
+      dataSource: this,
+      item: item,
+      key: key,
+      value: value,
+      previousValue: previousValue
+    }));
   },
   
   _filterFunction: function(regExp, item) {
@@ -1545,30 +1514,7 @@ Pushpop.TableViewCell.prototype = {
     Returns the data of the item in the data source that corresponds to this cell.
     @type Object
   */
-  getData: function() {
-    var data = this._data;
-    if (data && (!data.setValueForKey || (typeof data.setValueForKey !== 'function'))) {
-      var tableView = this.tableView;
-      
-      data.setValueForKey = function(key, value) {
-        var previousValue = data[key];
-        if (previousValue === value) return;
-        
-        data[key] = value;
-        
-        tableView.$trigger($.Event(Pushpop.TableView.EventType.DidChangeValueForItemInDataSource, {
-          tableView: tableView,
-          dataSource: tableView.getDataSource(),
-          item: data,
-          key: key,
-          value: value,
-          previousValue: previousValue
-        }));
-      };
-    }
-    
-    return data;
-  },
+  getData: function() { return this._data; },
   
   /**
     Sets the data of this cell that corresponds to an item in the data source.
@@ -1649,7 +1595,9 @@ Pushpop.TableViewCell.prototype = {
   */
   setValue: function(value) {
     var data = this.getData();
-    if (data) data.setValueForKey('value', value);
+    var dataSource = this.tableView.getDataSource();
+    dataSource.setValueForKeyOnItem(data, 'value', value);
+    
     this._value = value;
     this.draw();
   },
@@ -1792,7 +1740,9 @@ Pushpop.InlineTextInputTableViewCell = function InlineTextInputTableViewCell(reu
   this.$element.delegate('input', 'keyup change', function(evt) {
     var data = self.getData();
     var value = $(this).val();
-    if (data) data.setValueForKey('value', value);
+    var dataSource = self.tableView.getDataSource();
+    dataSource.setValueForKeyOnItem(data, 'value', value);
+    
     this._value = value;
   });
 };
@@ -1960,7 +1910,8 @@ Pushpop.SelectInputTableViewCell.prototype.setValue = function(value) {
       }
     }
     
-    data.setValueForKey('value', value);
+    var dataSource = this.tableView.getDataSource();
+    dataSource.setValueForKeyOnItem(data, 'value', value);
   }
   
   this._value = value;

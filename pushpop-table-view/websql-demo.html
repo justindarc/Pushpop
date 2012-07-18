@@ -46,7 +46,7 @@
             dataSource = new Pushpop.TableViewDataSource();
             dataSource.getNumberOfRows = function() { return numberOfRows; };
             dataSource.getCellForRowAtIndex = function(tableView, index) {
-              var cell = tableView.dequeueReusableCellWithIdentifier('pp-table-view-cell-style-default');
+              var cell = tableView.dequeueReusableCellWithIdentifier('pp-table-view-cell-default');
               var searchBar = tableView.getSearchBar();
               var searchString = (searchBar) ? '%' + searchBar.getSearchString() + '%' : '%%';
               
