@@ -279,7 +279,10 @@ Pushpop.TableView.EventType = {
   DidSelectRowAtIndex: 'Pushpop:TableView:DidSelectRowAtIndex',
   DidDeselectRowAtIndex: 'Pushpop:TableView:DidDeselectRowAtIndex',
   AccessoryButtonTappedForRowWithIndex: 'Pushpop:TableView:AccessoryButtonTappedForRowWithIndex',
-  EditingAccessoryButtonTappedForRowWithIndex: 'Pushpop:TableView:EditingAccessoryButtonTappedForRowWithIndex'
+  EditingAccessoryButtonTappedForRowWithIndex: 'Pushpop:TableView:EditingAccessoryButtonTappedForRowWithIndex',
+  DidReloadData: 'Pushpop:TableView:DidReloadData',
+  DidChangeValueForItemInDataSource: 'Pushpop:TableView:DidChangeValueForItemInDataSource',
+  DidChangeDataSource: 'Pushpop:TableView:DidChangeDataSource'
 };
 
 Pushpop.TableView._reusableCellPrototypes = {};
@@ -601,6 +604,8 @@ Pushpop.TableView.prototype = {
     }
     
     this.resetScrollView();
+    
+    this.$trigger($.Event(Pushpop.TableView.EventType.DidReloadData, { tableView: this }));
   },
   
   _parentTableView: null,
@@ -645,8 +650,8 @@ Pushpop.TableView.prototype = {
   */
   triggerEventOnParentTableViews: function(evt, includeSelf) {
     var parentTableViews = this.getParentTableViews();
-    for (var i = 0, length = parentTableViews.length; i < length; i++) parentTableViews[i].$element.trigger(evt);
-    if (includeSelf) this.$element.trigger(evt);
+    for (var i = 0, length = parentTableViews.length; i < length; i++) parentTableViews[i].$trigger(evt);
+    if (includeSelf) this.$trigger(evt);
   },
   
   _searchBar: null,
@@ -678,8 +683,17 @@ Pushpop.TableView.prototype = {
     to this TableView.
   */
   setDataSource: function(dataSource) {
+    var previousDataSource = this.getDataSource();
+    
     this._dataSource = dataSource;
     dataSource.setTableView(this);
+    
+    this.$trigger($.Event(Pushpop.TableView.EventType.DidChangeDataSource, {
+      tableView: this,
+      dataSource: dataSource,
+      previousDataSource: previousDataSource
+    }));
+    
     this.reloadData();
   },
   
@@ -1172,7 +1186,31 @@ Pushpop.TableViewDataSource.prototype = {
     this data source.
     @type Object
   */
-  getItemAtIndex: function(index) { return this.getDataSet()[index]; },
+  getItemAtIndex: function(index) {
+    var item = this.getDataSet()[index];
+    if (item && (!item.setValueForKey || (typeof item.setValueForKey !== 'function'))) {
+      var self = this;
+      
+      item.setValueForKey = function(key, value) {
+        var previousValue = item[key];
+        if (previousValue === value) return;
+        
+        item[key] = value;
+        
+        var tableView = self.getTableView();
+        tableView.$trigger($.Event(Pushpop.TableView.EventType.DidChangeValueForItemInDataSource, {
+          tableView: tableView,
+          dataSource: self,
+          item: item,
+          key: key,
+          value: value,
+          previousValue: previousValue
+        }));
+      };
+    }
+    
+    return item;
+  },
   
   /**
     Returns the number of filtered items contained within this data source.
@@ -1199,7 +1237,31 @@ Pushpop.TableViewDataSource.prototype = {
     this data source.
     @type Object
   */
-  getFilteredItemAtIndex: function(index) { return this.getFilteredDataSet()[index]; },
+  getFilteredItemAtIndex: function(index) {
+    var item = this.getFilteredDataSet()[index];
+    if (item && (!item.setValueForKey || (typeof item.setValueForKey !== 'function'))) {
+      var self = this;
+      
+      item.setValueForKey = function(key, value) {
+        var previousValue = item[key];
+        if (previousValue === value) return;
+        
+        item[key] = value;
+        
+        var tableView = self.getTableView();
+        tableView.$trigger($.Event(Pushpop.TableView.EventType.DidChangeValueForItemInDataSource, {
+          tableView: tableView,
+          dataSource: self,
+          item: item,
+          key: key,
+          value: value,
+          previousValue: previousValue
+        }));
+      };
+    }
+    
+    return item;
+  },
   
   _filterFunction: function(regExp, item) {
     
@@ -1483,7 +1545,30 @@ Pushpop.TableViewCell.prototype = {
     Returns the data of the item in the data source that corresponds to this cell.
     @type Object
   */
-  getData: function() { return this._data; },
+  getData: function() {
+    var data = this._data;
+    if (data && (!data.setValueForKey || (typeof data.setValueForKey !== 'function'))) {
+      var tableView = this.tableView;
+      
+      data.setValueForKey = function(key, value) {
+        var previousValue = data[key];
+        if (previousValue === value) return;
+        
+        data[key] = value;
+        
+        tableView.$trigger($.Event(Pushpop.TableView.EventType.DidChangeValueForItemInDataSource, {
+          tableView: tableView,
+          dataSource: tableView.getDataSource(),
+          item: data,
+          key: key,
+          value: value,
+          previousValue: previousValue
+        }));
+      };
+    }
+    
+    return data;
+  },
   
   /**
     Sets the data of this cell that corresponds to an item in the data source.
@@ -1564,7 +1649,7 @@ Pushpop.TableViewCell.prototype = {
   */
   setValue: function(value) {
     var data = this.getData();
-    if (data) data.value = value;
+    if (data) data.setValueForKey('value', value);
     this._value = value;
     this.draw();
   },
@@ -1707,7 +1792,7 @@ Pushpop.InlineTextInputTableViewCell = function InlineTextInputTableViewCell(reu
   this.$element.delegate('input', 'keyup change', function(evt) {
     var data = self.getData();
     var value = $(this).val();
-    if (data) data.value = value;
+    if (data) data.setValueForKey('value', value);
     this._value = value;
   });
 };
@@ -1875,7 +1960,7 @@ Pushpop.SelectInputTableViewCell.prototype.setValue = function(value) {
       }
     }
     
-    data.value = value;
+    data.setValueForKey('value', value);
   }
   
   this._value = value;
