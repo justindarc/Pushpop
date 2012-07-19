@@ -59,7 +59,8 @@ body {
   display: block;
 }
 
-div.pp-navigationbar-buttons {
+/* TODO: REMOVE **DEPRECATED** */
+.pp-navigationbar-buttons {
   display: none;
 }
 
@@ -88,6 +89,93 @@ div.pp-navigationbar-buttons {
 }
 
 /**
+  Pushpop.NavigationBar
+  =====================
+  pp-navigation-bar
+*/
+.pp-navigation-bar {
+  background: #000; /* Old browsers */
+  background: -moz-linear-gradient(top,  #636363 0%, #202020 50%, #000 51%, #000 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#636363), color-stop(50%,#202020), color-stop(51%,#000), color-stop(100%,#000)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #636363 0%,#202020 50%,#000 51%,#000 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #636363 0%,#202020 50%,#000 51%,#000 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #636363 0%,#202020 50%,#000 51%,#000 100%); /* IE10+ */
+  background: linear-gradient(top,  #636363 0%,#202020 50%,#000 51%,#000 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#636363', endColorstr='#000',GradientType=0 ); /* IE6-9 */
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 1em;
+  border-top: 1px solid rgba(255, 255, 255, 0.6);
+  border-bottom: 1px solid #000;
+  position: absolute;
+  padding: 0 0.25em;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: auto;
+  height: 42px;
+  z-index: 999999;
+  -webkit-box-shadow: inset 0 -1px 0 0 rgba(255, 255, 255, 0.2);
+  -moz-box-shadow: inset 0 -1px 0 0 rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 -1px 0 0 rgba(255, 255, 255, 0.2);
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  -o-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  -o-transform: translate(0, 0);
+  transform: translate(0, 0);
+}
+
+.pp-navigation-bar ~ .pp-view {
+  top: 44px;
+}
+
+.pp-navigation-bar-tap-to-top-target {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  z-index: 2;
+}
+
+.pp-navigation-bar-title {
+  display: inline-block;
+  position: absolute;
+  width: auto;
+  height: auto;
+  top: 0.1em;
+  left: 3em;
+  right: 3em;
+  font-size: 1.6em;
+  font-weight: bold;
+  line-height: 1.7em;
+  margin: 0;
+  padding: 0;
+  color: #fff;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  text-rendering: optimizelegibility;
+  text-shadow: 0 -1px 1px #000;
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.pp-navigation-bar-buttons {
+  display: none;
+}
+
+/**
   Pushpop.Button
   ==============
   pp-button
@@ -110,10 +198,10 @@ div.pp-navigationbar-buttons {
 	font-weight: bold;
 	line-height: 1.4em;
 	padding: 0.55em 0.9em 0.5em;
-	margin: 0.5em;
+	margin: 0.5em 0.25em;
 	min-width: 2.5em;
-	opacity: 1;
 	outline: none;
+	overflow: hidden;
 	text-align: center;
 	text-decoration: none;
 	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.75);
@@ -124,11 +212,13 @@ div.pp-navigationbar-buttons {
 	-webkit-box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.3), inset 0 1px 0 0 rgba(0, 0, 0, 0.1);
   -moz-box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.3), inset 0 1px 0 0 rgba(0, 0, 0, 0.1);
   box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.3), inset 0 1px 0 0 rgba(0, 0, 0, 0.1);
-	-webkit-transition: opacity 0.2s ease;
-	-moz-transition: opacity 0.2s ease;
-	-ms-transition: opacity 0.2s ease;
-	-o-transition: opacity 0.2s ease;
-	transition: opacity 0.2s ease;
+  visibility: visible;
+  opacity: 1;
+  -webkit-transition: opacity 0.2s linear 0.1s;
+  -moz-transition: opacity 0.2s linear 0.1s;
+  -ms-transition: opacity 0.2s linear 0.1s;
+  -o-transition: opacity 0.2s linear 0.1s;
+  transition: opacity 0.2s linear 0.1s;
 }
 
 .pp-button:hover {
@@ -145,8 +235,6 @@ div.pp-navigationbar-buttons {
   background: linear-gradient(top,  #7c87a4 0%,#3a4e78 50%,#253c6a 51%,#263e6c 100%); /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7c87a4', endColorstr='#263e6c',GradientType=0 ); /* IE6-9 */
 }
-
-.pp-button + .pp-button { margin-left: 0; } /* Correct the spacing between consecutive buttons. */
 
 .pp-button-style-black {
   background: #2d2d2d; /* Old browsers */
@@ -236,6 +324,21 @@ div.pp-navigationbar-buttons {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a65960', endColorstr='#8d131e',GradientType=0 ); /* IE6-9 */
 }
 
+.pp-button.pp-hidden {
+  visibility: hidden;
+  border-width: 0;
+  opacity: 0;
+  width: 0;
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  -webkit-transition: visibility 0s linear 0.3s, border-width 0s linear 0.3s, width 0s linear 0.3s, min-width 0s linear 0.3s, padding 0s linear 0.3s, margin 0s linear 0.3s, opacity 0.2s linear;
+  -moz-transition: visibility 0s linear 0.3s, border-width 0s linear 0.3s, width 0s linear 0.3s, min-width 0s linear 0.3s, padding 0s linear 0.3s, margin 0s linear 0.3s, opacity 0.2s linear;
+  -ms-transition: visibility 0s linear 0.3s, border-width 0s linear 0.3s, width 0s linear 0.3s, min-width 0s linear 0.3s, padding 0s linear 0.3s, margin 0s linear 0.3s, opacity 0.2s linear;
+  -o-transition: visibility 0s linear 0.3s, border-width 0s linear 0.3s, width 0s linear 0.3s, min-width 0s linear 0.3s, padding 0s linear 0.3s, margin 0s linear 0.3s, opacity 0.2s linear;
+  transition: visibility 0s linear 0.3s, border-width 0s linear 0.3s, width 0s linear 0.3s, min-width 0s linear 0.3s, padding 0s linear 0.3s, margin 0s linear 0.3s, opacity 0.2s linear;
+}
+
 /**
   Pushpop.Switch
   ==============
@@ -267,7 +370,7 @@ div.pp-navigationbar-buttons {
   appearance: none;
 }
 
-.pp-switch > .pp-switch-inner {
+.pp-switch-inner {
   position: static;
   width: 100%;
   height: 100%;
@@ -280,7 +383,7 @@ div.pp-navigationbar-buttons {
   box-shadow: 0 0 0 0.1em rgba(0, 0, 0, 0.2);
 }
 
-.pp-switch > .pp-switch-inner > .pp-switch-slider {
+.pp-switch-slider {
   display: block;
   width: 10.2em;
   height: 100%;
@@ -292,7 +395,7 @@ div.pp-navigationbar-buttons {
   transition: margin-left 0.2s ease;
 }
 
-.pp-switch > .pp-switch-inner > .pp-switch-slider::after {
+.pp-switch-slider::after {
   background: -moz-linear-gradient(top,  rgba(255,255,255,0.2) 25%, rgba(255,255,255,0.5) 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(25%,rgba(255,255,255,0.2)), color-stop(100%,rgba(255,255,255,0.5))); /* Chrome,Safari4+ */
   background: -webkit-linear-gradient(top,  rgba(255,255,255,0.2) 25%,rgba(255,255,255,0.5) 100%); /* Chrome10+,Safari5.1+ */
@@ -316,8 +419,7 @@ div.pp-navigationbar-buttons {
   margin-left: -0.1em;
 }
 
-.pp-switch > .pp-switch-inner > .pp-switch-slider > .pp-switch-on,
-.pp-switch > .pp-switch-inner > .pp-switch-slider > .pp-switch-off {
+.pp-switch-on, .pp-switch-off {
   display: block;
   float: left;
   position: static;
@@ -332,7 +434,7 @@ div.pp-navigationbar-buttons {
   box-shadow: inset 0 0.15em 0.2em 0 rgba(0, 0, 0, 0.25);
 }
 
-.pp-switch > .pp-switch-inner > .pp-switch-slider > .pp-switch-on {
+.pp-switch-on {
   background: #007fea;
   color: #fff;
   padding: 0 0.75em 0 0.25em;
@@ -345,7 +447,7 @@ div.pp-navigationbar-buttons {
   border-bottom-left-radius: 2em;
 }
 
-.pp-switch > .pp-switch-inner > .pp-switch-slider > .pp-switch-off {
+.pp-switch-off {
   background: #e3e3e3;
   color: #7f7f7f;
   padding: 0 0.25em 0 0.75em;
@@ -358,7 +460,7 @@ div.pp-navigationbar-buttons {
   border-bottom-right-radius: 2em;
 }
 
-.pp-switch > .pp-switch-inner > .pp-switch-slider > .pp-switch-handle {
+.pp-switch-handle {
   background: rgb(211,211,211); /* Old browsers */
   background: -moz-linear-gradient(top,  rgba(211,211,211,1) 0%, rgba(255,255,255,1) 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(211,211,211,1)), color-stop(100%,rgba(255,255,255,1))); /* Chrome,Safari4+ */

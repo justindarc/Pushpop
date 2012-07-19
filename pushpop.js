@@ -476,7 +476,32 @@ Pushpop.ViewStack.prototype = {
     if (beforePushCallback && typeof beforePushCallback === 'function') beforePushCallback(tableView);
     
     this.push(view, transitionOrCallback, callback);
-  }
+  },
+  
+	/**
+	  Convenience accessor for jQuery's .bind() method.
+	*/
+	$bind: function() { this.$element.bind.apply(this.$element, arguments); },
+	
+	/**
+	  Convenience accessor for jQuery's .unbind() method.
+	*/
+	$unbind: function() { this.$element.unbind.apply(this.$element, arguments); },
+	
+	/**
+	  Convenience accessor for jQuery's .delegate() method.
+	*/
+	$delegate: function() { this.$element.delegate.apply(this.$element, arguments); },
+	
+	/**
+	  Convenience accessor for jQuery's .undelegate() method.
+	*/
+	$undelegate: function() { this.$element.undelegate.apply(this.$element, arguments); },
+	
+	/**
+	  Convenience accessor for jQuery's .trigger() method.
+	*/
+	$trigger: function() { this.$element.trigger.apply(this.$element, arguments); }
 };
 
 /**
@@ -511,7 +536,7 @@ Pushpop.View.prototype = {
   $element: null,
   
   transition: null,
-  title: null,
+  
   $navbarButtons: null,
   hideNavBackButton: false,
   
@@ -524,6 +549,10 @@ Pushpop.View.prototype = {
     this.transition = value;
     this.$element.addClass(value);
   },
+  
+  title: null,
+  
+  getTitle: function() { return this.title; },
   
   /**
     Sets the title for this view.
@@ -549,6 +578,8 @@ Pushpop.View.prototype = {
     @type Pushpop.ViewStack
   */
   getViewStack: function() { return Pushpop.getViewStackForElement(this.$element); },
+  
+  getScrollView: function() { return this.element.scrollView || null; },
   
   /**
     Forces a reflow in the browser for this view.
@@ -585,9 +616,317 @@ Pushpop.View.prototype = {
 	$trigger: function() { this.$element.trigger.apply(this.$element, arguments); }
 };
 
+/**
+  Creates a new NavigationBar.
+  @param {HTMLDivElement} element The DIV element to initialize as a new NavigationBar.
+  @constructor
+*/
+Pushpop.NavigationBar = function NavigationBar(element) {
+  if (!element) return;
+  
+  var $element = this.$element = $(element);
+  var element = this.element = $element[0];
+  
+  var navigationBar = element.navigationBar;
+  if (navigationBar) return navigationBar;
+  
+  var self = element.navigationBar = this;
+  
+  // Set up the title container.
+  this._$titleElement = $('<h1 class="pp-navigation-bar-title"/>').appendTo($element);
+  
+  // Set up the back button.
+  this.setBackBarButtonItem(new Pushpop.BarButtonItem('Back', this, function(barButtonItem) {
+    var bar = barButtonItem.getBar();
+    if (!bar) return;
+    
+    var viewStack = bar.getViewStack();
+    if (viewStack) viewStack.pop();
+  }));
+  
+  // Prevent dragging of the navigation bar.
+  $element.bind('touchmove', function(evt) { evt.preventDefault(); });
+  
+  // Handle the "tap-to-top" action (automatically scroll to the top of the
+  // scroll view when the top of the navigation bar is tapped).
+  var tapToTop = $element.attr('data-tap-to-top') || 'false';
+  tapToTop = this. _tapToTop = tapToTop !== 'false';
+  
+  $('<div class="pp-navigation-bar-tap-to-top-target"/>').appendTo($element).bind('click', function(evt) {
+    if (!self.getTapToTop()) return;
+    
+    var activeView = self.getActiveView();
+    if (!activeView) return;
+    
+    var scrollView = activeView.getScrollView();
+    if (scrollView && !scrollView.isScrolling) scrollView.scrollToTop();
+  });
+  
+  // Handle view changes for the navigation bar's view stack.
+  var viewStack = this.getViewStack();
+  if (viewStack) {
+    viewStack.$bind(Pushpop.EventType.WillPresentView, function(evt) {
+      var view = evt.view;
+      self.setTitle(view.getTitle());
+      
+      var backBarButtonItem = self.getBackBarButtonItem();
+      if (backBarButtonItem) backBarButtonItem.setHidden(viewStack.containsView(view) && viewStack.views.length === 1);
+    });
+  }
+  
+  // Set up the navigation bar for the initial active view.
+  var activeView = this.getActiveView();
+  if (activeView) {
+    this.setTitle(activeView.getTitle());
+  }
+};
+
+/**
+  Style types for Pushpop.NavigationBar.
+*/
+Pushpop.NavigationBar.BarStyleType = {
+  Default: 'pp-navigation-bar-style-default',
+  Black: 'pp-navigation-bar-style-black'
+};
+
+Pushpop.NavigationBar.prototype = {
+  constructor: Pushpop.NavigationBar,
+  
+  element: null,
+  $element: null,
+  
+  _$titleElement: null,
+  
+  _title: '',
+  
+  /**
+  
+  */
+  getTitle: function() { return this._title; },
+  
+  /**
+  
+  */
+  setTitle: function(title) { this._$titleElement.html(_title = title || ''); },
+  
+  _tapToTop: false,
+  
+  /**
+  
+  */
+  getTapToTop: function() { return this._tapToTop; },
+  
+  /**
+  
+  */
+  setTapToTop: function(tapToTop) { this._tapToTop = tapToTop; },
+  
+  _backBarButtonItem: null,
+  
+  /**
+  
+  */
+  getBackBarButtonItem: function() { return this._backBarButtonItem; },
+  
+  /**
+  
+  */
+  setBackBarButtonItem: function(backBarButtonItem) {
+    this.$element.append((this._backBarButtonItem = backBarButtonItem).$element);
+    
+    var viewStack = this.getViewStack();
+    if (viewStack) backBarButtonItem.setHidden(viewStack.views.length === 1);
+    
+    var barStyle = this.getBarStyle();
+    if (barStyle === Pushpop.NavigationBar.BarStyleType.Default) {
+      backBarButtonItem.setButtonStyleType(Pushpop.ButtonStyleType.Default);
+    } else if (barStyle === Pushpop.NavigationBar.BarStyleType.Black) {
+      backBarButtonItem.setButtonStyleType(Pushpop.ButtonStyleType.Black);
+    }
+  },
+  
+  _barStyle: Pushpop.NavigationBar.BarStyleType.Black,
+  
+  /**
+  
+  */
+  getBarStyle: function() { return this._barStyle; },
+  
+  /**
+  
+  */
+  setBarStyle: function(barStyle) {
+    this._barStyle = barStyle;
+  },
+  
+  _translucent: false,
+  
+  /**
+  
+  */
+  getTranslucent: function() { return this._translucent; },
+  
+  /**
+  
+  */
+  setTranslucent: function(translucent) {
+    this._translucent = translucent;
+  },
+  
+  _tintColor: null,
+  
+  /**
+  
+  */
+  getTintColor: function() { return this._tintColor; },
+  
+  /**
+  
+  */
+  setTintColor: function(tintColor) {
+    this._tintColor = tintColor;
+  },
+  
+  /**
+    Returns the view stack that contains this navigation bar.
+    @description NOTE: If this navigation bar is not contained within a view stack,
+    this method will return null.
+    @type Pushpop.ViewStack
+  */
+  getViewStack: function() {
+    var parents = this.$element.parents();
+    var viewStack;
+    for (var i = 0, length = parents.length; i < length; i++) if (viewStack = parents[i].viewStack) return viewStack;
+    return null;
+  },
+  
+  /**
+    Returns the active view that this navigation bar currently represents.
+    @description NOTE: If this navigation bar is not contained within a view stack
+    or there is no active view, this method will return null.
+    @type Pushpop.View
+  */
+  getActiveView: function() {
+    var viewStack = this.getViewStack();
+    return (viewStack) ? viewStack.getActiveView() : null;
+  }
+};
+
+/**
+  Creates a new BarButtonItem.
+  @param {HTMLAnchorElement} element The A element to initialize as a new BarButtonItem.
+  @constructor
+*/
+Pushpop.BarButtonItem = function BarButtonItem(elementOrTitle, bar, action) {
+  var $element = this.$element = (!elementOrTitle || typeof elementOrTitle === 'string') ?
+    $('<a class="pp-button">' + (elementOrTitle || '') + '</a>') : $(elementOrTitle);
+  
+  var element = this.element = $element[0];
+  
+  var barButtonItem = element.barButtonItem;
+  if (barButtonItem) return barButtonItem;
+  
+  var self = element.barButtonItem = this;
+  
+  this.setTitle($element.html());
+  this.setBar(bar || null);
+  this.setAction(action || null);
+  
+  $element.bind('click', function(evt) {
+    var action = self.getAction();
+    if (!action) return;
+    
+    if (typeof action === 'string') window[action](self);
+    else if (typeof action === 'function') action(self);
+  });
+};
+
+/**
+  Style types for Pushpop.BarButtonItem.
+*/
+Pushpop.ButtonStyleType = {
+  Default: 'pp-button-style-default',
+  Black: 'pp-button-style-black',
+  Blue: 'pp-button-style-blue',
+  Green: 'pp-button-style-green',
+  Red: 'pp-button-style-red',
+};
+
+Pushpop.BarButtonItem.prototype = {
+  constructor: Pushpop.BarButtonItem,
+  
+  element: null,
+  $element: null,
+  
+  _title: '',
+  
+  /**
+  
+  */
+  getTitle: function() { return this._title; },
+  
+  /**
+  
+  */
+  setTitle: function(title) { this.$element.html(_title = title || ''); },
+  
+  _bar: null,
+  
+  /**
+  
+  */
+  getBar: function() { return this._bar; },
+  
+  /**
+  
+  */
+  setBar: function(bar) { this._bar = bar; },
+  
+  _action: null,
+  
+  /**
+  
+  */
+  getAction: function() { return this._action; },
+  
+  /**
+  
+  */
+  setAction: function(action) { this._action = action; },
+  
+  _buttonStyleType: Pushpop.ButtonStyleType.Default,
+  
+  getButtonStyleType: function() { return this._buttonStyleType; },
+  
+  setButtonStyleType: function(buttonStyleType) {
+    var $element = this.$element;
+    for (var i in Pushpop.ButtonStyleType) $element.removeClass(Pushpop.ButtonStyleType[i]);
+    $element.addClass(this._buttonStyleType = buttonStyleType);
+  },
+  
+  _hidden: false,
+  
+  /**
+  
+  */
+  getHidden: function() { return this._hidden; },
+  
+  /**
+  
+  */
+  setHidden: function(hidden) {
+    if (this._hidden = hidden) {
+      this.$element.addClass('pp-hidden');
+    } else {
+      this.$element.removeClass('pp-hidden');
+    }
+  }
+};
+
 $(function() {
   $('.pp-view').each(function(index, element) { new Pushpop.View(element); });
   $('.pp-view-stack').each(function(index, element) { new Pushpop.ViewStack(element); });
+  $('.pp-navigation-bar').each(function(index, element) { new Pushpop.NavigationBar(element); });
   
   $(document).bind('touchstart', function() {});
   

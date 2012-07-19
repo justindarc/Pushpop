@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<title>Pushpop NavigationBar Demo</title>
+	<link rel="stylesheet" href="externals/scrollkit/scrollkit.css">
+	<link rel="stylesheet" href="pushpop.css">
+	<script src="jquery-1.7.2.js"></script>
+	<script src="externals/scrollkit/scrollkit.js"></script>
+	<script src="pushpop.js"></script>
+	<script>
+    
+	</script>
+</head>
+<body>
+  <div class="pp-view-stack" id="root-view-stack">
+    <div class="pp-navigation-bar" data-tap-to-top="true"></div>
+    <div class="pp-view sk-scroll-view" id="root-view" data-view-title="NavigationBar Demo" data-always-bounce-vertical="true">
+      <a class="pp-button pp-push" href="#other-view">Push Other View</a>
+    </div>
+    <div class="pp-view sk-scroll-view" id="other-view" data-view-title="Other View" data-always-bounce-vertical="true">
+      <a class="pp-button pp-push" href="#yet-another-view">Push Yet Another View</a>
+      <p>This is some other view.</p>
+    </div>
+    <div class="pp-view sk-scroll-view" id="yet-another-view" data-view-title="Yet Another View" data-always-bounce-vertical="true">
+      <a class="pp-button pp-push" href="#root-view">Push Root View Again</a>
+      <p>This is yet another view.</p>
+    </div>
+  </div>
+</body>
+</html>
