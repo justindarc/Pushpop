@@ -460,15 +460,17 @@ Pushpop.TableView.prototype = {
       tableViewCell = $cells[i].tableViewCell;
       if (tableViewCell.getIndex() === index) {
         tableViewCell.setSelected(true);
+        tableViewCell.forceReflow();
         break;
       }
     }
+    
+    var self = this;
     
     // If this row contains a child data source, automatically push a new dynamic table view with it.
     if (dataSource.rowHasChildDataSourceAtIndex(index)) {
       var childDataSource = dataSource.getChildDataSourceForRowAtIndex(index);
       var viewStack = this.getViewStack();
-      var self = this;
       
       if (childDataSource && viewStack) {
         viewStack.pushNewTableView(function(childTableView) {
@@ -478,24 +480,28 @@ Pushpop.TableView.prototype = {
         });
         
         // Trigger the DidSelectRowAtIndex event on this and all parent table view elements.
-        this.triggerEventOnParentTableViews($.Event(Pushpop.TableView.EventType.DidSelectRowAtIndex, {
-          tableView: this,
-          index: index,
-          item: dataSource.getItemAtIndex(index),
-          hasChildDataSource: true
-        }), true);
+        window.setTimeout(function() {
+          self.triggerEventOnParentTableViews($.Event(Pushpop.TableView.EventType.DidSelectRowAtIndex, {
+            tableView: self,
+            index: index,
+            item: dataSource.getItemAtIndex(index),
+            hasChildDataSource: true
+          }), true);
+        }, 1);
         
         return;
       }
     }
     
     // Trigger the DidSelectRowAtIndex event on this and all parent table view elements.
-    this.triggerEventOnParentTableViews($.Event(Pushpop.TableView.EventType.DidSelectRowAtIndex, {
-      tableView: this,
-      index: index,
-      item: dataSource.getItemAtIndex(index),
-      hasChildDataSource: false
-    }), true);
+    window.setTimeout(function() {
+      self.triggerEventOnParentTableViews($.Event(Pushpop.TableView.EventType.DidSelectRowAtIndex, {
+        tableView: self,
+        index: index,
+        item: dataSource.getItemAtIndex(index),
+        hasChildDataSource: false
+      }), true);
+    }, 1);
   },
   
   /**
@@ -1462,6 +1468,8 @@ Pushpop.TableViewCell.prototype = {
   draw: function() {
     this.$element.html(this.getEditingAccessoryHtml() + this.getHtml() + this.getAccessoryHtml());
   },
+  
+  forceReflow: function() { this.element.offsetWidth; },
   
   /**
     Performs any necessary actions when this cell has been tapped.
