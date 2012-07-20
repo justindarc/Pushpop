@@ -85,7 +85,20 @@ Pushpop.ModalViewStack.prototype.constructor = Pushpop.ModalViewStack;
   transition.
 */
 Pushpop.ModalViewStack.prototype.push = function(view, transitionOrCallback, callback) {
-  if (this.getHidden()) this.present();
+  if (this.getHidden()) {
+    var activeView = this.getActiveView();
+    activeView.$trigger($.Event(Pushpop.EventType.WillPresentView, {
+      view: activeView,
+      action: 'modal-push'
+    }));
+    
+    this.present();
+    
+    activeView.$trigger($.Event(Pushpop.EventType.DidPresentView, {
+      view: activeView,
+      action: 'modal-push'
+    }));
+  }
   
   // Call the "super" method.
   Pushpop.ViewStack.prototype.push.apply(this, arguments);
@@ -112,7 +125,20 @@ Pushpop.ModalViewStack.prototype.push = function(view, transitionOrCallback, cal
   transition.
 */
 Pushpop.ModalViewStack.prototype.pop = function(viewOrTransition, transitionOrCallback, callback) {
-  if (this.views.length <= 1) this.dismiss();
+  if (this.views.length <= 1) {
+    var activeView = this.getActiveView();
+    activeView.$trigger($.Event(Pushpop.EventType.WillDismissView, {
+      view: activeView,
+      action: 'modal-push'
+    }));
+    
+    this.dismiss();
+    
+    activeView.$trigger($.Event(Pushpop.EventType.DidDismissView, {
+      view: activeView,
+      action: 'modal-push'
+    }));
+  }
   
   // Call the "super" method.
   Pushpop.ViewStack.prototype.pop.apply(this, arguments);
