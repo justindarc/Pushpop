@@ -636,11 +636,8 @@ Pushpop.NavigationBar = function NavigationBar(element) {
   this._$titleElement = $('<h1 class="pp-navigation-bar-title"/>').appendTo($element);
   
   // Set up the back button.
-  this.setBackBarButtonItem(new Pushpop.BarButtonItem('Back', this, function(barButtonItem) {
-    var bar = barButtonItem.getBar();
-    if (!bar) return;
-    
-    var viewStack = bar.getViewStack();
+  this.setBackBarButtonItem(new Pushpop.Button('Back', function(button) {
+    var viewStack = button.getViewStack();
     if (viewStack) viewStack.pop();
   }));
   
@@ -813,36 +810,27 @@ Pushpop.NavigationBar.prototype = {
 };
 
 /**
-  Creates a new BarButtonItem.
-  @param {HTMLAnchorElement} element The A element to initialize as a new BarButtonItem.
+  Creates a new Button.
+  @param {HTMLAnchorElement} element The A element to initialize as a new Button.
   @constructor
 */
-Pushpop.BarButtonItem = function BarButtonItem(elementOrTitle, bar, action) {
+Pushpop.Button = function Button(elementOrTitle, action) {
   var $element = this.$element = (!elementOrTitle || typeof elementOrTitle === 'string') ?
-    $('<a class="pp-button">' + (elementOrTitle || '') + '</a>') : $(elementOrTitle);
+    $('<a class="pp-button" href="#">' + (elementOrTitle || '') + '</a>') : $(elementOrTitle);
   
   var element = this.element = $element[0];
   
-  var barButtonItem = element.barButtonItem;
-  if (barButtonItem) return barButtonItem;
+  var button = element.button;
+  if (button) return button;
   
-  var self = element.barButtonItem = this;
+  var self = element.button = this;
   
   this.setTitle($element.html());
-  this.setBar(bar || null);
   this.setAction(action || null);
-  
-  $element.bind('click', function(evt) {
-    var action = self.getAction();
-    if (!action) return;
-    
-    if (typeof action === 'string') window[action](self);
-    else if (typeof action === 'function') action(self);
-  });
 };
 
 /**
-  Style types for Pushpop.BarButtonItem.
+  Style types for Pushpop.Button.
 */
 Pushpop.ButtonStyleType = {
   Default: 'pp-button-style-default',
@@ -852,8 +840,16 @@ Pushpop.ButtonStyleType = {
   Red: 'pp-button-style-red',
 };
 
-Pushpop.BarButtonItem.prototype = {
-  constructor: Pushpop.BarButtonItem,
+/**
+  Event types for Pushpop.Button.
+*/
+Pushpop.Button.EventType = {
+  WillTriggerAction: 'Pushpop:Button:WillTriggerAction',
+  DidTriggerAction: 'Pushpop:Button:DidTriggerAction'
+};
+
+Pushpop.Button.prototype = {
+  constructor: Pushpop.Button,
   
   element: null,
   $element: null,
@@ -870,18 +866,6 @@ Pushpop.BarButtonItem.prototype = {
   */
   setTitle: function(title) { this.$element.html(_title = title || ''); },
   
-  _bar: null,
-  
-  /**
-  
-  */
-  getBar: function() { return this._bar; },
-  
-  /**
-  
-  */
-  setBar: function(bar) { this._bar = bar; },
-  
   _action: null,
   
   /**
@@ -893,6 +877,24 @@ Pushpop.BarButtonItem.prototype = {
   
   */
   setAction: function(action) { this._action = action; },
+  
+  _active: false,
+  
+  /**
+  
+  */
+  getActive: function() { return this._active; },
+  
+  /**
+  
+  */
+  setActive: function(active) {
+    if (this._active = active) {
+      this.$element.addClass('pp-button-state-active');
+    } else {
+      this.$element.removeClass('pp-button-state-active');
+    }
+  },
   
   _buttonStyleType: Pushpop.ButtonStyleType.Default,
   
@@ -920,21 +922,132 @@ Pushpop.BarButtonItem.prototype = {
     } else {
       this.$element.removeClass('pp-hidden');
     }
+  },
+  
+  /**
+  
+  */
+  triggerAction: function() {
+    var $element = this.$element;
+    var action = this.getAction();
+    
+    $element.trigger($.Event(Pushpop.Button.EventType.WillTriggerAction, {
+      button: this,
+      action: action
+    }));
+    
+    if (action) {
+      if (typeof action === 'string') window[action](this);
+      else if (typeof action === 'function') action(this);
+    }
+    
+    $element.trigger($.Event(Pushpop.Button.EventType.DidTriggerAction, {
+      button: this,
+      action: action
+    }));
+  },
+  
+  /**
+    Returns the view that contains this button.
+    @description NOTE: If this button is not contained within a view, this method will return null.
+    @type Pushpop.View
+  */
+  getView: function() {
+    var parents = this.$element.parents();
+    var view;
+    for (var i = 0, length = parents.length; i < length; i++) if (view = parents[i].view) return view;
+    return null;
+  },
+  
+  /**
+    Returns the view stack that contains this button.
+    @description NOTE: If this button is not contained within a view stack, this method will return null.
+    @type Pushpop.ViewStack
+  */
+  getViewStack: function() {
+    var parents = this.$element.parents();
+    var viewStack;
+    for (var i = 0, length = parents.length; i < length; i++) if (viewStack = parents[i].viewStack) return viewStack;
+    return null;
   }
-};
+}
 
 $(function() {
   $('.pp-view').each(function(index, element) { new Pushpop.View(element); });
   $('.pp-view-stack').each(function(index, element) { new Pushpop.ViewStack(element); });
   $('.pp-navigation-bar').each(function(index, element) { new Pushpop.NavigationBar(element); });
+  $('.pp-button').each(function(index, element) { new Pushpop.Button(element); });
   
+  // Handle mouse/touch events globally to trigger button actions.
+  var $window = $(window['addEventListener'] ? window : document.body);
+  
+  $window.delegate('.pp-button', 'click', function(evt) { evt.preventDefault(); });
+  
+  $window.delegate('.pp-button', !!('ontouchstart' in window) ? 'touchstart' : 'mousedown', function(evt) {
+    var button = this.button;
+    if (!button) return;
+    button.setActive(true);
+  });
+  
+  $window.delegate('.pp-button', !!('ontouchmove' in window) ? 'touchmove' : 'mousemove', function(evt) {
+    var button = this.button;
+    if (!button || !button.getActive()) return;
+    
+    button.setActive(false);
+  });
+  
+  $window.delegate('.pp-button', !!('ontouchend' in window) ? 'touchend' : 'mouseup', function(evt) {
+    var button = this.button;
+    if (!button || !button.getActive()) return;
+    
+    button.setActive(false);
+    button.triggerAction();
+  });
+  
+  // Handle actions for buttons set up to automatically push/pop views.
+  $window.delegate('.pp-button', Pushpop.Button.EventType.DidTriggerAction, function(evt) {
+    var button = evt.button;
+    var $element = button.$element;
+    var href = $element.attr('href');
+    var transition = $element.attr('data-transition');
+    var $viewElement, view, viewStack;
+    
+    if ($element.hasClass('pp-push')) {
+      $viewElement = $(href);
+      if ($viewElement.length === 0) return;
+
+      view = $viewElement[0].view || new Pushpop.View($viewElement);
+
+      viewStack = view.getViewStack();
+      if (viewStack) viewStack.push(view, transition);
+    }
+    
+    else if ($element.hasClass('pp-pop')) {
+      if (href === '#') {
+        viewStack = button.getViewStack();
+        if (viewStack) viewStack.pop(transition);
+      } else {
+        $viewElement = $(href);
+        if ($viewElement.length === 0) return;
+
+        view = $viewElement[0].view || new Pushpop.View($viewElement);
+
+        viewStack = view.getViewStack();      
+        if (viewStack) viewStack.pop(view, transition);
+      }
+    }
+  });
+  
+  // TODO: Is this still needed?
   $(document).bind('touchstart', function() {});
   
   // TODO: Remove legacy .push class.
-  $('a.pp-push, a.push').live('click', function(evt) {
+  $('a.pp-push').live('click', function(evt) {
+    var $this = $(this);
+    if ($this.hasClass('pp-button')) return;
+    
     evt.preventDefault();
     
-    var $this = $(this);
     var href = $this.attr('href');
     var $viewElement, view, viewStack;
     
@@ -949,9 +1062,11 @@ $(function() {
   
   // TODO: Remove legacy .pop class.
   $('a.pp-pop, a.pop').live('click', function(evt) {
+    var $this = $(this);
+    if ($this.hasClass('pp-button')) return;
+    
     evt.preventDefault();
     
-    var $this = $(this);
     var href = $this.attr('href');
     var $viewElement, view, viewStack;
     

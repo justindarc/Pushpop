@@ -225,7 +225,7 @@ body {
   text-decoration: none;
 }
 
-.pp-button:active {
+.pp-button.pp-button-state-active {
   background: #7c87a4; /* Old browsers */
   background: -moz-linear-gradient(top,  #7c87a4 0%, #3a4e78 50%, #253c6a 51%, #263e6c 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#7c87a4), color-stop(50%,#3a4e78), color-stop(51%,#253c6a), color-stop(100%,#263e6c)); /* Chrome,Safari4+ */
@@ -247,7 +247,7 @@ body {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7e7e7e', endColorstr='#272727',GradientType=0 ); /* IE6-9 */
 }
 
-.pp-button-style-black:active {
+.pp-button-style-black.pp-button-state-active {
   background: #5e5e5e; /* Old browsers */
   background: -moz-linear-gradient(top,  #5e5e5e 0%, #202020 50%, #0d0d0d 51%, #070707 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#5e5e5e), color-stop(50%,#202020), color-stop(51%,#0d0d0d), color-stop(100%,#070707)); /* Chrome,Safari4+ */
@@ -269,7 +269,7 @@ body {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7a9de9', endColorstr='#2362dd',GradientType=0 ); /* IE6-9 */
 }
 
-.pp-button-style-blue:active {
+.pp-button-style-blue.pp-button-state-active {
   background: #7c87a4; /* Old browsers */
   background: -moz-linear-gradient(top,  #7c87a4 0%, #3a4e78 50%, #253c6a 51%, #263e6c 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#7c87a4), color-stop(50%,#3a4e78), color-stop(51%,#253c6a), color-stop(100%,#263e6c)); /* Chrome,Safari4+ */
@@ -291,7 +291,7 @@ body {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#61b860', endColorstr='#079004',GradientType=0 ); /* IE6-9 */
 }
 
-.pp-button-style-green:active {
+.pp-button-style-green.pp-button-state-active {
   background: #217840; /* Old browsers */
   background: -moz-linear-gradient(top,  #217840 0%, #075f05 50%, #034f00 51%, #055002 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#217840), color-stop(50%,#075f05), color-stop(51%,#034f00), color-stop(100%,#055002)); /* Chrome,Safari4+ */
@@ -313,7 +313,7 @@ body {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ed8288', endColorstr='#bd1421',GradientType=0 ); /* IE6-9 */
 }
 
-.pp-button-style-red:active {
+.pp-button-style-red.pp-button-state-active {
   background: #a65960; /* Old browsers */
   background: -moz-linear-gradient(top,  #a65960 0%, #94262f 50%, #8d141e 51%, #8d131e 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#a65960), color-stop(50%,#94262f), color-stop(51%,#8d141e), color-stop(100%,#8d131e)); /* Chrome,Safari4+ */
