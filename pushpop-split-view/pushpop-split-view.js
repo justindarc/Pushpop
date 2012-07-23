@@ -30,5 +30,3 @@ Pushpop.SplitView.prototype.getMasterViewStack = function() {
 Pushpop.SplitView.prototype.getDetailViewStack = function() {
   return this.$element.children('.pp-split-view-stack-detail')[0].viewStack;
 };
-
-$(function() { $('.pp-split-view').each(function(index, element) { new Pushpop.SplitView(element); }); });

@@ -59,7 +59,7 @@ Pushpop.ViewStack = function ViewStack(element) {
   var viewStack = element.viewStack;
   if (viewStack) return viewStack;
   
-  element.viewStack = this;
+  var self = element.viewStack = this;
   
   var views = this.views = [];
   
@@ -1261,6 +1261,8 @@ $(function() {
   $('.pp-button').each(function(index, element) { new Pushpop.Button(element); });
   $('.pp-view').each(function(index, element) { new Pushpop.View(element); });
   $('.pp-view-stack').each(function(index, element) { new Pushpop.ViewStack(element); });
+  if (Pushpop.ModalViewStack) $('.pp-modal-view-stack').each(function(index, element) { new Pushpop.ModalViewStack(element); });
+  if (Pushpop.SplitView) $('.pp-split-view').each(function(index, element) { new Pushpop.SplitView(element); });
   $('.pp-navigation-bar').each(function(index, element) { new Pushpop.NavigationBar(element); });
   
   // Handle mouse/touch events globally to trigger button actions.

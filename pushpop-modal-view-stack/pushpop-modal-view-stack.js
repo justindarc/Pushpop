@@ -85,20 +85,7 @@ Pushpop.ModalViewStack.prototype.constructor = Pushpop.ModalViewStack;
   transition.
 */
 Pushpop.ModalViewStack.prototype.push = function(view, transitionOrCallback, callback) {
-  if (this.getHidden()) {
-    var activeView = this.getActiveView();
-    activeView.$trigger($.Event(Pushpop.EventType.WillPresentView, {
-      view: activeView,
-      action: 'modal-push'
-    }));
-    
-    this.present();
-    
-    activeView.$trigger($.Event(Pushpop.EventType.DidPresentView, {
-      view: activeView,
-      action: 'modal-push'
-    }));
-  }
+  if (this.getHidden()) this.present();
   
   // Call the "super" method.
   Pushpop.ViewStack.prototype.push.apply(this, arguments);
@@ -125,20 +112,7 @@ Pushpop.ModalViewStack.prototype.push = function(view, transitionOrCallback, cal
   transition.
 */
 Pushpop.ModalViewStack.prototype.pop = function(viewOrTransition, transitionOrCallback, callback) {
-  if (this.views.length <= 1) {
-    var activeView = this.getActiveView();
-    activeView.$trigger($.Event(Pushpop.EventType.WillDismissView, {
-      view: activeView,
-      action: 'modal-push'
-    }));
-    
-    this.dismiss();
-    
-    activeView.$trigger($.Event(Pushpop.EventType.DidDismissView, {
-      view: activeView,
-      action: 'modal-push'
-    }));
-  }
+  if (this.views.length <= 1) this.dismiss();
   
   // Call the "super" method.
   Pushpop.ViewStack.prototype.pop.apply(this, arguments);
@@ -160,13 +134,60 @@ Pushpop.ModalViewStack.prototype.setHidden = function(hidden) { if (hidden) this
 
 /**
   Presents this modal view stack and transitions it to a visible state.
+  @param {Pushpop.View} [view] Optional view to set as the active view before presenting.
 */
-Pushpop.ModalViewStack.prototype.present = function() { this._hidden = false; this.$element.addClass('pp-active'); };
+Pushpop.ModalViewStack.prototype.present = function(view) {
+  if (!this.getHidden()) return;
+  
+  this._hidden = false;
+
+  var oldActiveView = this.getActiveView();
+  if (view && oldActiveView !== view) {
+    oldActiveView.$element.removeClass('pp-active');
+    view.$element.addClass('pp-active');
+    
+    this.views.length = 0;
+    this.views.push(view);
+  } else {
+    this.views.length = 0;
+    this.views.push(oldActiveView);
+  }
+  
+  var activeView = this.getActiveView();
+  activeView.$trigger($.Event(Pushpop.EventType.WillPresentView, {
+    view: activeView,
+    action: 'modal-present'
+  }));
+  
+  this.$element.addClass('pp-active');
+  
+  activeView.$trigger($.Event(Pushpop.EventType.DidPresentView, {
+    view: activeView,
+    action: 'modal-present'
+  }));
+};
 
 /**
   Dismisses this modal view stack and transitions it to a hidden state.
 */
-Pushpop.ModalViewStack.prototype.dismiss = function() { this._hidden = true; this.$element.removeClass('pp-active'); };
+Pushpop.ModalViewStack.prototype.dismiss = function() {
+  if (this.getHidden()) return;
+  
+  this._hidden = true;
+  
+  var activeView = this.getActiveView();
+  activeView.$trigger($.Event(Pushpop.EventType.WillDismissView, {
+    view: activeView,
+    action: 'modal-dismiss'
+  }));
+  
+  this.$element.removeClass('pp-active');
+  
+  activeView.$trigger($.Event(Pushpop.EventType.DidDismissView, {
+    view: activeView,
+    action: 'modal-dismiss'
+  }));
+};
 
 Pushpop.ModalViewStack.prototype._presentationStyle = Pushpop.ModalViewStack.PresentationStyleType.FormSheet;
 
@@ -209,11 +230,9 @@ Pushpop.ModalViewStack.prototype.setTransitionStyle = function(transitionStyle) 
 };
 
 $(function() {
-  $('.pp-modal-view-stack').each(function(index, element) { new Pushpop.ModalViewStack(element); });
-  
   var $window = $(window['addEventListener'] ? window : document.body);
   
-  // Handle actions for buttons set up to automatically push/pop views.
+  // Handle actions for buttons set up to automatically present/dismiss modals.
   $window.delegate('.pp-button.pp-present-modal, .pp-button.pp-dismiss-modal', Pushpop.Button.EventType.DidTriggerAction, function(evt) {
     var button = evt.button;
     var $element = button.$element;
@@ -223,11 +242,11 @@ $(function() {
     if ($element.hasClass('pp-present-modal')) {
       $viewElement = $(href);
       if ($viewElement.length === 0) return;
-
+      
       view = $viewElement[0].view || new Pushpop.View($viewElement);
-
+      
       viewStack = view.getViewStack();
-      if (viewStack) viewStack.present();
+      if (viewStack) viewStack.present(view);
     }
     
     else if ($element.hasClass('pp-dismiss-modal')) {
@@ -246,44 +265,39 @@ $(function() {
     }
   });
   
-  // TODO: Clean up (use new events?)
-  $('a.pp-present-modal').live('click', function(evt) {
+  // Handle clicks for anchor links set up to automatically present/dismiss modals.
+  $window.delegate('a.pp-present-modal, a.pp-dismiss-modal', 'click', function(evt) {
+    var $element = $(this);
+    if ($element.hasClass('pp-button')) return;
+    
     evt.preventDefault();
     
-    var $this = $(this);
-    var href = $this.attr('href');
-    var $viewElement = $(href);
-    
-    var view = $viewElement[0];
-    if (view) view = view.view || new Pushpop.View($viewElement);
-    
-    var viewStack = view.getViewStack();    
-    if (viewStack) viewStack.present();
-  });
-  
-  // TODO: Clean up (use new events?)
-  $('a.pp-dismiss-modal').live('click', function(evt) {
-    evt.preventDefault();
-    
-    var $this = $(this);
-    var href = $this.attr('href');
+    var href = $element.attr('href');
     var $viewElement, view, viewStack;
     
-    if (href === '#') {
-      if ($this.parent().hasClass('pp-navigationbar')) {
-        $viewElement = $this.parent().parent().children('.pp-view.pp-active').first();
-      } else {
-        $viewElement = $this.parents('.pp-view').first();
-      }
-    } else {
+    if ($element.hasClass('pp-present-modal')) {
       $viewElement = $(href);
+      if ($viewElement.length === 0) return;
+
+      view = $viewElement[0].view || new Pushpop.View($viewElement);
+
+      viewStack = view.getViewStack();
+      if (viewStack) viewStack.present(view);
     }
     
-    if ($viewElement.length === 0) return;
-    
-    view = $viewElement[0].view || new Pushpop.View($viewElement);
-    
-    viewStack = view.getViewStack();      
-    if (viewStack) viewStack.dismiss();
+    else if ($element.hasClass('pp-dismiss-modal')) {
+      if (href === '#') {
+        viewStack = Pushpop.getViewStackForElement($element);
+        if (viewStack) viewStack.dismiss();
+      } else {
+        $viewElement = $(href);
+        if ($viewElement.length === 0) return;
+
+        view = $viewElement[0].view || new Pushpop.View($viewElement);
+
+        viewStack = view.getViewStack();      
+        if (viewStack) viewStack.dismiss();
+      }
+    }
   });
 });

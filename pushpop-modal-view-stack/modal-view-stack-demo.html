@@ -17,7 +17,11 @@
 	<script src="../pushpop-split-view/pushpop-split-view.js"></script>
 	<script src="pushpop-modal-view-stack.js"></script>
 	<script>
-    
+	  $(function() {
+      $('#custom-cells-table-view').bind(Pushpop.TableView.EventType.DidSelectRowAtIndex, function(evt) {
+        evt.tableView.getViewStack().push($('#master-view-other')[0].view);
+      });
+    });
 	</script>
 </head>
 <body>
@@ -25,19 +29,21 @@
     <div class="pp-split-view">
       <div class="pp-view-stack pp-split-view-stack-master">
         <div class="pp-navigation-bar" data-tap-to-top="true"></div>
-        <div class="pp-view sk-scroll-view" id="master-view-root" style="background: #7a8faa;">
-          <ul id="custom-cells-table-view" class="pp-table-view" data-contains-search-bar="true" data-set-url="../pushpop-table-view/sample-data/big-data-20.json">
+        
+        <div class="pp-view sk-scroll-view" id="master-view-root" data-view-title="Master View">
+          <ul class="pp-table-view" id="custom-cells-table-view" data-contains-search-bar="true" data-set-url="../pushpop-table-view/sample-data/big-data-20.json">
           
           </ul>
         </div>
-        <div class="pp-view" id="master-view-other">
-          <a class="pp-button pp-pop" href="#">Back</a>
+        
+        <div class="pp-view" id="master-view-other" data-view-title="Other Master">
           <p>This is some other "Master" view.</p>
         </div>
       </div>
       <div class="pp-view-stack pp-split-view-stack-detail">
         <div class="pp-navigation-bar" data-tap-to-top="true"></div>
-        <div class="pp-view" id="detail-view-root">
+        
+        <div class="pp-view" id="detail-view-root" data-view-title="ModalViewStack Demo">
           <a class="pp-button pp-push" data-transition="slide-horizontal" href="#detail-view-other">Slide Horizontal</a>
           <a class="pp-button pp-button-style-red pp-push" data-transition="slide-vertical" href="#detail-view-other">Slide Vertical</a>
           <a class="pp-button pp-button-style-green pp-push" data-transition="flip-horizontal" href="#detail-view-other">Flip Horizontal</a>
@@ -45,7 +51,6 @@
           <a class="pp-button pp-button-style-blue pp-push" data-transition="card-swap" href="#detail-view-other">Card Swap</a>
           <a class="pp-button pp-push" data-transition="zoom" href="#detail-view-other">Zoom</a>
           <a class="pp-button pp-push" data-transition="cross-fade" href="#detail-view-other">Cross Fade</a>
-          <a class="pp-button pp-push" href="#modal-view-1">Show Modal</a>
           <label class="pp-switch" onclick>
             <input type="checkbox"/>
             <div class="pp-switch-inner">
@@ -56,25 +61,34 @@
               </div>
             </div>
           </label>
+          
+          <br>
+          <br>
+          
+          <a class="pp-present-modal" href="#modal-view-1">Show Modal</a>
+          <a class="pp-button pp-present-modal" href="#modal-view-1">Show Modal</a>
+          <a class="pp-button pp-present-modal" href="#modal-view-2">Show Other Modal</a>
         </div>
-        <div class="pp-view" id="detail-view-other">
-          <a class="pp-button pp-pop" href="#">Back</a>
+        
+        <div class="pp-view" id="detail-view-other" data-view-title="Other Detail View">
           <p>This is some other "Detail" view.</p>
         </div>
       </div>
     </div>
     <div class="pp-modal-view-stack">
       <div class="pp-navigation-bar" data-tap-to-top="true"></div>
-      <div class="pp-view" id="modal-view-1" data-hide-back-bar-button-item="true">
+      
+      <div class="pp-view" id="modal-view-1" data-view-title="Modal View" data-hide-back-bar-button-item="true">
         <div class="pp-navigation-bar-button-items">
           <a class="pp-button pp-dismiss-modal" href="#">Close</a>
         </div>
-        <a class="pp-button pp-pop" href="#">Back</a>
         <p>This is some modal view.</p>
-        <a class="pp-button pp-push" data-transition="slide-horizontal" href="#modal-view-2">Slide Horizontal</a>
+        <a class="pp-button pp-push" href="#modal-view-2">Go To Another View</a>
+        <a class="pp-button pp-dismiss-modal" href="#">Dismiss Modal</a>
+        <a class="pp-dismiss-modal" href="#">Close</a>
       </div>
-      <div class="pp-view" id="modal-view-2">
-        <a class="pp-button pp-pop" href="#">Back</a>
+      
+      <div class="pp-view" id="modal-view-2" data-view-title="Other Modal">
         <p>This is some OTHER modal view!!.</p>
         <a class="pp-button pp-dismiss-modal" href="#">Dismiss Modal</a>
       </div>
