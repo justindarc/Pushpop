@@ -25,7 +25,7 @@ Documentation
 -------------
 The documentation for this project is generated using the node-jsdoc-toolkit with the "bootdoc" Twitter Boostrap theme. In order to properly skip generating documentation for included libraries (i.e.: jQuery, Twitter Bootstrap), the toolkit should be executed as follows:
 
-$ app/run.js -a -r=3 -E="jquery|bootstrap|generate|tableview" -t=templates/bootdoc /path/to/pushpop
+$ app/run.js -a -r=3 -E="jquery|generate" -t=templates/bootdoc /path/to/pushpop
 
 Internet Explorer Support
 -------------------------
