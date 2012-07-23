@@ -282,7 +282,8 @@ body {
   transition: opacity 0.2s linear 0.1s;
 }
 
-.pp-button:hover {
+.pp-button:active, .pp-button:hover, .pp-button:visited {
+  color: #fff;
   text-decoration: none;
 }
 

@@ -11,20 +11,31 @@
   -webkit-box-shadow: 0 4px 20px 2px rgba(0, 0, 0, 0.6);
   -moz-box-shadow: 0 4px 20px 2px rgba(0, 0, 0, 0.6);
   box-shadow: 0 4px 20px 2px rgba(0, 0, 0, 0.6);
-  -webkit-perspective: 2000px;
-  -moz-perspective: 2000px;
-  -ms-perspective: 2000px;
-  -o-perspective: 2000px;
-  perspective: 2000px;
-  -webkit-transform: translate(0, 0);
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  -o-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translate3d(0, 0, 0);
   -moz-transform: translate(0, 0);
   -ms-transform: translate(0, 0);
   -o-transform: translate(0, 0);
   transform: translate(0, 0);
 }
 
-.pp-modal-view-stack.pp-active {
+.pp-modal-view-stack .pp-navigation-bar {
+  visibility: hidden;
+  opacity: 0;
+  -webkit-transition: visibility 0s linear 0.4s, opacity 0s ease 0.4s;
+  -moz-transition: visibility 0s linear 0.4s, opacity 0s ease 0.4s;
+  -ms-transition: visibility 0s linear 0.4s, opacity 0s ease 0.4s;
+  -o-transition: visibility 0s linear 0.4s, opacity 0s ease 0.4s;
+  transition: visibility 0s linear 0.4s, opacity 0s ease 0.4s;
+}
+
+.pp-modal-view-stack.pp-active .pp-navigation-bar {
   visibility: visible;
+  opacity: 1;
   -webkit-transition-delay: 0s;
   -moz-transition-delay: 0s;
   -ms-transition-delay: 0s;
@@ -32,7 +43,7 @@
   transition-delay: 0s;
 }
 
-.pp-modal-view-stack.pp-modal-presentation-style-full-screen {
+.pp-modal-presentation-style-full-screen {
   top: 0;
   right: 0;
   bottom: 0;
@@ -42,7 +53,7 @@
   height: auto;
 }
 
-.pp-modal-view-stack.pp-modal-presentation-style-page-sheet {
+.pp-modal-presentation-style-page-sheet {
   top: 0;
   bottom: 0;
   left: 50%;
@@ -51,7 +62,7 @@
   height: auto;
 }
 
-.pp-modal-view-stack.pp-modal-presentation-style-form-sheet {
+.pp-modal-presentation-style-form-sheet {
   top: 64px;
   bottom: auto;
   left: 50%;
@@ -62,9 +73,9 @@
 
 /* On screens smaller than 768px (e.g.: phones) all presentation styles should be full screen. */
 @media (max-width: 768px) {
-  .pp-modal-view-stack.pp-modal-presentation-style-full-screen,
-  .pp-modal-view-stack.pp-modal-presentation-style-page-sheet,
-  .pp-modal-view-stack.pp-modal-presentation-style-form-sheet {
+  .pp-modal-presentation-style-full-screen,
+  .pp-modal-presentation-style-page-sheet,
+  .pp-modal-presentation-style-form-sheet {
     top: 0;
     right: 0;
     bottom: 0;
@@ -75,17 +86,29 @@
   }
 }
 
-.pp-modal-view-stack.pp-modal-transition-style-cover-vertical {
-  margin-top: 100%;
-  -webkit-transition: visibility 0s linear 0.3s, margin-top 0.3s linear;
-  -moz-transition: visibility 0s linear 0.3s, margin-top 0.3s linear;
-  -ms-transition: visibility 0s linear 0.3s, margin-top 0.3s linear;
-  -o-transition: visibility 0s linear 0.3s, margin-top 0.3s linear;
-  transition: visibility 0s linear 0.3s, margin-top 0.3s linear;
+.pp-modal-transition-style-cover-vertical {
+  visibility: hidden;
+  opacity: 0;
+  -webkit-transform: translate3d(0, 100%, 0);
+  -moz-transform: translate(0, 100%);
+  -ms-transform: translate(0, 100%);
+  -o-transform: translate(0, 100%);
+  transform: translate(0, 100%);
+  -webkit-transition: visibility 0s linear 0.4s, opacity 0.15s ease 0.15s, -webkit-transform 0.3s ease 0s;
+  -moz-transition: visibility 0s linear 0.4s, opacity 0.15s ease 0.15s, -moz-transform 0.3s ease 0s;
+  -ms-transition: visibility 0s linear 0.4s, opacity 0.15s ease 0.15s, -ms-transform 0.3s ease 0s;
+  -o-transition: visibility 0s linear 0.4s, opacity 0.15s ease 0.15s, -o-transform 0.3s ease 0s;
+  transition: visibility 0s linear 0.4s, opacity 0.15s ease 0.15s, transform 0.3s ease 0s;
 }
 
-.pp-modal-view-stack.pp-modal-transition-style-cover-vertical.pp-active {
-  margin-top: 0;
+.pp-modal-transition-style-cover-vertical.pp-active {
+  visibility: visible;
+  opacity: 1;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  -o-transform: translate(0, 0);
+  transform: translate(0, 0);
   -webkit-transition-delay: 0s;
   -moz-transition-delay: 0s;
   -ms-transition-delay: 0s;
@@ -106,16 +129,16 @@
   z-index: 99998;
   visibility: hidden;
   opacity: 0;
-  -webkit-transform: translate(0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
   -moz-transform: translate(0, 0);
   -ms-transform: translate(0, 0);
   -o-transform: translate(0, 0);
   transform: translate(0, 0);
-  -webkit-transition: visibility 0s linear 0.3s, opacity 0.3s linear;
-  -moz-transition: visibility 0s linear 0.3s, opacity 0.3s linear;
-  -ms-transition: visibility 0s linear 0.3s, opacity 0.3s linear;
-  -o-transition: visibility 0s linear 0.3s, opacity 0.3s linear;
-  transition: visibility 0s linear 0.3s, opacity 0.3s linear;
+  -webkit-transition: visibility 0s linear 0.3s, opacity 0.3s linear 0s;
+  -moz-transition: visibility 0s linear 0.3s, opacity 0.3s linear 0s;
+  -ms-transition: visibility 0s linear 0.3s, opacity 0.3s linear 0s;
+  -o-transition: visibility 0s linear 0.3s, opacity 0.3s linear 0s;
+  transition: visibility 0s linear 0.3s, opacity 0.3s linear 0s;
 }
 
 .pp-modal-view-stack.pp-active + .pp-modal-view-stack-backdrop {
