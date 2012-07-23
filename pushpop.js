@@ -63,7 +63,7 @@ Pushpop.ViewStack = function ViewStack(element) {
   
   var views = this.views = [];
   
-  var $rootViewElement = $element.children('.pp-view, .pp-split-view').first().addClass('active');
+  var $rootViewElement = $element.children('.pp-view, .pp-split-view').first().addClass('pp-active');
   var rootViewElement = $rootViewElement[0];
   
   if (!rootViewElement) return;
@@ -88,7 +88,7 @@ Pushpop.ViewStack.prototype = {
       case 'oTransitionEnd':
       case 'transitionEnd':
         var target = evt.target;
-        if (!target.view || $(target).hasClass('active')) return;
+        if (!target.view || $(target).hasClass('pp-active')) return;
         
         var newActiveView = target;
         newActiveView = (newActiveView) ? newActiveView.view : null;
@@ -97,7 +97,7 @@ Pushpop.ViewStack.prototype = {
         var viewStack = newActiveView.getViewStack();
         if (!viewStack || !viewStack.isTransitioning) return;
         
-        var oldActiveView = viewStack.$element.children('.pp-view.active')[0];
+        var oldActiveView = viewStack.$element.children('.pp-view.pp-active')[0];
         oldActiveView = (oldActiveView) ? oldActiveView.view : null;
         if (!oldActiveView) return;
         
@@ -108,9 +108,9 @@ Pushpop.ViewStack.prototype = {
         var $oldActiveViewElement = oldActiveView.$element;
         var action = ($newActiveViewElement.hasClass('push') ? 'push' : 'pop');
 
-        $newActiveViewElement.addClass('active');
+        $newActiveViewElement.addClass('pp-active');
         $newActiveViewElement.removeClass('transition push pop ' + newActiveView.transition);
-        $oldActiveViewElement.removeClass('active transition push pop ' + newActiveView.transition);
+        $oldActiveViewElement.removeClass('pp-active transition push pop ' + newActiveView.transition);
         
         if (action === 'push') {
           
@@ -518,15 +518,31 @@ Pushpop.View = function View(element) {
   var view = element.view;
   if (view) return view;
   
-  element.view = this;
+  var self = element.view = this;
   
   this.title = $element.attr('data-view-title');
+  
+  // Set up this view's navigation bar button items.
+  this._barButtonItems = [];
+  $element.find('.pp-navigation-bar-button-items .pp-button').each(function(index, element) {
+    self.addBarButtonItem(element.button || new Pushpop.Button(element));
+  });
+  
+  // Determine if the back bar button item should be hidden when this view is active.
+  var hideBackBarButtonItem = $element.attr('data-hide-back-bar-button-item') || 'false';
+  hideBackBarButtonItem = hideBackBarButtonItem !== 'false';
+  this.setHideBackBarButtonItem(hideBackBarButtonItem);
+  
+  //////
+  // OLD
   var $navbarButtonsContainer = $element.find('.pp-navigationbar-buttons');
   var $navbarButtons = this.$navbarButtons = $navbarButtonsContainer.find('.pp-barbutton');
   
   // Hide the back button if data-hide-back-button="true" or if there is a left navigation bar
   var dataHideBackButton = $navbarButtonsContainer.attr('data-hide-back-button');
   this.hideNavBackButton = ((dataHideBackButton && dataHideBackButton !== 'false') || $navbarButtons.filter('.pp-barbutton-align-left').length > 0);
+  // OLD
+  //////
 };
 
 Pushpop.View.prototype = {
@@ -535,10 +551,10 @@ Pushpop.View.prototype = {
   element: null,
   $element: null,
   
-  transition: null,
+  $navbarButtons: null, // OLD
+  hideNavBackButton: false, // OLD
   
-  $navbarButtons: null,
-  hideNavBackButton: false,
+  transition: null,
   
   /**
     Sets the transition that should be used when pushing or popping to this view.
@@ -567,10 +583,93 @@ Pushpop.View.prototype = {
     this.$element.attr('data-view-title', value);
   },
   
+  /**
+  
+  */
+  getActive: function() { return this.$element.hasClass('pp-active'); },
+  
+  _barButtonItems: null,
+  
+  /**
+  
+  */
+  getBarButtonItems: function() { return this._barButtonItems; },
+  
+  /**
+  
+  */
+  setBarButtonItems: function(barButtonItems, animated) {
+    this.removeAllBarButtonItems();
+    for (var i = 0, length = barButtonItems.length; i < length; i++) this.addBarButtonItem(barButtonItems[i], animated);
+  },
+  
+  /**
+  
+  */
+  addBarButtonItem: function(barButtonItem, animated) {
+    if (this.getActive()) {
+      var navigationBar = this.getNavigationBar();
+      if (navigationBar) navigationBar.addBarButtonItem(barButtonItem, animated);
+    }
+    
+    this._barButtonItems.push(barButtonItem);
+  },
+  
+  /**
+  
+  */
+  removeBarButtonItem: function(barButtonItem, animated) {
+    var barButtonItems = this._barButtonItems;
+    for (var i = 0, length = barButtonItems.length; i < length; i++) {
+      if (barButtonItems[i] === barButtonItem) {
+        if (this.getActive()) {
+          var navigationBar = this.getNavigationBar();
+          if (navigationBar) navigationBar.removeBarButtonItem(barButtonItem, animated);
+        }
+        
+        barButtonItems.splice(i, 1);
+        break;
+      }
+    }
+  },
+  
+  /**
+  
+  */
+  removeAllBarButtonItems: function(animated) {
+    var barButtonItems = this._barButtonItems;
+    if (this.getActive()) {
+      var navigationBar = this.getNavigationBar();
+      if (navigationBar) for (var i = 0, length = barButtonItems.length; i < length; i++) navigationBar.removeBarButtonItem(barButtonItems[i], animated);
+    }
+    
+    barButtonItems.length = 0;
+  },
+  
+  _hideBackBarButtonItem: false,
+  
+  /**
+  
+  */
+  getHideBackBarButtonItem: function() { return this._hideBackBarButtonItem; },
+  
+  /**
+  
+  */
+  setHideBackBarButtonItem: function(hideBackBarButtonItem) {
+    this._hideBackBarButtonItem = hideBackBarButtonItem;
+  },
+  
   _shouldRemoveWhenPopped: false,
   
+  /**
+  
+  */
   getShouldRemoveWhenPopped: function() { return this._shouldRemoveWhenPopped; },
   
+  /**
+  
+  */
   setShouldRemoveWhenPopped: function(shouldRemoveWhenPopped) { this._shouldRemoveWhenPopped = shouldRemoveWhenPopped; },
   
   /**
@@ -579,6 +678,22 @@ Pushpop.View.prototype = {
   */
   getViewStack: function() { return Pushpop.getViewStackForElement(this.$element); },
   
+  /**
+  
+  */
+  getNavigationBar: function() {
+    var viewStack = this.getViewStack();
+    if (!viewStack) return null;
+    
+    var $navigationBar = viewStack.$element.children('.pp-navigation-bar').first();
+    if ($navigationBar.length !== 1) return null;
+    
+    return $navigationBar[0].navigationBar;
+  },
+  
+  /**
+  
+  */
   getScrollView: function() { return this.element.scrollView || null; },
   
   /**
@@ -632,14 +747,19 @@ Pushpop.NavigationBar = function NavigationBar(element) {
   
   var self = element.navigationBar = this;
   
+  // Set up this navigation bar's button items.
+  this._barButtonItems = [];
+  
   // Set up the title container.
-  this._$titleElement = $('<h1 class="pp-navigation-bar-title"/>').appendTo($element);
+  this.$titleElement = $('<h1 class="pp-navigation-bar-title"/>').appendTo($element);
   
   // Set up the back button.
-  this.setBackBarButtonItem(new Pushpop.Button('Back', function(button) {
+  var backBarButtonItem = new Pushpop.Button('Back', function(button) {
     var viewStack = button.getViewStack();
     if (viewStack) viewStack.pop();
-  }));
+  });
+  
+  this.setBackBarButtonItem(backBarButtonItem);
   
   // Prevent dragging of the navigation bar.
   $element.bind('touchmove', function(evt) { evt.preventDefault(); });
@@ -667,7 +787,9 @@ Pushpop.NavigationBar = function NavigationBar(element) {
       self.setTitle(view.getTitle());
       
       var backBarButtonItem = self.getBackBarButtonItem();
-      if (backBarButtonItem) backBarButtonItem.setHidden(viewStack.containsView(view) && viewStack.views.length === 1);
+      if (backBarButtonItem) backBarButtonItem.setHidden(view.getHideBackBarButtonItem() || (viewStack.containsView(view) && viewStack.views.length === 1));
+      
+      self.setBarButtonItems(view.getBarButtonItems(), true);
     });
   }
   
@@ -675,6 +797,9 @@ Pushpop.NavigationBar = function NavigationBar(element) {
   var activeView = this.getActiveView();
   if (activeView) {
     this.setTitle(activeView.getTitle());
+    this.setBarButtonItems(activeView.getBarButtonItems());
+    
+    backBarButtonItem.setHidden(activeView.getHideBackBarButtonItem() || (viewStack.containsView(activeView) && viewStack.views.length === 1))
   }
 };
 
@@ -692,7 +817,60 @@ Pushpop.NavigationBar.prototype = {
   element: null,
   $element: null,
   
-  _$titleElement: null,
+  $titleElement: null,
+  
+  _barButtonItems: null,
+  
+  /**
+  
+  */
+  getBarButtonItems: function() { return this._barButtonItems; },
+  
+  /**
+  
+  */
+  setBarButtonItems: function(barButtonItems, animated) {
+    this.removeAllBarButtonItems(animated);    
+    for (var i = 0, length = barButtonItems.length; i < length; i++) this.addBarButtonItem(barButtonItems[i], animated);
+  },
+  
+  /**
+  
+  */
+  addBarButtonItem: function(barButtonItem, animated) {
+    var barStyle = this.getBarStyle();
+    if (barStyle === Pushpop.NavigationBar.BarStyleType.Default) {
+      barButtonItem.setButtonStyleType(Pushpop.Button.ButtonStyleType.Default);
+    } else if (barStyle === Pushpop.NavigationBar.BarStyleType.Black) {
+      barButtonItem.setButtonStyleType(Pushpop.Button.ButtonStyleType.Black);
+    }
+    
+    this._barButtonItems.push(barButtonItem);
+    barButtonItem.appendTo(this.$element, animated);
+  },
+  
+  /**
+  
+  */
+  removeBarButtonItem: function(barButtonItem, animated) {
+    var barButtonItems = this._barButtonItems;
+    for (var i = 0, length = barButtonItems.length; i < length; i++) {
+      if (barButtonItems[i] === barButtonItem) {
+        barButtonItems.splice(i, 1);
+        barButtonItem.remove(animated);
+        break;
+      }
+    }
+  },
+  
+  /**
+  
+  */
+  removeAllBarButtonItems: function(animated) {
+    var barButtonItems = this._barButtonItems;
+    for (var i = 0, length = barButtonItems.length; i < length; i++) barButtonItems[i].remove(animated);
+    barButtonItems.length = 0;
+  },
   
   _title: '',
   
@@ -704,7 +882,7 @@ Pushpop.NavigationBar.prototype = {
   /**
   
   */
-  setTitle: function(title) { this._$titleElement.html(_title = title || ''); },
+  setTitle: function(title) { this.$titleElement.html(_title = title || ''); },
   
   _tapToTop: false,
   
@@ -729,16 +907,20 @@ Pushpop.NavigationBar.prototype = {
   
   */
   setBackBarButtonItem: function(backBarButtonItem) {
-    this.$element.append((this._backBarButtonItem = backBarButtonItem).$element);
+    var previousBackBarButtonItem = this._backBarButtonItem;
+    if (previousBackBarButtonItem) previousBackBarButtonItem.$element.removeClass('pp-navigation-bar-back-bar-button-item');
+    this.$element.prepend((this._backBarButtonItem = backBarButtonItem).$element);
+    
+    backBarButtonItem.$element.addClass('pp-navigation-bar-back-bar-button-item');
     
     var viewStack = this.getViewStack();
     if (viewStack) backBarButtonItem.setHidden(viewStack.views.length === 1);
     
     var barStyle = this.getBarStyle();
     if (barStyle === Pushpop.NavigationBar.BarStyleType.Default) {
-      backBarButtonItem.setButtonStyleType(Pushpop.ButtonStyleType.Default);
+      backBarButtonItem.setButtonStyleType(Pushpop.Button.ButtonStyleType.Default);
     } else if (barStyle === Pushpop.NavigationBar.BarStyleType.Black) {
-      backBarButtonItem.setButtonStyleType(Pushpop.ButtonStyleType.Black);
+      backBarButtonItem.setButtonStyleType(Pushpop.Button.ButtonStyleType.Black);
     }
   },
   
@@ -812,9 +994,12 @@ Pushpop.NavigationBar.prototype = {
 /**
   Creates a new Button.
   @param {HTMLAnchorElement} element The A element to initialize as a new Button.
+  @param {Function} [action] Optional callback function to execute for the button's action.
+  @param {String} [buttonAlignmentType] Optional alignment type specified by Pushpop.Button.ButtonAlignmentType.
+  @param {String} [buttonStyleType] Optional style type specified by Pushpop.Button.ButtonStyleType.
   @constructor
 */
-Pushpop.Button = function Button(elementOrTitle, action) {
+Pushpop.Button = function Button(elementOrTitle, action, buttonAlignmentType, buttonStyleType) {
   var $element = this.$element = (!elementOrTitle || typeof elementOrTitle === 'string') ?
     $('<a class="pp-button" href="#">' + (elementOrTitle || '') + '</a>') : $(elementOrTitle);
   
@@ -825,14 +1010,45 @@ Pushpop.Button = function Button(elementOrTitle, action) {
   
   var self = element.button = this;
   
+  var buttonAlignmentTypes = Pushpop.Button.ButtonAlignmentType;
+  var buttonStyleTypes = Pushpop.Button.ButtonStyleType;
+  var key;
+  
+  var buttonAlignmentType = buttonAlignmentType;
+  if (!buttonAlignmentType) for (key in buttonAlignmentTypes) {
+    if ($element.hasClass(buttonAlignmentTypes[key])) {
+      buttonAlignmentType = buttonAlignmentTypes[key];
+      break;
+    }
+  }
+  
+  var buttonStyleType = buttonStyleType;
+  if (!buttonStyleType) for (key in buttonStyleTypes) {
+    if ($element.hasClass(buttonStyleTypes[key])) {
+      buttonStyleType = buttonStyleTypes[key];
+      break;
+    }
+  }
+  
   this.setTitle($element.html());
   this.setAction(action || null);
+  this.setButtonAlignmentType(buttonAlignmentType || Pushpop.Button.ButtonAlignmentType.Default);
+  this.setButtonStyleType(buttonStyleType || Pushpop.Button.ButtonStyleType.Default);
+};
+
+/**
+  Alignment types for Pushpop.Button.
+*/
+Pushpop.Button.ButtonAlignmentType = {
+  Default: 'pp-button-alignment-default',
+  Left: 'pp-button-alignment-left',
+  Right: 'pp-button-alignment-right'
 };
 
 /**
   Style types for Pushpop.Button.
 */
-Pushpop.ButtonStyleType = {
+Pushpop.Button.ButtonStyleType = {
   Default: 'pp-button-style-default',
   Black: 'pp-button-style-black',
   Blue: 'pp-button-style-blue',
@@ -895,14 +1111,24 @@ Pushpop.Button.prototype = {
       this.$element.removeClass('pp-button-state-active');
     }
   },
+
+  _buttonAlignmentType: Pushpop.Button.ButtonAlignmentType.Default,
   
-  _buttonStyleType: Pushpop.ButtonStyleType.Default,
+  getButtonAlignmentType: function() { return this._buttonAlignmentType; },
+  
+  setButtonAlignmentType: function(buttonAlignmentType) {
+    var $element = this.$element, buttonAlignmentTypes = Pushpop.Button.ButtonAlignmentType;
+    for (var i in buttonAlignmentTypes) $element.removeClass(buttonAlignmentTypes[i]);
+    $element.addClass(this._buttonAlignmentType = buttonAlignmentType);
+  },
+  
+  _buttonStyleType: Pushpop.Button.ButtonStyleType.Default,
   
   getButtonStyleType: function() { return this._buttonStyleType; },
   
   setButtonStyleType: function(buttonStyleType) {
-    var $element = this.$element;
-    for (var i in Pushpop.ButtonStyleType) $element.removeClass(Pushpop.ButtonStyleType[i]);
+    var $element = this.$element, buttonStyleTypes = Pushpop.Button.ButtonStyleType;
+    for (var i in buttonStyleTypes) $element.removeClass(buttonStyleTypes[i]);
     $element.addClass(this._buttonStyleType = buttonStyleType);
   },
   
@@ -947,6 +1173,40 @@ Pushpop.Button.prototype = {
     }));
   },
   
+  _pendingRemovalTimeout: null,
+  
+  remove: function(animated) {
+    var $element = this.$element;
+    
+    if (animated) {
+      this.setHidden(true);
+      this._pendingRemovalTimeout = window.setTimeout(function() {
+        $element.detach();
+      }, 300);
+    } else {
+      $element.detach();
+      this.setHidden(true);
+    }
+  },
+  
+  appendTo: function(element, animated) {
+    if (this._pendingRemovalTimeout) window.clearTimeout(this._pendingRemovalTimeout);
+    if (animated) {
+      this.setHidden(true);
+      $(element).append(this.$element);
+      this.forceReflow();
+      this.setHidden(false);
+    } else {
+      this.setHidden(false);
+      $(element).append(this.$element);
+    }
+  },
+  
+  /**
+    Forces a reflow in the browser for this button.
+  */
+  forceReflow: function() { this.element.offsetWidth; },
+  
   /**
     Returns the view that contains this button.
     @description NOTE: If this button is not contained within a view, this method will return null.
@@ -973,10 +1233,10 @@ Pushpop.Button.prototype = {
 }
 
 $(function() {
+  $('.pp-button').each(function(index, element) { new Pushpop.Button(element); });
   $('.pp-view').each(function(index, element) { new Pushpop.View(element); });
   $('.pp-view-stack').each(function(index, element) { new Pushpop.ViewStack(element); });
   $('.pp-navigation-bar').each(function(index, element) { new Pushpop.NavigationBar(element); });
-  $('.pp-button').each(function(index, element) { new Pushpop.Button(element); });
   
   // Handle mouse/touch events globally to trigger button actions.
   var $window = $(window['addEventListener'] ? window : document.body);
@@ -1005,7 +1265,7 @@ $(function() {
   });
   
   // Handle actions for buttons set up to automatically push/pop views.
-  $window.delegate('.pp-button', Pushpop.Button.EventType.DidTriggerAction, function(evt) {
+  $window.delegate('.pp-button.pp-push, .pp-button.pp-pop', Pushpop.Button.EventType.DidTriggerAction, function(evt) {
     var button = evt.button;
     var $element = button.$element;
     var href = $element.attr('href');
@@ -1041,7 +1301,7 @@ $(function() {
   // TODO: Is this still needed?
   $(document).bind('touchstart', function() {});
   
-  // TODO: Remove legacy .push class.
+  // TODO: Clean up (use new events?)
   $('a.pp-push').live('click', function(evt) {
     var $this = $(this);
     if ($this.hasClass('pp-button')) return;
@@ -1060,8 +1320,8 @@ $(function() {
     if (viewStack) viewStack.push(view, $this.attr('data-transition'));
   });
   
-  // TODO: Remove legacy .pop class.
-  $('a.pp-pop, a.pop').live('click', function(evt) {
+  // TODO: Clean up (use new events?)
+  $('a.pp-pop').live('click', function(evt) {
     var $this = $(this);
     if ($this.hasClass('pp-button')) return;
     

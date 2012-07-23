@@ -17,7 +17,11 @@
 <body>
   <div class="pp-view-stack" id="root-view-stack">
     <div class="pp-navigation-bar" data-tap-to-top="true"></div>
-    <div class="pp-view sk-scroll-view" id="root-view" data-view-title="NavigationBar Demo" data-always-bounce-vertical="true">
+    <div class="pp-view sk-scroll-view" id="root-view" data-view-title="NavigationBar Demo" data-always-bounce-vertical="true" data-hide-back-bar-button-item="true">
+      <div class="pp-navigation-bar-button-items">
+        <a class="pp-button pp-pop" href="#">Custom Back Button</a>
+        <a class="pp-button pp-button-alignment-right" href="#">Right Button</a>
+      </div>
       <a class="pp-button pp-push" href="#other-view">Push Other View</a>
     </div>
     <div class="pp-view sk-scroll-view" id="other-view" data-view-title="Other View" data-always-bounce-vertical="true">
@@ -25,6 +29,12 @@
       <p>This is some other view.</p>
     </div>
     <div class="pp-view sk-scroll-view" id="yet-another-view" data-view-title="Yet Another View" data-always-bounce-vertical="true">
+      <div class="pp-navigation-bar-button-items">
+        <a class="pp-button pp-button-alignment-right" href="#">4</a>
+        <a class="pp-button pp-button-alignment-right" href="#">3</a>
+        <a class="pp-button pp-button-alignment-right" href="#">2</a>
+        <a class="pp-button pp-button-alignment-right" href="#">1</a>
+      </div>
       <a class="pp-button pp-push" href="#root-view">Push Root View Again</a>
       <p>This is yet another view.</p>
     </div>
