@@ -753,6 +753,11 @@ Pushpop.NavigationBar = function NavigationBar(element) {
   // Set up the title container.
   this.$titleElement = $('<h1 class="pp-navigation-bar-title"/>').appendTo($element);
   
+  // Set up the bar button item containers. NOTE: Two containers are created and are
+  // alternated each time setBarButtonItems() is called to provide a smooth transition.
+  this.$barButtonItemContainerElement = this.$barButtonItemContainerElementA = $('<div class="pp-navigation-bar-button-item-container"/>').appendTo($element);
+  this.$barButtonItemContainerElementB = $('<div class="pp-navigation-bar-button-item-container"/>').appendTo($element);
+  
   // Set up the back button.
   var backBarButtonItem = new Pushpop.Button('Back', function(button) {
     var viewStack = button.getViewStack();
@@ -818,6 +823,9 @@ Pushpop.NavigationBar.prototype = {
   $element: null,
   
   $titleElement: null,
+  $barButtonItemContainerElement: null,
+  $barButtonItemContainerElementA: null,
+  $barButtonItemContainerElementB: null,
   
   _barButtonItems: null,
   
@@ -830,7 +838,12 @@ Pushpop.NavigationBar.prototype = {
   
   */
   setBarButtonItems: function(barButtonItems, animated) {
-    this.removeAllBarButtonItems(animated);    
+    this.removeAllBarButtonItems(animated);
+    
+    // Toggle the current bar button item container before adding the new items to
+    // create a smooth transition.
+    this.$barButtonItemContainerElement = (this.$barButtonItemContainerElement === this.$barButtonItemContainerElementA) ? this.$barButtonItemContainerElementB : this.$barButtonItemContainerElementA;
+    
     for (var i = 0, length = barButtonItems.length; i < length; i++) this.addBarButtonItem(barButtonItems[i], animated);
   },
   
@@ -846,7 +859,7 @@ Pushpop.NavigationBar.prototype = {
     }
     
     this._barButtonItems.push(barButtonItem);
-    barButtonItem.appendTo(this.$element, animated);
+    barButtonItem.appendTo(this.$barButtonItemContainerElement, animated);
   },
   
   /**
