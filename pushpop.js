@@ -747,6 +747,18 @@ Pushpop.NavigationBar = function NavigationBar(element) {
   
   var self = element.navigationBar = this;
   
+  // Set up this navigation bar's style type.
+  var barStyleTypes = Pushpop.NavigationBar.BarStyleType;
+  var barStyleType;
+  for (var key in barStyleTypes) {
+    if ($element.hasClass(barStyleTypes[key])) {
+      barStyleType = barStyleTypes[key];
+      break;
+    }
+  }
+  
+  this.setBarStyleType(barStyleType || Pushpop.NavigationBar.Default);
+  
   // Set up this navigation bar's button items.
   this._barButtonItems = [];
   
@@ -827,6 +839,72 @@ Pushpop.NavigationBar.prototype = {
   $barButtonItemContainerElementA: null,
   $barButtonItemContainerElementB: null,
   
+  _title: '',
+  
+  /**
+  
+  */
+  getTitle: function() { return this._title; },
+  
+  /**
+  
+  */
+  setTitle: function(title) { this.$titleElement.html(_title = title || ''); },
+  
+  _tapToTop: false,
+  
+  /**
+  
+  */
+  getTapToTop: function() { return this._tapToTop; },
+  
+  /**
+  
+  */
+  setTapToTop: function(tapToTop) { this._tapToTop = tapToTop; },
+  
+  _barStyle: Pushpop.NavigationBar.BarStyleType.Default,
+  
+  /**
+  
+  */
+  getBarStyleType: function() { return this._barStyle; },
+  
+  /**
+  
+  */
+  setBarStyleType: function(barStyle) {
+    this._barStyle = barStyle;
+  },
+  
+  _translucent: false,
+  
+  /**
+  
+  */
+  getTranslucent: function() { return this._translucent; },
+  
+  /**
+  
+  */
+  setTranslucent: function(translucent) {
+    this._translucent = translucent;
+  },
+  
+  _tintColor: null,
+  
+  /**
+  
+  */
+  getTintColor: function() { return this._tintColor; },
+  
+  /**
+  
+  */
+  setTintColor: function(tintColor) {
+    this._tintColor = tintColor;
+  },
+  
   _barButtonItems: null,
   
   /**
@@ -851,7 +929,7 @@ Pushpop.NavigationBar.prototype = {
   
   */
   addBarButtonItem: function(barButtonItem, animated) {
-    var barStyle = this.getBarStyle();
+    var barStyle = this.getBarStyleType();
     if (barStyle === Pushpop.NavigationBar.BarStyleType.Default) {
       barButtonItem.setButtonStyleType(Pushpop.Button.ButtonStyleType.Default);
     } else if (barStyle === Pushpop.NavigationBar.BarStyleType.Black) {
@@ -885,30 +963,6 @@ Pushpop.NavigationBar.prototype = {
     barButtonItems.length = 0;
   },
   
-  _title: '',
-  
-  /**
-  
-  */
-  getTitle: function() { return this._title; },
-  
-  /**
-  
-  */
-  setTitle: function(title) { this.$titleElement.html(_title = title || ''); },
-  
-  _tapToTop: false,
-  
-  /**
-  
-  */
-  getTapToTop: function() { return this._tapToTop; },
-  
-  /**
-  
-  */
-  setTapToTop: function(tapToTop) { this._tapToTop = tapToTop; },
-  
   _backBarButtonItem: null,
   
   /**
@@ -929,54 +983,12 @@ Pushpop.NavigationBar.prototype = {
     var viewStack = this.getViewStack();
     if (viewStack) backBarButtonItem.setHidden(viewStack.views.length === 1);
     
-    var barStyle = this.getBarStyle();
+    var barStyle = this.getBarStyleType();
     if (barStyle === Pushpop.NavigationBar.BarStyleType.Default) {
       backBarButtonItem.setButtonStyleType(Pushpop.Button.ButtonStyleType.Default);
     } else if (barStyle === Pushpop.NavigationBar.BarStyleType.Black) {
       backBarButtonItem.setButtonStyleType(Pushpop.Button.ButtonStyleType.Black);
     }
-  },
-  
-  _barStyle: Pushpop.NavigationBar.BarStyleType.Black,
-  
-  /**
-  
-  */
-  getBarStyle: function() { return this._barStyle; },
-  
-  /**
-  
-  */
-  setBarStyle: function(barStyle) {
-    this._barStyle = barStyle;
-  },
-  
-  _translucent: false,
-  
-  /**
-  
-  */
-  getTranslucent: function() { return this._translucent; },
-  
-  /**
-  
-  */
-  setTranslucent: function(translucent) {
-    this._translucent = translucent;
-  },
-  
-  _tintColor: null,
-  
-  /**
-  
-  */
-  getTintColor: function() { return this._tintColor; },
-  
-  /**
-  
-  */
-  setTintColor: function(tintColor) {
-    this._tintColor = tintColor;
   },
   
   /**
