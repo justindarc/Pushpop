@@ -211,6 +211,42 @@ Pushpop.ModalViewStack.prototype.setTransitionStyle = function(transitionStyle) 
 $(function() {
   $('.pp-modal-view-stack').each(function(index, element) { new Pushpop.ModalViewStack(element); });
   
+  var $window = $(window['addEventListener'] ? window : document.body);
+  
+  // Handle actions for buttons set up to automatically push/pop views.
+  $window.delegate('.pp-button.pp-present-modal, .pp-button.pp-dismiss-modal', Pushpop.Button.EventType.DidTriggerAction, function(evt) {
+    var button = evt.button;
+    var $element = button.$element;
+    var href = $element.attr('href');
+    var $viewElement, view, viewStack;
+    
+    if ($element.hasClass('pp-present-modal')) {
+      $viewElement = $(href);
+      if ($viewElement.length === 0) return;
+
+      view = $viewElement[0].view || new Pushpop.View($viewElement);
+
+      viewStack = view.getViewStack();
+      if (viewStack) viewStack.present();
+    }
+    
+    else if ($element.hasClass('pp-dismiss-modal')) {
+      if (href === '#') {
+        viewStack = button.getViewStack();
+        if (viewStack) viewStack.dismiss();
+      } else {
+        $viewElement = $(href);
+        if ($viewElement.length === 0) return;
+
+        view = $viewElement[0].view || new Pushpop.View($viewElement);
+
+        viewStack = view.getViewStack();      
+        if (viewStack) viewStack.dismiss();
+      }
+    }
+  });
+  
+  // TODO: Clean up (use new events?)
   $('a.pp-present-modal').live('click', function(evt) {
     evt.preventDefault();
     
@@ -225,6 +261,7 @@ $(function() {
     if (viewStack) viewStack.present();
   });
   
+  // TODO: Clean up (use new events?)
   $('a.pp-dismiss-modal').live('click', function(evt) {
     evt.preventDefault();
     
@@ -234,7 +271,7 @@ $(function() {
     
     if (href === '#') {
       if ($this.parent().hasClass('pp-navigationbar')) {
-        $viewElement = $this.parent().parent().children('.pp-view.active').first();
+        $viewElement = $this.parent().parent().children('.pp-view.pp-active').first();
       } else {
         $viewElement = $this.parents('.pp-view').first();
       }

@@ -7,12 +7,10 @@
 	<title>Pushpop TableView Accessories Demo</title>
 	<link rel="stylesheet" href="../externals/scrollkit/scrollkit.css">
 	<link rel="stylesheet" href="../pushpop.css">
-	<link rel="stylesheet" href="../pushpop-navigationbar/pushpop-navigationbar.css">
 	<link rel="stylesheet" href="pushpop-table-view.css">
 	<script src="../jquery-1.7.2.js"></script>
 	<script src="../externals/scrollkit/scrollkit.js"></script>
 	<script src="../pushpop.js"></script>
-	<script src="../pushpop-navigationbar/pushpop-navigationbar.js"></script>
 	<script src="pushpop-table-view.js"></script>
 	<script>
 	  $(function() {	    
@@ -56,33 +54,26 @@
         window.alert('Editing Accessory Button tapped for row with index: ' + evt.index);
       });
       
-      var $rootNavigationBar = $('#root-navigation-bar');
-	    $rootNavigationBar.delegate('a', 'click', function(evt) {
-	      var $button = $(this);
-	      
-	      if (!$button.hasClass('pp-barbutton-style-blue')) {
-	        $button.addClass('pp-barbutton-style-blue');
-	        tableView.setEditing(true);
-	      }
-	      
-	      else {
-	        $button.removeClass('pp-barbutton-style-blue');
-	        tableView.setEditing(false);
-	      }
-	      
-	      evt.preventDefault();
-	    });
+      var view = $('#root-view')[0].view;
+      view.addBarButtonItem(new Pushpop.Button('Edit', function(button) {
+        if (!tableView.getEditing()) {
+          tableView.setEditing(true);
+          button.setTitle('Done');
+          button.setButtonStyleType(Pushpop.Button.ButtonStyleType.Blue);
+        } else {
+          tableView.setEditing(false);
+          button.setTitle('Edit');
+          button.setButtonStyleType(Pushpop.Button.ButtonStyleType.Black);
+        }
+      }, Pushpop.Button.ButtonAlignmentType.Right));
 	  });
 	</script>
 </head>
 <body>
   <div class="pp-view-stack" id="root-view-stack">
-    <div class="pp-navigationbar" id="root-navigation-bar" data-tap-to-top="true"></div>
+    <div class="pp-navigation-bar" data-tap-to-top="true"></div>
     <div class="pp-view sk-scroll-view" id="root-view" data-view-title="TableView Accessories Demo" data-always-bounce-vertical="true">
-      <div class="pp-navigationbar-buttons">
-        <a class="pp-barbutton pp-barbutton-align-right active" href="#">Edit</a>
-      </div>
-      <ul id="accessories-table-view" class="pp-table-view" data-contains-search-bar="true">
+      <ul class="pp-table-view" id="accessories-table-view" data-contains-search-bar="true">
         
       </ul>
     </div>
