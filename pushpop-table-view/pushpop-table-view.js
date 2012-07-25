@@ -1039,6 +1039,13 @@ Pushpop.TableViewDataSource.prototype = {
     var childDataSource = new Pushpop.TableViewDataSource(childDataSet, this.getDefaultReuseIdentifier());
     childDataSource.setChildDataSourceKey(key);
     
+    // Inherit properties from this parent data source for the new child data source.
+    childDataSource.shouldSelectRowAtIndex = this.shouldSelectRowAtIndex;
+    childDataSource.shouldReloadTableForSearchString = this.shouldReloadTableForSearchString;
+    
+    childDataSource.setFilterFunction(this.getFilterFunction());
+    console.log('here');
+    
     return childDataSource;
   },
   
