@@ -34,40 +34,7 @@ Pushpop.PickerTableView = function PickerTableView(element) {
     var index = evt.index;
     
     var isPickerCell = (index === dataSource.getPickerCellIndex());
-    if (!isPickerCell) return;
-    
-    var viewStack = self.getViewStack();
-    var view = self.getView();
-    
-    if (!viewStack || !view) return;
-    
-    var pickerCellDataSource = self.getPickerCellDataSource();
-    var pickerCellView = self.getPickerCellView();
-    
-    if (pickerCellDataSource) {
-      viewStack.pushNewTableView(function(newTableView) {
-        newTableView.setSearchBar(new Pushpop.TableViewSearchBar(newTableView));
-        newTableView.setDataSource(pickerCellDataSource);
-        
-        newTableView.$bind(Pushpop.TableView.EventType.DidSelectRowAtIndex, function(evt) {
-          if (evt.hasChildDataSource) return;
-        
-          var tableView = evt.tableView;
-          var pickerCellDataSource = tableView.getDataSource();
-          var item = pickerCellDataSource.getFilteredItemAtIndex(evt.index);
-        
-          newTableView.$trigger($.Event(Pushpop.PickerTableView.EventType.DidFinishSelectingItem, { item: item }));
-        });
-        
-        newTableView.getView().$bind(Pushpop.PickerTableView.EventType.DidFinishSelectingItem, function(evt) {
-          self.didFinishSelectingItem(evt.item);
-        });
-      });
-    }
-    
-    else if (pickerCellView) {      
-      viewStack.push(pickerCellView);
-    }
+    if (isPickerCell) self.pushPickerView();
   });
   
   // Listen for tap events on the editing accessory buttons to add items and to toggle
@@ -176,6 +143,43 @@ Pushpop.PickerTableView.prototype.setPickerCellView = function(pickerCellView) {
   pickerCellView.$bind(Pushpop.PickerTableView.EventType.DidFinishSelectingItem, function(evt) {
     self.didFinishSelectingItem(evt.item);
   });
+};
+
+Pushpop.PickerTableView.prototype.pushPickerView = function() {
+  var viewStack = this.getViewStack();
+  var view = this.getView();
+  
+  if (!viewStack || !view) return;
+  
+  var pickerCellDataSource = this.getPickerCellDataSource();
+  var pickerCellView = this.getPickerCellView();
+  
+  var self = this;
+  
+  if (pickerCellDataSource) {
+    viewStack.pushNewTableView(function(newTableView) {
+      newTableView.setSearchBar(new Pushpop.TableViewSearchBar(newTableView));
+      newTableView.setDataSource(pickerCellDataSource);
+      
+      newTableView.$bind(Pushpop.TableView.EventType.DidSelectRowAtIndex, function(evt) {
+        if (evt.hasChildDataSource) return;
+      
+        var tableView = evt.tableView;
+        var pickerCellDataSource = tableView.getDataSource();
+        var item = pickerCellDataSource.getFilteredItemAtIndex(evt.index);
+      
+        newTableView.$trigger($.Event(Pushpop.PickerTableView.EventType.DidFinishSelectingItem, { item: item }));
+      });
+      
+      newTableView.getView().$bind(Pushpop.PickerTableView.EventType.DidFinishSelectingItem, function(evt) {
+        self.didFinishSelectingItem(evt.item);
+      });
+    });
+  }
+  
+  else if (pickerCellView) {      
+    viewStack.push(pickerCellView);
+  }
 };
 
 /**
