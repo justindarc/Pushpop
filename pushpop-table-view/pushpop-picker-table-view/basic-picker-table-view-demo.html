@@ -95,6 +95,14 @@
         
         evt.preventDefault();
 	    });
+	    
+	    pickerTableView.$bind(Pushpop.PickerTableView.EventType.DidAddItemToDataSource, function(evt) {
+        console.log('DidAddItemToDataSource', evt);
+      });
+      
+      pickerTableView.$bind(Pushpop.PickerTableView.EventType.DidRemoveItemFromDataSource, function(evt) {
+        console.log('DidRemoveItemFromDataSource', evt);
+      });
     });
 	</script>
 </head>

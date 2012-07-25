@@ -107,7 +107,9 @@ Pushpop.PickerTableView = function PickerTableView(element) {
 };
 
 Pushpop.PickerTableView.EventType = {
-  DidFinishSelectingItem: 'Pushpop:PickerTableView:DidFinishSelectingItem'
+  DidFinishSelectingItem: 'Pushpop:PickerTableView:DidFinishSelectingItem',
+  DidAddItemToDataSource: 'Pushpop:PickerTableView:DidAddItemToDataSource',
+  DidRemoveItemFromDataSource: 'Pushpop:PickerTableView:DidRemoveItemFromDataSource'
 };
 
 // Create the prototype for the Pushpop.PickerTableView as a "sub-class" of Pushpop.TableView.
@@ -327,6 +329,13 @@ Pushpop.PickerTableViewDataSource.prototype.addItem = function(item) {
   
   dataSet.push(item);
   this.setDataSet(dataSet);
+  
+  var tableView = this.getTableView();
+  tableView.$trigger($.Event(Pushpop.PickerTableView.EventType.DidAddItemToDataSource, {
+    tableView: tableView,
+    dataSource: this,
+    item: item
+  }));
 };
 
 /**
@@ -339,6 +348,14 @@ Pushpop.PickerTableViewDataSource.prototype.removeItem = function(item) {
   for (var i = 0; i < numberOfItems; i++) if (this.getItemAtIndex(i) === item) {
     dataSet.splice(i, 1);
     this.setDataSet(dataSet);
+    
+    var tableView = this.getTableView();
+    tableView.$trigger($.Event(Pushpop.PickerTableView.EventType.DidRemoveItemFromDataSource, {
+      tableView: tableView,
+      dataSource: this,
+      item: item
+    }));
+    
     return;
   }
 };
