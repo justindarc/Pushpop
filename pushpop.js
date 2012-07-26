@@ -581,6 +581,9 @@ Pushpop.View.prototype = {
   setTitle: function(value) {
     this.title = value;
     this.$element.attr('data-view-title', value);
+    
+    var navigationBar = this.getNavigationBar();
+    if (navigationBar) navigationBar.setTitle(value);
   },
   
   /**
