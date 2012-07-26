@@ -1823,20 +1823,14 @@ Pushpop.TextAreaInputTableViewCell.prototype.didReceiveTap = function() {
   
   // Push a new view with a large text area input.
   viewStack.pushNewView(function(newView) {
-    var $textarea = $('<textarea class="pp-text-area-input-table-view-cell-textarea" name="' + name + '">' + value + '</textarea>');
-    var $doneButton = $('<a class="pp-barbutton pp-barbutton-align-right pp-barbutton-style-blue active" href="#">Done</a>');
+    var $textarea = $('<textarea class="pp-text-area-input-table-view-cell-textarea" name="' + name + '">' + value + '</textarea>').appendTo(newView.$element);
     
-    $doneButton.bind('click', function(evt) {
-      evt.preventDefault();
-      
+    newView.setTitle(title);
+    newView.addBarButtonItem(new Pushpop.Button('Done', function(button) {
       self.setValue($textarea.val());
       tableView.reloadData();
       viewStack.pop();
-    });
-    
-    newView.setTitle(title);
-    newView.$navbarButtons = $doneButton;
-    newView.$element.append($textarea);
+    }, Pushpop.Button.ButtonAlignmentType.Right, Pushpop.Button.ButtonStyleType.Blue));
   });
 };
 
@@ -2030,11 +2024,9 @@ Pushpop.DateInputTableViewCell.prototype.didReceiveTap = function() {
   viewStack.pushNewTableView(function(newTableView) {
     newTableView.setDataSource(dataSource);
     
-    var $doneButton = $('<a class="pp-barbutton pp-barbutton-align-right pp-barbutton-style-blue active" href="#">Done</a>');
-    
-    $doneButton.bind('click', function(evt) {
-      evt.preventDefault();
-      
+    var newView = newTableView.getView();
+    newView.setTitle($.trim((data && data.title) ? data.title : 'Date'));
+    newView.addBarButtonItem(new Pushpop.Button('Done', function(button) {
       var value = dataSource.getValuesObject();
       var year = value.year.value;
       var month = value.month.value;
@@ -2043,11 +2035,7 @@ Pushpop.DateInputTableViewCell.prototype.didReceiveTap = function() {
       self.setValue(year + '-' + (month < 10 ? '0' : '') + month + '-' + (day < 10 ? '0' : '') + day);
       tableView.reloadData();
       viewStack.pop();
-    });
-    
-    var newView = newTableView.getView();
-    newView.setTitle($.trim((data && data.title) ? data.title : 'Date'));
-    newView.$navbarButtons = $doneButton;
+    }, Pushpop.Button.ButtonAlignmentType.Right, Pushpop.Button.ButtonStyleType.Blue));
   });
 };
 
@@ -2127,11 +2115,9 @@ Pushpop.TimeInputTableViewCell.prototype.didReceiveTap = function() {
   viewStack.pushNewTableView(function(newTableView) {
     newTableView.setDataSource(dataSource);
     
-    var $doneButton = $('<a class="pp-barbutton pp-barbutton-align-right pp-barbutton-style-blue active" href="#">Done</a>');
-    
-    $doneButton.bind('click', function(evt) {
-      evt.preventDefault();
-      
+    var newView = newTableView.getView();
+    newView.setTitle($.trim((data && data.title) ? data.title : 'Time'));
+    newView.addBarButtonItem(new Pushpop.Button('Done', function(button) {
       var value = dataSource.getValuesObject();
       var hour = value.hour.value;
       var minute = value.minute.value;
@@ -2139,11 +2125,7 @@ Pushpop.TimeInputTableViewCell.prototype.didReceiveTap = function() {
       self.setValue(hour + ':' + minute);
       tableView.reloadData();
       viewStack.pop();
-    });
-    
-    var newView = newTableView.getView();
-    newView.setTitle($.trim((data && data.title) ? data.title : 'Time'));
-    newView.$navbarButtons = $doneButton;
+    }, Pushpop.Button.ButtonAlignmentType.Right, Pushpop.Button.ButtonStyleType.Blue));
   });
 };
 
