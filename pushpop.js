@@ -933,7 +933,6 @@ Pushpop.NavigationBar.prototype = {
   */
   addBarButtonItem: function(barButtonItem, animated) {
     var barStyle = this.getBarStyleType();
-    console.log(barButtonItem.getButtonStyleType());
     if (barButtonItem.getButtonStyleType() === Pushpop.Button.ButtonStyleType.Default) {
       if (barStyle === Pushpop.NavigationBar.BarStyleType.Default) {
          barButtonItem.setButtonStyleType(Pushpop.Button.ButtonStyleType.Default);
