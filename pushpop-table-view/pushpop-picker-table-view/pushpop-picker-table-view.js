@@ -75,6 +75,7 @@ Pushpop.PickerTableView = function PickerTableView(element) {
 
 Pushpop.PickerTableView.EventType = {
   DidFinishSelectingItem: 'Pushpop:PickerTableView:DidFinishSelectingItem',
+  WillPresentPickerCellView: 'Pushpop:PickerTableView:WillPresentPickerCellView',
   DidAddItemToDataSource: 'Pushpop:PickerTableView:DidAddItemToDataSource',
   DidRemoveItemFromDataSource: 'Pushpop:PickerTableView:DidRemoveItemFromDataSource'
 };
@@ -171,13 +172,24 @@ Pushpop.PickerTableView.prototype.pushPickerView = function() {
         newTableView.$trigger($.Event(Pushpop.PickerTableView.EventType.DidFinishSelectingItem, { item: item }));
       });
       
-      newTableView.getView().$bind(Pushpop.PickerTableView.EventType.DidFinishSelectingItem, function(evt) {
+      var newView = newTableView.getView();
+      newView.$bind(Pushpop.PickerTableView.EventType.DidFinishSelectingItem, function(evt) {
         self.didFinishSelectingItem(evt.item);
       });
+      
+      self.$trigger($.Event(Pushpop.PickerTableView.EventType.WillPresentPickerCellView, {
+        pickerTableView: self,
+        pickerCellView: newView
+      }));
     });
   }
   
-  else if (pickerCellView) {      
+  else if (pickerCellView) {
+    this.$trigger($.Event(Pushpop.PickerTableView.EventType.WillPresentPickerCellView, {
+      pickerTableView: this,
+      pickerCellView: pickerCellView
+    }));
+    
     viewStack.push(pickerCellView);
   }
 };

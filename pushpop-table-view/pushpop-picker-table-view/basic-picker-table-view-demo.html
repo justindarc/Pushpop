@@ -93,6 +93,14 @@
         window.alert(JSON.stringify(dataSource.getValuesObject('items')));
       }, Pushpop.Button.ButtonAlignmentType.Right));
 	    
+	    pickerTableView.$bind(Pushpop.PickerTableView.EventType.WillPresentPickerCellView, function(evt) {
+	      console.log('WillPresentPickerCellView', evt);
+	      
+	      evt.pickerCellView.addBarButtonItem(new Pushpop.Button('Add New Item', function(button) {
+	        window.alert('TODO: Implement "Add New Item"');
+	      }, Pushpop.Button.ButtonAlignmentType.Right, Pushpop.Button.ButtonStyleType.Blue));
+	    });
+	    
 	    pickerTableView.$bind(Pushpop.PickerTableView.EventType.DidAddItemToDataSource, function(evt) {
         console.log('DidAddItemToDataSource', evt);
       });
