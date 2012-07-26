@@ -930,10 +930,13 @@ Pushpop.NavigationBar.prototype = {
   */
   addBarButtonItem: function(barButtonItem, animated) {
     var barStyle = this.getBarStyleType();
-    if (barStyle === Pushpop.NavigationBar.BarStyleType.Default) {
-      barButtonItem.setButtonStyleType(Pushpop.Button.ButtonStyleType.Default);
-    } else if (barStyle === Pushpop.NavigationBar.BarStyleType.Black) {
-      barButtonItem.setButtonStyleType(Pushpop.Button.ButtonStyleType.Black);
+    console.log(barButtonItem.getButtonStyleType());
+    if (barButtonItem.getButtonStyleType() === Pushpop.Button.ButtonStyleType.Default) {
+      if (barStyle === Pushpop.NavigationBar.BarStyleType.Default) {
+         barButtonItem.setButtonStyleType(Pushpop.Button.ButtonStyleType.Default);
+      } else if (barStyle === Pushpop.NavigationBar.BarStyleType.Black) {
+        barButtonItem.setButtonStyleType(Pushpop.Button.ButtonStyleType.Black);
+      }
     }
     
     this._barButtonItems.push(barButtonItem);
