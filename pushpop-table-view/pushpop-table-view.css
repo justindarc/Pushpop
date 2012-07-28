@@ -370,6 +370,12 @@
   background: -ms-linear-gradient(top,  #758296 0%,#56677f 100%); /* IE10+ */
   background: linear-gradient(top,  #758296 0%,#56677f 100%); /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#758296', endColorstr='#56677f',GradientType=0 ); /* IE6-9 */
+  color: #fff;
+}
+
+.pp-table-view-search-bar-button:hover {
+  color: #fff;
+  text-decoration: none;
 }
 
 .pp-table-view-search-bar > input:focus + .pp-table-view-search-bar-button {
