@@ -19,14 +19,14 @@
 	    var viewStack = $('#root-view-stack')[0].viewStack;
       
       $('#root-table-view').bind(Pushpop.TableView.EventType.DidSelectRowAtIndex, function(evt) {
-        var index = evt.index;
+        var value = evt.item.value;
         
         viewStack.pushNewTableView(function(newTableView) {
           var dataSet = [{
-            title: 'You tapped Row: ' + index
+            title: 'You tapped Row: ' + value
           }];
           
-          for (var i = 0; i < index; i++) dataSet.push({title: (i + 1) + ''});
+          for (var i = 0; i < value; i++) dataSet.push({title: (i + 1) + ''});
           
           newTableView.setSearchBar(new Pushpop.TableViewSearchBar(newTableView));
           newTableView.setDataSource(new Pushpop.TableViewDataSource(dataSet));
