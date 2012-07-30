@@ -194,9 +194,8 @@
   border-color: rgba(126, 142, 160, 0.75) rgba(166, 177, 188, 1) rgba(163, 175, 184, 1);
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1.1em;
-  line-height: 1em;
   margin: 0;
-  padding: 0.8em 0.2em 0 2em !important;
+  padding: 0.5em 0.2em 0.4em 2em !important;
   position: absolute;
   top: 0.4em;
   right: 0.5em;

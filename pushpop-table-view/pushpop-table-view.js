@@ -35,7 +35,7 @@ Pushpop.TableView = function TableView(element) {
   containsSearchBar = containsSearchBar !== 'false';
   
   var searchBar = null;
-  if (containsSearchBar) searchBar = this._searchBar = new Pushpop.TableViewSearchBar(this);
+  if (containsSearchBar) this.setSearchBar(searchBar = new Pushpop.TableViewSearchBar(this));
   
   var numberOfBufferedCells = this._numberOfBufferedCells;
   var selectionTimeoutDuration = this._selectionTimeoutDuration;
@@ -152,7 +152,7 @@ Pushpop.TableView = function TableView(element) {
       tableView: self,
       tableViewCell: tableViewCell,
       index: index,
-      item: self.getDataSource().getItemAtIndex(index)
+      item: self.getDataSource().getFilteredItemAtIndex(index)
     }));
   });
   
@@ -181,7 +181,7 @@ Pushpop.TableView = function TableView(element) {
       tableView: self,
       tableViewCell: tableViewCell,
       index: index,
-      item: self.getDataSource().getItemAtIndex(index)
+      item: self.getDataSource().getFilteredItemAtIndex(index)
     }));
   });
   
@@ -484,7 +484,7 @@ Pushpop.TableView.prototype = {
           self.triggerEventOnParentTableViews($.Event(Pushpop.TableView.EventType.DidSelectRowAtIndex, {
             tableView: self,
             index: index,
-            item: dataSource.getItemAtIndex(index),
+            item: dataSource.getFilteredItemAtIndex(index),
             hasChildDataSource: true
           }), true);
         }, 1);
@@ -498,7 +498,7 @@ Pushpop.TableView.prototype = {
       self.triggerEventOnParentTableViews($.Event(Pushpop.TableView.EventType.DidSelectRowAtIndex, {
         tableView: self,
         index: index,
-        item: dataSource.getItemAtIndex(index),
+        item: dataSource.getFilteredItemAtIndex(index),
         hasChildDataSource: false
       }), true);
     }, 1);
@@ -948,8 +948,6 @@ Pushpop.TableViewDataSource.prototype = {
     if (!dataSet) return false;
     
     var filterFunction = this.getFilterFunction();
-    var tableView = this.getTableView();
-    
     if (!filterFunction || typeof filterFunction !== 'function' || !searchString) {
       this._lastSearchString = null;
       
@@ -1044,7 +1042,6 @@ Pushpop.TableViewDataSource.prototype = {
     childDataSource.shouldReloadTableForSearchString = this.shouldReloadTableForSearchString;
     
     childDataSource.setFilterFunction(this.getFilterFunction());
-    console.log('here');
     
     return childDataSource;
   },
@@ -1061,7 +1058,12 @@ Pushpop.TableViewDataSource.prototype = {
     Sets the TableView this data source should be bound to.
     @param {Pushpop.TableView} tableView The TableView to bind this data source to.
   */
-  setTableView: function(tableView) { this._tableView = tableView; },
+  setTableView: function(tableView) {
+    this._tableView = tableView;
+  
+    var searchBar = tableView.getSearchBar();
+    if (searchBar) searchBar.setSearchString(this._lastSearchString);
+  },
   
   _defaultReuseIdentifier: 'pp-table-view-cell-default',
   
@@ -1135,7 +1137,7 @@ Pushpop.TableViewDataSource.prototype = {
   */
   setDataSet: function(dataSet) {
     this._dataSet = dataSet;
-    this.shouldReloadTableForSearchString()
+    this.shouldReloadTableForSearchString('');
     
     var tableView = this.getTableView();
     if (tableView) tableView.reloadData();
@@ -1380,7 +1382,13 @@ Pushpop.TableViewSearchBar.prototype = {
     Returns the current search string entered in the search bar.
     @type String
   */
-  getSearchString: function() { return this.$input.val(); }
+  getSearchString: function() { return this.$input.val(); },
+  
+  /**
+    Sets the current search string that should appear in the search bar.
+    @param {String} searchString The search string that should appear in the search bar.
+  */
+  setSearchString: function(searchString) { this.$input.val(searchString); }
 };
 
 /**
