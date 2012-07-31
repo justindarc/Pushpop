@@ -523,10 +523,12 @@ Pushpop.View = function View(element) {
   this.title = $element.attr('data-view-title');
   
   // Set up this view's navigation bar button items.
-  this._barButtonItems = [];
-  $element.find('.pp-navigation-bar-button-items .pp-button').each(function(index, element) {
+  var barButtonItems = this._barButtonItems = [];
+  $element.find('.pp-navigation-bar-button-items > .pp-button').each(function(index, element) {
     self.addBarButtonItem(element.button || new Pushpop.Button(element));
   });
+  
+  $element.find('.pp-navigation-bar-button-items').remove();
   
   // Determine if the back bar button item should be hidden when this view is active.
   var hideBackBarButtonItem = $element.attr('data-hide-back-bar-button-item') || 'false';
@@ -613,6 +615,8 @@ Pushpop.View.prototype = {
     if (this.getActive()) {
       var navigationBar = this.getNavigationBar();
       if (navigationBar) navigationBar.addBarButtonItem(barButtonItem, animated);
+    } else {
+      barButtonItem.remove();
     }
     
     this._barButtonItems.push(barButtonItem);
@@ -688,10 +692,10 @@ Pushpop.View.prototype = {
     var viewStack = this.getViewStack();
     if (!viewStack) return null;
     
-    var $navigationBar = viewStack.$element.children('.pp-navigation-bar').first();
-    if ($navigationBar.length !== 1) return null;
+    var navigationBar = viewStack.$element.children('.pp-navigation-bar')[0];
+    navigationBar = (navigationBar) ? navigationBar.navigationBar : null;
     
-    return $navigationBar[0].navigationBar;
+    return navigationBar;
   },
   
   /**

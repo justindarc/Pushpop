@@ -3,7 +3,7 @@
   =======================
   pp-picker-table-view
 */
-ul.pp-picker-table-view {
+.pp-picker-table-view {
   background: #f7f7f7;
   font-size: 17px;
   line-height: 1.2em;
@@ -13,7 +13,7 @@ ul.pp-picker-table-view {
   padding: 0;
 }
 
-ul.pp-picker-table-view::before {
+.pp-picker-table-view::before {
   background: #f7f7f7;
   content: '';
   position: absolute;
@@ -33,7 +33,7 @@ ul.pp-picker-table-view::before {
   transform: translate(0, 0);
 }
 
-ul.pp-picker-table-view::after {
+.pp-picker-table-view::after {
   background: #f7f7f7;
   content: '';
   position: absolute;
@@ -53,56 +53,55 @@ ul.pp-picker-table-view::after {
   transform: translate(0, 0);
 }
 
-div.pp-table-view-search-bar + ul.pp-picker-table-view::before {
+.pp-table-view-search-bar + .pp-picker-table-view::before {
   background: #d6dde2;
   top: -1067px;
 }
 
 /* Clearfix */
-ul.pp-picker-table-view > li::before,
-ul.pp-picker-table-view > li::after { content: ''; display: table; }
-ul.pp-picker-table-view > li::after { clear: both; }
+.pp-picker-table-view > li::before,
+.pp-picker-table-view > li::after { content: ''; display: table; }
+.pp-picker-table-view > li::after { clear: both; }
 
 /**
   Pushpop.TableViewStyleGrouped
   =============================
   pp-table-view-style-grouped
 */
-ul.pp-picker-table-view.pp-table-view-style-grouped {
+.pp-picker-table-view.pp-table-view-style-grouped {
   background: #ddd;
   padding: 1em;
 }
 
-ul.pp-picker-table-view.pp-table-view-style-grouped::before {
+.pp-picker-table-view.pp-table-view-style-grouped::before {
   background: #ddd;
   top: -1023px;
 }
 
-ul.pp-picker-table-view.pp-table-view-style-grouped::after {
+.pp-picker-table-view.pp-table-view-style-grouped::after {
   background: #ddd;
   bottom: -1023px;
 }
 
-div.pp-table-view-search-bar + ul.pp-picker-table-view.pp-table-view-style-grouped::before {
+.pp-table-view-search-bar + .pp-picker-table-view.pp-table-view-style-grouped::before {
   background: #d6dde2;
   top: -1067px;
+}
+
+.sk-scroll-view-plain .pp-picker-table-view.pp-table-view-style-grouped::before,
+.sk-scroll-view-plain .pp-picker-table-view.pp-table-view-style-grouped::after {
+  background: none;
 }
 
 /**
   Pushpop.TableViewCell (Base Class)
   ==================================
-  pp-table-view-cell
+  pp-table-view-cell-default
 */
-ul.pp-picker-table-view > li {
-  background-color: #f7f7f7;
+.pp-picker-table-view > li {
   border: 1px solid #cacaca;
   border-top: 1px solid #fdfdfd;
-  color: #000;
-  line-height: 1.2em;
-  padding: 0.7em 0.6em;
   position: relative;
-  font-size: 1em;
-  font-weight: bold;
   zoom: 1; /* Trigger "hasLayout" in IE */
   -webkit-backface-visibility: hidden;
   -moz-backface-visibility: hidden;
@@ -121,11 +120,11 @@ ul.pp-picker-table-view > li {
   transition: padding 0.2s linear;
 }
 
-ul.pp-picker-table-view.pp-table-view-editing > li {
+.pp-picker-table-view.pp-table-view-editing > li {
   padding-left: 2.6em;
 }
 
-ul.pp-picker-table-view > li.pp-table-view-selected-state {
+.pp-picker-table-view > .pp-table-view-selected-state {
   background: #058cf5; /* Old browsers */
   background: -moz-linear-gradient(top, rgb(5, 140, 245) 0%, rgb(1, 93, 230) 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgb(5, 140, 245)), color-stop(100%, rgb(1, 93, 230))); /* Chrome,Safari4+ */
