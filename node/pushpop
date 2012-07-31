@@ -1,0 +1,86 @@
+#! /usr/local/bin/node
+
+var program = require('commander');
+var cliff = require('cliff');
+var jsdom = require('jsdom'),
+    document = jsdom.jsdom(),
+    window = document.createWindow();
+
+var Pushpop;
+
+var main = function(classNames) {  
+  program.version('0.1');
+  
+  program.command('new <appname>')
+    .description('Creates a new Pushpop application with the name provided.')
+    .action(function(appname, options) {
+      console.log(appname);
+      console.log('TODO: Implement "new"');
+    });
+  
+  program.command('subclass <superclass> <subclass>')
+    .description('Generates a Pushpop sub-class with the default implementation for the super class provided (see below for available super classes).')
+    .action(function(superClassName, subClassName, options) {
+      var superClass;
+      for (var i = 0, length = classNames.length; i < length; i++) if (superClassName.toLowerCase() === classNames[i].toLowerCase()) {
+        superClass = Pushpop[superClassName];
+        break;
+      }
+      
+      console.log('TODO: Implement "subclass"');
+      console.log(superClass.prototype.constructor.toString());
+    });
+  
+  program.on('--help', function() {
+    var rows = [['', '']];
+    var currentRow = [];
+    for (var i = 0, length = classNames.length; i < length; i++) {
+      currentRow.push('    ' + classNames[i]);
+      if (i % 2 === 1) {
+        rows.push(currentRow);
+        currentRow = [];
+      }
+    }
+    
+    console.log('  Pushpop Classes:', cliff.stringifyRows(rows));
+  });
+  
+  program.parse(process.argv);
+};
+
+// Inject jQuery into the DOM and then load Pushpop and all of its submodules.
+jsdom.jQueryify(window, '../jquery-1.7.2.js', function(window, $) {
+  var loadCount = 0;
+  var scripts = [
+    '../externals/scrollkit/scrollkit.js',
+    '../pushpop.js',
+    '../pushpop-modal-view-stack/pushpop-modal-view-stack.js',
+    '../pushpop-split-view/pushpop-split-view.js',
+    '../pushpop-table-view/pushpop-table-view.js',
+    '../pushpop-table-view/pushpop-picker-table-view/pushpop-picker-table-view.js'
+  ];
+  
+  for (var i = 0, length = scripts.length, tag; i < length; i++) {
+    tag = document.createElement('script');
+    tag.src = scripts[i];
+    tag.onload = function() { loadCount++; };
+    document.body.appendChild(tag);
+  }
+  
+  var interval = setInterval(function() {
+    if (loadCount !== scripts.length) return;
+    
+    clearInterval(interval);
+    
+    Pushpop = window.Pushpop;
+    
+    var classNames = [], firstChar;
+    for (var className in Pushpop) {
+      if (typeof Pushpop[className] === 'function' && (firstChar = className.substring(0, 1)) === firstChar.toUpperCase()) {
+        classNames.push(className);
+      }
+    }
+    
+    main(classNames);
+  }, 100);
+});
