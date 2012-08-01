@@ -1275,24 +1275,24 @@ $(function() {
   $('.pp-navigation-bar').each(function(index, element) { new Pushpop.NavigationBar(element); });
   
   // Handle mouse/touch events globally to trigger button actions.
-  var $window = $(window['addEventListener'] ? window : document.body);
+  var $body = $(document.body);
   
-  $window.delegate('.pp-button', 'click', function(evt) { evt.preventDefault(); });
+  $body.delegate('.pp-button', 'click', function(evt) { evt.preventDefault(); });
   
-  $window.delegate('.pp-button', !!('ontouchstart' in window) ? 'touchstart' : 'mousedown', function(evt) {
+  $body.delegate('.pp-button', !!('ontouchstart' in window) ? 'touchstart' : 'mousedown', function(evt) {
     var button = this.button;
     if (!button) return;
     button.setActive(true);
   });
   
-  $window.delegate('.pp-button', !!('ontouchmove' in window) ? 'touchmove' : 'mousemove', function(evt) {
+  $body.delegate('.pp-button', !!('ontouchmove' in window) ? 'touchmove' : 'mousemove', function(evt) {
     var button = this.button;
     if (!button || !button.getActive()) return;
     
     button.setActive(false);
   });
   
-  $window.delegate('.pp-button', !!('ontouchend' in window) ? 'touchend' : 'mouseup', function(evt) {
+  $body.delegate('.pp-button', !!('ontouchend' in window) ? 'touchend' : 'mouseup', function(evt) {
     var button = this.button;
     if (!button || !button.getActive()) return;
     
@@ -1301,7 +1301,7 @@ $(function() {
   });
   
   // Handle actions for buttons set up to automatically push/pop views.
-  $window.delegate('.pp-button.pp-push, .pp-button.pp-pop', Pushpop.Button.EventType.DidTriggerAction, function(evt) {
+  $body.delegate('.pp-button.pp-push, .pp-button.pp-pop', Pushpop.Button.EventType.DidTriggerAction, function(evt) {
     var button = evt.button;
     var $element = button.$element;
     var href = $element.attr('href');
