@@ -34,6 +34,25 @@ Pushpop.EventType = {
 Pushpop.defaultTransition = 'slide-horizontal';
 
 /**
+
+*/
+Pushpop.Util = {  
+  _dashedToCamelCaseRegExp: /(\-[a-z])/g,
+  _dashedToCamelCaseReplacer: function($1) { return $1.toUpperCase().replace('-', ''); },
+  convertDashedStringToCamelCase: function(dashedString) {
+    return new String(dashedString).replace(this._dashedToCamelCaseRegExp, this._dashedToCamelCaseReplacer);
+  },
+  
+  _camelCaseToDashedRegExp: /([A-Z])/g,
+  _camelCaseToDashedReplacer: function($1) { return '-' + $1.toLowerCase(); },
+  convertCamelCaseStringToDashed: function(camelCaseString) {
+    var dashedString = new String(camelCaseString).replace(this._camelCaseToDashedRegExp, this._camelCaseToDashedReplacer);
+    if (dashedString.length > 0 && dashedString.charAt(0) === '-') dashedString = dashedString.slice(1);
+    return dashedString;
+  }
+};
+
+/**
   Traverses the parents of the specified element and returns the closest Pushpop.ViewStack.
   @param {HTMLElement} element The element for which to find the closest parent view stack.
   @type Pushpop.ViewStack
@@ -1267,12 +1286,37 @@ Pushpop.Button.prototype = {
 }
 
 $(function() {
-  $('.pp-button').each(function(index, element) { new Pushpop.Button(element); });
-  $('.pp-view').each(function(index, element) { new Pushpop.View(element); });
-  $('.pp-view-stack').each(function(index, element) { new Pushpop.ViewStack(element); });
-  if (Pushpop.ModalViewStack) $('.pp-modal-view-stack').each(function(index, element) { new Pushpop.ModalViewStack(element); });
+  var buttons = Pushpop.buttons = Pushpop.buttons || {};
+  var views = Pushpop.views = Pushpop.views || {};
+  var viewStacks = Pushpop.viewStacks = Pushpop.viewStacks || {};
+  var navigationBars = Pushpop.navigationBars = Pushpop.navigationBars || {};
+  
+  $('.pp-button').each(function(index, element) {
+    var button = new Pushpop.Button(element);
+    if (element.id) buttons[Pushpop.Util.convertDashedStringToCamelCase(element.id)] = button;
+  });
+  
+  $('.pp-view').each(function(index, element) {
+    var view = new Pushpop.View(element);
+    if (element.id) views[Pushpop.Util.convertDashedStringToCamelCase(element.id)] = view;
+  });
+  
+  $('.pp-view-stack').each(function(index, element) {
+    var viewStack = new Pushpop.ViewStack(element);
+    if (element.id) viewStacks[Pushpop.Util.convertDashedStringToCamelCase(element.id)] = viewStack;
+  });
+  
+  if (Pushpop.ModalViewStack) $('.pp-modal-view-stack').each(function(index, element) {
+    var viewStack = new Pushpop.ModalViewStack(element);
+    if (element.id) viewStacks[Pushpop.Util.convertDashedStringToCamelCase(element.id)] = viewStack;
+  });
+  
   if (Pushpop.SplitView) $('.pp-split-view').each(function(index, element) { new Pushpop.SplitView(element); });
-  $('.pp-navigation-bar').each(function(index, element) { new Pushpop.NavigationBar(element); });
+  
+  $('.pp-navigation-bar').each(function(index, element) {
+    var navigationBar = new Pushpop.NavigationBar(element);
+    if (element.id) navigationBars[Pushpop.Util.convertDashedStringToCamelCase(element.id)] = navigationBar;
+  });
   
   // Handle mouse/touch events globally to trigger button actions.
   var $body = $(document.body);

@@ -2140,4 +2140,11 @@ Pushpop.TimeInputTableViewCell.prototype.didReceiveTap = function() {
 // Register the prototype for Pushpop.TimeInputTableViewCell as a reusable cell type.
 Pushpop.TableView.registerReusableCellPrototype(Pushpop.TimeInputTableViewCell.prototype);
 
-$(function() { $('.pp-table-view').each(function(index, element) { new Pushpop.TableView(element); }); });
+$(function() {
+  var tableViews = Pushpop.tableViews = Pushpop.tableViews || {};
+  
+  $('.pp-table-view').each(function(index, element) {
+    var tableView = new Pushpop.TableView(element);
+    if (element.id) tableViews[Pushpop.Util.convertDashedStringToCamelCase(element.id)] = tableView;
+  });
+});

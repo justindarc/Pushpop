@@ -376,4 +376,11 @@ Pushpop.PickerTableViewDataSource.prototype.removeItem = function(item) {
   }
 };
 
-$(function() { $('.pp-picker-table-view').each(function(index, element) { new Pushpop.PickerTableView(element); }); });
+$(function() {
+  var tableViews = Pushpop.tableViews = Pushpop.tableViews || {};
+  
+  $('.pp-picker-table-view').each(function(index, element) {
+    var tableView = new Pushpop.PickerTableView(element);
+    if (element.id) tableViews[Pushpop.Util.convertDashedStringToCamelCase(element.id)] = tableView;
+  });
+});
