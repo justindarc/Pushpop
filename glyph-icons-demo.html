@@ -5,27 +5,26 @@
 	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<meta name="apple-mobile-web-app-capable" content="yes">
   <title>Pushpop Glyphs Demo</title>
-	<link rel="stylesheet" href="pushpop-glyphs.css">
+	<link rel="stylesheet" href="pushpop.css">
 	<style>
 	  html {
-	    background: #555 url(../noise.png);
+	    background: #555 url(noise.png);
 	    color: #ddd;
-	    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.8), 0 1px 0 rgba(255, 255, 255, 0.15);
+	    overflow: auto;
 	  }
 	  
 	  body {
-	    margin: 2em;
+	    left: -480px;
+	    margin: 2em 0 2em 50%;
+	    overflow: visible;
+      width: 960px;
 	  }
 	  
 	  [class^='pp-icon-'], [class*=' pp-icon-'] {
 	    font-size: 24px;
 	    position: absolute;
 	    -webkit-transition: -webkit-transform 0.2s ease;
-	  }
-	  
-	  p:hover [class^='pp-icon-'], p:hover [class*=' pp-icon-'] {
-	    -webkit-transform: translate(100px, 0) scale(4);
 	  }
 	  
 	  p {
@@ -35,6 +34,10 @@
 	  
 	  p > * {
 	    vertical-align: middle;
+	  }
+	  
+	  p:hover [class^='pp-icon-'], p:hover [class*=' pp-icon-'] {
+	    -webkit-transform: translate(100px, 0) scale(4);
 	  }
 	  
 	  span {
