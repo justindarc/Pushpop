@@ -946,6 +946,7 @@
   background: linear-gradient(top,  #ed8288 0%,#c83640 50%,#be1623 51%,#bd1421 100%); /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ed8288', endColorstr='#bd1421',GradientType=0 ); /* IE6-9 */
 	border: 1px solid rgba(0, 0, 0, 0.5);
+	color: #fff;
 	cursor: pointer;
 	display: inline-block;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -955,8 +956,13 @@
 	top: 0;
 	right: 0;
 	padding: 0.3em 0 0.25em;
-	margin: 0.5em;
+	margin: 0.45em 0.5em 0.5em;
 	width: 4.25em;
+  outline: none;
+  overflow: hidden;
+  text-decoration: none;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.75);
+  white-space: nowrap;
 	zoom: 1; /* Trigger "hasLayout" in IE */
 	-webkit-border-radius: 0.5em;
 	-moz-border-radius: 0.5em;
@@ -995,13 +1001,12 @@
 }
 
 .pp-table-view-cell-accessory-confirm-delete-button::after {
-  color: #fff;
   content: 'Delete';
-  display: inline-block;
+  position: absolute;
+  top: 0.25em;
+  margin: 0;
+  width: 4.25em;
   text-align: center;
-	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.75);
-	width: 4.25em;
-	line-height: 2em;
 }
 
 /**
