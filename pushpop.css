@@ -234,6 +234,16 @@ li[class^='pp-icon-'].icon-large::before, li[class*=' pp-icon-'].icon-large::bef
   box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.3), inset 0 1px 0 0 rgba(0, 0, 0, 0.1);
   visibility: visible;
   opacity: 1;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  -o-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  -o-transform: translate(0, 0);
+  transform: translate(0, 0);
   -webkit-transition: opacity 0.2s linear 0.1s;
   -moz-transition: opacity 0.2s linear 0.1s;
   -ms-transition: opacity 0.2s linear 0.1s;
