@@ -193,6 +193,7 @@ li[class^='pp-icon-'].icon-large::before, li[class*=' pp-icon-'].icon-large::bef
 .pp-icon-rewind::before                                         { content: '\f015'; }
 .pp-icon-fast-forward::before                                   { content: '\f016'; }
 .pp-icon-compose::before                                        { content: '\f017'; }
+.pp-icon-pull-to-refresh::before                                { content: '\f018'; }
 
 /**
   Pushpop.Button
