@@ -176,7 +176,7 @@ li[class^='pp-icon-'].icon-large::before, li[class*=' pp-icon-'].icon-large::bef
 .pp-icon-action::before                                         { content: '\f004'; }
 .pp-icon-documents::before                                      { content: '\f005'; }
 .pp-icon-document-count::before                                 { content: '\f006'; }
-.pp-icon-close::before                                          { content: '\f007'; }
+.pp-icon-clear::before                                          { content: '\f007'; }
 .pp-icon-search::before                                         { content: '\f008'; }
 .pp-icon-reload::before                                         { content: '\f009'; }
 .pp-icon-trash::before                                          { content: '\f00a'; }
