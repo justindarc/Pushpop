@@ -11,6 +11,16 @@
   position: relative;
   margin: 0;
   padding: 0;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  -o-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  -o-transform: translate(0, 0);
+  transform: translate(0, 0);
 }
 
 .pp-table-view::before {
@@ -154,9 +164,20 @@
   font-size: 1em;
   width: 100%;
   height: 42px;
+  overflow: hidden;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   border-radius: 0;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  -o-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  -o-transform: translate(0, 0);
+  transform: translate(0, 0);
 }
 
 .pp-table-view-search-bar::before {
@@ -179,7 +200,7 @@
   font-size: 1.1em;
   outline: none;
   margin: 5px 7px;
-  padding: 7px 7px 7px 28px;
+  padding: 7px 7px 6px 28px;
   position: absolute;
   top: 0;
   right: 0;
@@ -371,6 +392,7 @@
   pp-table-view-cell-default
 */
 .pp-table-view > li {
+  background: #f7f7f7;
   border: 1px solid #cacaca;
   border-top: 1px solid #fdfdfd;
   position: relative;
@@ -665,6 +687,16 @@
   left: 0;
   width: auto;
   height: auto;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  -o-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  -o-transform: translate(0, 0);
+  transform: translate(0, 0);
 }
 
 /**
@@ -821,7 +853,6 @@
   right: 0;
   width: 2em;
   height: 2em;
-  text-align: center;
   -webkit-backface-visibility: hidden;
   -moz-backface-visibility: hidden;
   -ms-backface-visibility: hidden;
@@ -835,7 +866,7 @@
 }
 
 .pp-table-view-cell-accessory::after {
-  margin-left: 0.25em;
+  margin-left: 0.8em;
 }
 
 .pp-table-view-selected-state > .pp-table-view-cell-accessory::after {
@@ -989,7 +1020,6 @@
   left: 0;
   width: 2em;
   height: 2em;
-  text-align: center;
   visibility: hidden;
   opacity: 0;
   -webkit-backface-visibility: hidden;
@@ -1017,6 +1047,10 @@
   -ms-transition-delay: 0s;
   -o-transition-delay: 0s;
   transition-delay: 0s;
+}
+
+.pp-table-view-cell-editing-accessory::after {
+  margin-left: 0.6em;
 }
 
 /**

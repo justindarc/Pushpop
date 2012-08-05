@@ -39,7 +39,7 @@ Pushpop.TableView = function TableView(element) {
   
   var numberOfBufferedCells = this._numberOfBufferedCells;
   var selectionTimeoutDuration = this._selectionTimeoutDuration;
-  var lastOffset = -scrollView.y;
+  var lastOffset = -scrollView.getScrollOffset().y;
   var topMargin = window.parseInt($element.css('margin-top'), 10);
   
   // Render table view cells "virtually" when the view is scrolled.
@@ -223,6 +223,7 @@ Pushpop.TableView = function TableView(element) {
     
     tableViewCell.didReceiveTap();
     self.selectRowAtIndex(this.tableViewCell.getIndex());
+    evt.preventDefault();
   });
   
   // Create a new data source from a data set URL.
