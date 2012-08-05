@@ -24,7 +24,7 @@
 <glyph unicode="&#x202f;" horiz-adv-x="324" />
 <glyph unicode="&#x205f;" horiz-adv-x="406" />
 <glyph unicode="&#xe000;" horiz-adv-x="1024" d="M0 0z" />
-<glyph unicode="&#xf000;" horiz-adv-x="976" d="M0 225l502 531l-502 528l225 252l752 -780l-752 -756z" />
+<glyph unicode="&#xf000;" horiz-adv-x="960" d="M0 193l578 575l-578 575l193 193l768 -768l-768 -768z" />
 <glyph unicode="&#xf001;" d="M0 633v366h1624v-366h-1624z" />
 <glyph unicode="&#xf002;" d="M0 612v400h612v612h400v-612h612v-400h-612v-612h-400v612h-612z" />
 <glyph unicode="&#xf003;" horiz-adv-x="1454" d="M74 714q35 69 98 78q73 11 123 -65l215 -299q26 -21 53 0l567 946q37 77 116 79q73 2 110 -59q18 -28 18 -68t-26 -87l-676 -1133q-41 -64 -112 -70q-73 -6 -132 70l-348 459q-40 78 -6 149z" />

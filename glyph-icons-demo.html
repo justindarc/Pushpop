@@ -5,27 +5,26 @@
 	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<meta name="apple-mobile-web-app-capable" content="yes">
   <title>Pushpop Glyphs Demo</title>
-	<link rel="stylesheet" href="pushpop-glyphs.css">
+	<link rel="stylesheet" href="pushpop.css">
 	<style>
 	  html {
-	    background: #555 url(../noise.png);
+	    background: #555 url(noise.png);
 	    color: #ddd;
-	    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.8), 0 1px 0 rgba(255, 255, 255, 0.15);
+	    overflow: auto;
 	  }
 	  
 	  body {
-	    margin: 2em;
+	    left: -480px;
+	    margin: 2em 0 2em 50%;
+	    overflow: visible;
+      width: 960px;
 	  }
 	  
 	  [class^='pp-icon-'], [class*=' pp-icon-'] {
 	    font-size: 24px;
 	    position: absolute;
 	    -webkit-transition: -webkit-transform 0.2s ease;
-	  }
-	  
-	  p:hover [class^='pp-icon-'], p:hover [class*=' pp-icon-'] {
-	    -webkit-transform: translate(100px, 0) scale(4);
 	  }
 	  
 	  p {
@@ -35,6 +34,10 @@
 	  
 	  p > * {
 	    vertical-align: middle;
+	  }
+	  
+	  p:hover [class^='pp-icon-'], p:hover [class*=' pp-icon-'] {
+	    -webkit-transform: translate(100px, 0) scale(4);
 	  }
 	  
 	  span {
@@ -51,7 +54,7 @@
   <p><span>.pp-icon-action</span><i class="pp-icon-action"></i></p>
   <p><span>.pp-icon-documents</span><i class="pp-icon-documents"></i></p>
   <p><span>.pp-icon-document-count</span><i class="pp-icon-document-count"></i></p>
-  <p><span>.pp-icon-close</span><i class="pp-icon-close"></i></p>
+  <p><span>.pp-icon-clear</span><i class="pp-icon-clear"></i></p>
   <p><span>.pp-icon-search</span><i class="pp-icon-search"></i></p>
   <p><span>.pp-icon-reload</span><i class="pp-icon-reload"></i></p>
   <p><span>.pp-icon-trash</span><i class="pp-icon-trash"></i></p>
