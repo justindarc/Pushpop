@@ -122,10 +122,22 @@ Pushpop.TableView = function TableView(element) {
   });
   
   // Handle case when table view is scrolled to the top (e.g.: tapping top of navigation bar).
-  scrollView.$element.bind(ScrollKit.ScrollView.EventType.WillScrollToTop, function(evt) {    
-    var firstCellElement = $element.children('li:first-child')[0];
-    if (firstCellElement) firstCellElement.tableViewCell.setIndex(0);
-  }).bind(ScrollKit.ScrollView.EventType.DidScrollToTop, function(evt) { self.reloadData(); });
+  var view = this.getView();
+  if (view) {
+    view.$bind(ScrollKit.ScrollView.EventType.WillScrollToTop, function(evt) {    
+      var firstCellElement = $element.children('li:first-child')[0];
+      if (firstCellElement) firstCellElement.tableViewCell.setIndex(0);
+    });
+    view.$bind(ScrollKit.ScrollView.EventType.DidScrollToTop, function(evt) { self.reloadData(); });
+  }
+  
+  // Re-calculate the visible height of the table view when the view has been presented.
+  if (view) {
+    view.$bind(Pushpop.EventType.WillPresentView, function(evt) {
+      var visibleHeight = self.getVisibleHeight();
+      if (visibleHeight !== self.recalculateVisibleHeight()) self.reloadData();
+    });
+  }
   
   // Handle mouse/touch events to allow the user to tap accessory buttons.
   var isPendingAccessoryButtonTap = false;
@@ -568,14 +580,14 @@ Pushpop.TableView.prototype = {
     
     var scrollView = this.scrollView;
     
-    // Scroll to the top of the table view without animating.
-    scrollView.setScrollOffset({ x: 0, y: 0 });
-    
     // Set the scroll view margin.
     scrollView.getScrollContent().setMargin({
       top: 0,
       bottom: hiddenCellCount * this.getRowHeight()
     });
+    
+    // Scroll to the top of the table view without animating.
+    scrollView.setScrollOffset({ x: 0, y: 0 });
   },
   
   /**
@@ -1325,10 +1337,10 @@ Pushpop.TableViewSearchBar = function TableViewSearchBar(tableView) {
     }, 0);
   });
   $input.bind('blur', function(evt) { $overlay.removeClass('pp-active'); $clearButton.removeClass('pp-active'); });
-  $cancelButton.bind('mousedown touchstart', function(evt) { evt.stopPropagation(); evt.preventDefault(); });
-  $cancelButton.bind('mouseup touchend', function(evt) { $input.val(null).trigger('keyup').trigger('blur'); });
-  $clearButton.bind('mousedown touchstart', function(evt) { evt.stopPropagation(); evt.preventDefault(); });
-  $clearButton.bind('mouseup touchend', function(evt) { $input.val(null).trigger('keyup'); });
+  $cancelButton.bind('mousedown touchstart', function(evt) { evt.stopImmediatePropagation(); evt.preventDefault(); });
+  $cancelButton.bind('click', function(evt) { evt.preventDefault(); $input.val(null).trigger('keyup').trigger('blur'); });
+  $clearButton.bind('mousedown touchstart', function(evt) { evt.stopImmediatePropagation(); evt.preventDefault(); });
+  $clearButton.bind('click', function(evt) { evt.preventDefault(); $input.val(null).trigger('keyup'); });
   $overlay.bind('mousedown touchstart', function(evt) { evt.stopPropagation(); evt.preventDefault(); });
   $overlay.bind('mouseup touchend', function(evt) { $input.trigger('blur'); });
   

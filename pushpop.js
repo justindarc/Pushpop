@@ -227,6 +227,28 @@ Pushpop.ViewStack.prototype = {
     var $oldActiveViewElement = oldActiveView.$element;
     var $newActiveViewElement = newActiveView.$element;
     
+    this.views.push(newActiveView);
+
+    $newActiveViewElement.bind('webkitTransitionEnd transitionend oTransitionEnd transitionEnd', this.handleEvent);
+    
+		var transition;
+		if (transitionOrCallback) {
+			if (typeof transitionOrCallback === 'function') {
+				this.callback = transitionOrCallback;
+			} else {
+				transition = transitionOrCallback;
+				this.callback = callback;
+			}
+		}
+
+    transition = newActiveView.transition = transition || newActiveView.transition || Pushpop.defaultTransition;
+    
+    $oldActiveViewElement.addClass('push ' + transition);
+    $newActiveViewElement.addClass('push ' + transition);
+    
+    oldActiveView.forceReflow();
+    newActiveView.forceReflow();
+    
     // Trigger an event indicating that the new view is about to be pushed.
     $newActiveViewElement.trigger($.Event(Pushpop.EventType.WillPushView, {
       view: newActiveView
@@ -269,28 +291,6 @@ Pushpop.ViewStack.prototype = {
         action: 'parent-push'
       }));
     });
-    
-    this.views.push(newActiveView);
-
-    $newActiveViewElement.bind('webkitTransitionEnd transitionend oTransitionEnd transitionEnd', this.handleEvent);
-    
-		var transition;
-		if (transitionOrCallback) {
-			if (typeof transitionOrCallback === 'function') {
-				this.callback = transitionOrCallback;
-			} else {
-				transition = transitionOrCallback;
-				this.callback = callback;
-			}
-		}
-
-    transition = newActiveView.transition = transition || newActiveView.transition || Pushpop.defaultTransition;
-    
-    $oldActiveViewElement.addClass('push ' + transition);
-    $newActiveViewElement.addClass('push ' + transition);
-    
-    oldActiveView.forceReflow();
-    newActiveView.forceReflow();
     
     $oldActiveViewElement.addClass('transition');
     $newActiveViewElement.addClass('transition');
@@ -357,6 +357,16 @@ Pushpop.ViewStack.prototype = {
     var $oldActiveViewElement = oldActiveView.$element;
     var $newActiveViewElement = newActiveView.$element;
     
+    $newActiveViewElement.bind('webkitTransitionEnd transitionend oTransitionEnd transitionEnd', this.handleEvent);
+    
+    transition = newActiveView.transition = transition || oldActiveView.transition || Pushpop.defaultTransition;
+    
+    $oldActiveViewElement.addClass('pop ' + transition);
+    $newActiveViewElement.addClass('pop ' + transition);
+    
+    oldActiveView.forceReflow();
+    newActiveView.forceReflow();
+    
     // Trigger an event indicating that the previous view is about to be popped.
     $oldActiveViewElement.trigger($.Event(Pushpop.EventType.WillPopView, {
       view: oldActiveView
@@ -399,16 +409,6 @@ Pushpop.ViewStack.prototype = {
         action: 'parent-pop'
       }));
     });
-    
-    $newActiveViewElement.bind('webkitTransitionEnd transitionend oTransitionEnd transitionEnd', this.handleEvent);
-    
-    transition = newActiveView.transition = transition || oldActiveView.transition || Pushpop.defaultTransition;
-    
-    $oldActiveViewElement.addClass('pop ' + transition);
-    $newActiveViewElement.addClass('pop ' + transition);
-    
-    oldActiveView.forceReflow();
-    newActiveView.forceReflow();
     
     $oldActiveViewElement.addClass('transition');
     $newActiveViewElement.addClass('transition');
