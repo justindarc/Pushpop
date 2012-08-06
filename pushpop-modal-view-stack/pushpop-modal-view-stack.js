@@ -181,12 +181,15 @@ Pushpop.ModalViewStack.prototype.dismiss = function() {
     action: 'modal-dismiss'
   }));
   
-  this.$element.removeClass('pp-active');
-  
-  activeView.$trigger($.Event(Pushpop.EventType.DidDismissView, {
-    view: activeView,
-    action: 'modal-dismiss'
-  }));
+  var self = this;
+  window.setTimeout(function() {
+    self.$element.removeClass('pp-active');
+
+    activeView.$trigger($.Event(Pushpop.EventType.DidDismissView, {
+      view: activeView,
+      action: 'modal-dismiss'
+    }));
+  }, 50);
 };
 
 Pushpop.ModalViewStack.prototype._presentationStyle = Pushpop.ModalViewStack.PresentationStyleType.FormSheet;
