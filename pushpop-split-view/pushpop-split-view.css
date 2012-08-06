@@ -15,6 +15,11 @@
   left: 0;
   width: 320px;
   height: 100%;
+  -webkit-perspective: none;
+  -moz-perspective: none;
+  -ms-perspective: none;
+  -o-perspective: none;
+  perspective: none;
 }
 
 .pp-split-view > .pp-split-view-stack-detail {
@@ -23,4 +28,9 @@
   right: 0;
   width: auto;
   height: 100%;
+  -webkit-perspective: none;
+  -moz-perspective: none;
+  -ms-perspective: none;
+  -o-perspective: none;
+  perspective: none;
 }
