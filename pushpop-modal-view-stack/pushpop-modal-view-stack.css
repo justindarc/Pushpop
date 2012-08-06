@@ -23,34 +23,14 @@
   transform: translate(0, 0);
 }
 
-.pp-modal-view-stack .pp-navigation-bar {
-  visibility: hidden;
-  opacity: 0;
-  -webkit-transition: visibility 0s linear 0.4s, opacity 0s ease 0.4s;
-  -moz-transition: visibility 0s linear 0.4s, opacity 0s ease 0.4s;
-  -ms-transition: visibility 0s linear 0.4s, opacity 0s ease 0.4s;
-  -o-transition: visibility 0s linear 0.4s, opacity 0s ease 0.4s;
-  transition: visibility 0s linear 0.4s, opacity 0s ease 0.4s;
-}
-
-.pp-modal-view-stack.pp-active .pp-navigation-bar {
-  visibility: visible;
-  opacity: 1;
-  -webkit-transition-delay: 0s;
-  -moz-transition-delay: 0s;
-  -ms-transition-delay: 0s;
-  -o-transition-delay: 0s;
-  transition-delay: 0s;
-}
-
 .pp-modal-presentation-style-full-screen {
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
   margin: 0;
-  width: auto;
-  height: auto;
+  width: 100%;
+  height: 100%;
 }
 
 .pp-modal-presentation-style-page-sheet {
@@ -59,7 +39,7 @@
   left: 50%;
   margin: 0 0 0 -384px;
   width: 768px;
-  height: auto;
+  height: 100%;
 }
 
 .pp-modal-presentation-style-form-sheet {
@@ -81,12 +61,13 @@
     bottom: 0;
     left: 0;
     margin: 0;
-    width: auto;
-    height: auto;
+    width: 100%;
+    height: 100%;
   }
 }
 
 .pp-modal-transition-style-cover-vertical {
+  height: 0;
   visibility: hidden;
   opacity: 0;
   -webkit-transform: translate3d(0, 100%, 0);
@@ -94,11 +75,11 @@
   -ms-transform: translate(0, 100%);
   -o-transform: translate(0, 100%);
   transform: translate(0, 100%);
-  -webkit-transition: visibility 0s linear 0.4s, opacity 0.15s ease 0.15s, -webkit-transform 0.3s ease 0s;
-  -moz-transition: visibility 0s linear 0.4s, opacity 0.15s ease 0.15s, -moz-transform 0.3s ease 0s;
-  -ms-transition: visibility 0s linear 0.4s, opacity 0.15s ease 0.15s, -ms-transform 0.3s ease 0s;
-  -o-transition: visibility 0s linear 0.4s, opacity 0.15s ease 0.15s, -o-transform 0.3s ease 0s;
-  transition: visibility 0s linear 0.4s, opacity 0.15s ease 0.15s, transform 0.3s ease 0s;
+  -webkit-transition: height 0s linear 0.4s, visibility 0s linear 0.4s, opacity 0.15s ease 0.15s, -webkit-transform 0.3s ease 0s;
+  -moz-transition: height 0s linear 0.4s, visibility 0s linear 0.4s, opacity 0.15s ease 0.15s, -moz-transform 0.3s ease 0s;
+  -ms-transition: height 0s linear 0.4s, visibility 0s linear 0.4s, opacity 0.15s ease 0.15s, -ms-transform 0.3s ease 0s;
+  -o-transition: height 0s linear 0.4s, visibility 0s linear 0.4s, opacity 0.15s ease 0.15s, -o-transform 0.3s ease 0s;
+  transition: height 0s linear 0.4s, visibility 0s linear 0.4s, opacity 0.15s ease 0.15s, transform 0.3s ease 0s;
 }
 
 .pp-modal-transition-style-cover-vertical.pp-active {
@@ -109,11 +90,32 @@
   -ms-transform: translate(0, 0);
   -o-transform: translate(0, 0);
   transform: translate(0, 0);
-  -webkit-transition-delay: 0s;
-  -moz-transition-delay: 0s;
-  -ms-transition-delay: 0s;
-  -o-transition-delay: 0s;
-  transition-delay: 0s;
+  -webkit-transition: height 0s linear 0s, visibility 0s linear 0.1s, opacity 0.15s ease 0.1s, -webkit-transform 0.3s ease 0.1s;
+  -moz-transition: height 0s linear 0s, visibility 0s linear 0.1s, opacity 0.15s ease 0.1s, -moz-transform 0.3s ease 0.1s;
+  -ms-transition: height 0s linear 0s, visibility 0s linear 0.1s, opacity 0.15s ease 0.1s, -ms-transform 0.3s ease 0.1s;
+  -o-transition: height 0s linear 0s, visibility 0s linear 0.1s, opacity 0.15s ease 0.1s, -o-transform 0.3s ease 0.1s;
+  transition: height 0s linear 0s, visibility 0s linear 0.1s, opacity 0.15s ease 0.1s, transform 0.3s ease 0.1s;
+}
+
+.pp-modal-transition-style-cover-vertical.pp-modal-presentation-style-full-screen.pp-active {
+  height: 100%;
+}
+
+.pp-modal-transition-style-cover-vertical.pp-modal-presentation-style-page-sheet.pp-active {
+  height: 100%;
+}
+
+.pp-modal-transition-style-cover-vertical.pp-modal-presentation-style-form-sheet.pp-active {
+  height: 620px;
+}
+
+/* On screens smaller than 768px (e.g.: phones) all presentation styles should be full screen. */
+@media (max-width: 768px) {
+  .pp-modal-transition-style-cover-vertical.pp-modal-presentation-style-full-screen.pp-active,
+  .pp-modal-transition-style-cover-vertical.pp-modal-presentation-style-page-sheet.pp-active,
+  .pp-modal-transition-style-cover-vertical.pp-modal-presentation-style-form-sheet.pp-active {
+    height: 100%;
+  }
 }
 
 .pp-modal-view-stack-backdrop {
