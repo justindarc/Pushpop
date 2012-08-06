@@ -1303,8 +1303,33 @@ Pushpop.TableViewSearchBar = function TableViewSearchBar(tableView) {
   var $clearButton = this.$clearButton = $('<a class="pp-table-view-search-bar-clear-button" href="#"/>').appendTo($element);
   var $overlay = this.$overlay = $('<div class="pp-table-view-search-bar-overlay"/>');
   
+  var willClickCancel = false;
+  var willClickClear = false;
   var willFocus = false;
   
+  $element.delegate('a', 'click', function(evt) { evt.preventDefault(); });
+  $element.delegate('a', !!('ontouchstart' in window) ? 'touchstart' : 'mousedown', function(evt) {
+    evt.stopImmediatePropagation();
+    evt.preventDefault();
+    
+    var $button = $(this);
+    if ($button.hasClass('pp-table-view-search-bar-button')) willClickCancel = true;
+    else if ($button.hasClass('pp-table-view-search-bar-clear-button')) willClickClear = true;
+  });
+  $element.delegate('a', !!('ontouchmove' in window) ? 'touchmove' : 'mousemove', function(evt) {
+    if (willClickCancel || willClickClear) willClickCancel = willClickClear = false;
+  });
+  $element.delegate('a', !!('ontouchend' in window) ? 'touchend' : 'mouseup', function(evt) {
+    if (willClickCancel) {
+      willClickCancel = false;
+      $input.val(null).trigger('keyup').trigger('blur');
+    }
+    
+    else if (willClickClear) {
+      willClickClear = false;
+      $input.val(null).trigger('keyup');
+    }
+  });
   $input.bind('mousedown touchstart', function(evt) {
     if ($input.is(':focus')) {
       evt.stopPropagation();
@@ -1339,13 +1364,8 @@ Pushpop.TableViewSearchBar = function TableViewSearchBar(tableView) {
     }, 0);
   });
   $input.bind('blur', function(evt) { $overlay.removeClass('pp-active'); $clearButton.removeClass('pp-active'); });
-  $cancelButton.bind('mousedown touchstart', function(evt) { evt.stopImmediatePropagation(); evt.preventDefault(); });
-  $cancelButton.bind('click', function(evt) { evt.preventDefault(); $input.val(null).trigger('keyup').trigger('blur'); });
-  $clearButton.bind('mousedown touchstart', function(evt) { evt.stopImmediatePropagation(); evt.preventDefault(); });
-  $clearButton.bind('click', function(evt) { evt.preventDefault(); $input.val(null).trigger('keyup'); });
   $overlay.bind('mousedown touchstart', function(evt) { evt.stopPropagation(); evt.preventDefault(); });
   $overlay.bind('mouseup touchend', function(evt) { $input.trigger('blur'); });
-  
   $input.bind('keyup', function(evt) {
     
     // If 'ESC' key was pressed, cancel the search.
