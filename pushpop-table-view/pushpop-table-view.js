@@ -142,16 +142,16 @@ Pushpop.TableView = function TableView(element) {
   // Handle mouse/touch events to allow the user to tap accessory buttons.
   var isPendingAccessoryButtonTap = false;
 
-  $element.delegate('span.pp-table-view-cell-accessory', !!('ontouchstart' in window) ? 'touchstart' : 'mousedown', function(evt) {
+  $element.delegate('.pp-table-view-cell-accessory', !!('ontouchstart' in window) ? 'touchstart' : 'mousedown', function(evt) {
     isPendingAccessoryButtonTap = true;
   });
   
-  $element.delegate('span.pp-table-view-cell-accessory', !!('ontouchmove' in window) ? 'touchmove' : 'mousemove', function(evt) {
+  $element.delegate('.pp-table-view-cell-accessory', !!('ontouchmove' in window) ? 'touchmove' : 'mousemove', function(evt) {
     if (!isPendingAccessoryButtonTap) return;
     isPendingAccessoryButtonTap = false;
   });
   
-  $element.delegate('span.pp-table-view-cell-accessory', !!('ontouchend' in window) ? 'touchend' : 'mouseup', function(evt) {
+  $element.delegate('.pp-table-view-cell-accessory', !!('ontouchend' in window) ? 'touchend' : 'mouseup', function(evt) {
     if (!isPendingAccessoryButtonTap) return;
     isPendingAccessoryButtonTap = false;
     
@@ -164,23 +164,24 @@ Pushpop.TableView = function TableView(element) {
       tableView: self,
       tableViewCell: tableViewCell,
       index: index,
-      item: self.getDataSource().getFilteredItemAtIndex(index)
+      item: self.getDataSource().getFilteredItemAtIndex(index),
+      element: this
     }));
   });
   
   // Handle mouse/touch events to allow the user to tap editing accessory buttons.
   var isPendingEditingAccessoryButtonTap = false;
 
-  $element.delegate('span.pp-table-view-cell-editing-accessory', !!('ontouchstart' in window) ? 'touchstart' : 'mousedown', function(evt) {
+  $element.delegate('.pp-table-view-cell-editing-accessory', !!('ontouchstart' in window) ? 'touchstart' : 'mousedown', function(evt) {
     isPendingEditingAccessoryButtonTap = true;
   });
   
-  $element.delegate('span.pp-table-view-cell-editing-accessory', !!('ontouchmove' in window) ? 'touchmove' : 'mousemove', function(evt) {
+  $element.delegate('.pp-table-view-cell-editing-accessory', !!('ontouchmove' in window) ? 'touchmove' : 'mousemove', function(evt) {
     if (!isPendingEditingAccessoryButtonTap) return;
     isPendingEditingAccessoryButtonTap = false;
   });
   
-  $element.delegate('span.pp-table-view-cell-editing-accessory', !!('ontouchend' in window) ? 'touchend' : 'mouseup', function(evt) {
+  $element.delegate('.pp-table-view-cell-editing-accessory', !!('ontouchend' in window) ? 'touchend' : 'mouseup', function(evt) {
     if (!isPendingEditingAccessoryButtonTap) return;
     isPendingEditingAccessoryButtonTap = false;
     
@@ -193,7 +194,8 @@ Pushpop.TableView = function TableView(element) {
       tableView: self,
       tableViewCell: tableViewCell,
       index: index,
-      item: self.getDataSource().getFilteredItemAtIndex(index)
+      item: self.getDataSource().getFilteredItemAtIndex(index),
+      element: this
     }));
   });
   
