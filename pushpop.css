@@ -81,6 +81,10 @@ body {
   display: block;
 }
 
+.pp-view.push, .pp-view.pop {
+  pointer-events: none;
+}
+
 /* TODO: REMOVE **DEPRECATED** */
 .pp-navigationbar-buttons {
   display: none;
@@ -858,9 +862,6 @@ li[class^='pp-icon-'].icon-large::before, li[class*=' pp-icon-'].icon-large::bef
 */
 .pp-view.slide-vertical,
 .pp-view.flip-vertical {
-  -webkit-box-shadow: 0 -2px 16px 6px rgba(0, 0, 0, 0.6); /* NOTE: Possible performance implications on some devices/browsers. */
-  -moz-box-shadow: 0 -2px 16px 6px rgba(0, 0, 0, 0.6);
-  box-shadow: 0 -2px 16px 6px rgba(0, 0, 0, 0.6);
   -webkit-transition: -webkit-transform 0.5s ease;
   -moz-transition: -moz-transform 0.5s ease;
   -ms-transition: -ms-transform 0.5s ease;
@@ -1026,9 +1027,6 @@ li[class^='pp-icon-'].icon-large::before, li[class*=' pp-icon-'].icon-large::bef
   flip-horizontal (3D)
 */
 .csstransforms3d .pp-view.flip-horizontal {
-  -webkit-box-shadow: 0 -2px 16px 6px rgba(0, 0, 0, 0.6); /* NOTE: Possible performance implications on some devices/browsers. */
-  -moz-box-shadow: 0 -2px 16px 6px rgba(0, 0, 0, 0.6);
-  box-shadow: 0 -2px 16px 6px rgba(0, 0, 0, 0.6);
   -webkit-transition: -webkit-transform 1s ease;
   -moz-transition: -moz-transform 1s ease;
   -ms-transition: -ms-transform 1s ease;
@@ -1098,9 +1096,6 @@ li[class^='pp-icon-'].icon-large::before, li[class*=' pp-icon-'].icon-large::bef
   flip-vertical (3D)
 */
 .csstransforms3d .pp-view.flip-vertical {
-  -webkit-box-shadow: 0 -2px 16px 6px rgba(0, 0, 0, 0.6); /* NOTE: Possible performance implications on some devices/browsers. */
-  -moz-box-shadow: 0 -2px 16px 6px rgba(0, 0, 0, 0.6);
-  box-shadow: 0 -2px 16px 6px rgba(0, 0, 0, 0.6);
   -webkit-transition: -webkit-transform 1s ease;
   -moz-transition: -moz-transform 1s ease;
   -ms-transition: -ms-transform 1s ease;
@@ -1170,9 +1165,6 @@ li[class^='pp-icon-'].icon-large::before, li[class*=' pp-icon-'].icon-large::bef
   card-swap (3D)
 */
 .csstransforms3d .pp-view.card-swap {
-  -webkit-box-shadow: 0 -2px 16px 6px rgba(0, 0, 0, 0.6); /* NOTE: Possible performance implications on some devices/browsers. */
-  -moz-box-shadow: 0 -2px 16px 6px rgba(0, 0, 0, 0.6);
-  box-shadow: 0 -2px 16px 6px rgba(0, 0, 0, 0.6);
   -webkit-transition: -webkit-transform 0.75s cubic-bezier(0.25, 1, 0.5, 0.25);
   -moz-transition: -moz-transform 0.75s cubic-bezier(0.25, 1, 0.5, 0.25);
   -ms-transition: -ms-transform 0.75s cubic-bezier(0.25, 1, 0.5, 0.25);
