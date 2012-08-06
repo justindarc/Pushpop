@@ -203,13 +203,13 @@ Pushpop.TableView = function TableView(element) {
   var isPendingSelection = false, selectionTimeout = null;
 
   $element.delegate('li', !!('ontouchstart' in window) ? 'touchstart' : 'mousedown', function(evt) {
+    var tableViewCell = this.tableViewCell;
+    if (!tableViewCell) return;
     
     // Don't allow row to be selected if an accessory button is pending a tap.
     if (isPendingAccessoryButtonTap || isPendingEditingAccessoryButtonTap) return;
     
     isPendingSelection = true;
-    
-    var tableViewCell = this.tableViewCell;
     
     selectionTimeout = window.setTimeout(function() {
       if (!isPendingSelection) return;
@@ -228,10 +228,10 @@ Pushpop.TableView = function TableView(element) {
   });
   
   $element.delegate('li', !!('ontouchend' in window) ? 'touchend' : 'mouseup', function(evt) {
-    if (!isPendingSelection) return;
-    isPendingSelection = false;
-    
     var tableViewCell = this.tableViewCell;
+    if (!tableViewCell || !isPendingSelection) return;
+    
+    isPendingSelection = false;
     
     window.clearTimeout(selectionTimeout);
     
