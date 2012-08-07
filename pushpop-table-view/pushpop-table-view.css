@@ -232,7 +232,14 @@
 }
 
 .pp-table-view-search-bar > input:focus {
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(126, 142, 160, 0.75) rgba(166, 177, 188, 1) rgba(163, 175, 184, 1);
   right: 5em;
+  outline: none;
+  -webkit-box-shadow: inset 0 1px 2px 0 rgba(0, 0, 0, 0.7);
+  -moz-box-shadow: inset 0 1px 2px 0 rgba(0, 0, 0, 0.7);
+  box-shadow: inset 0 1px 2px 0 rgba(0, 0, 0, 0.7);
 }
 
 .pp-table-view-search-bar > input::-webkit-input-placeholder { color: #bbb; } /* Must be contained in its own rule */
@@ -247,6 +254,11 @@
   right: 84px;
   z-index: 2;
   visibility: hidden;
+}
+
+.pp-table-view-search-bar-clear-button:hover,
+.pp-table-view-search-bar-clear-button:visited {
+  color: #b2b2b2;
 }
 
 .pp-table-view-search-bar-clear-button::before {
