@@ -221,6 +221,9 @@ Pushpop.ViewStack.prototype = {
     }
     
     this.isTransitioning = true;
+
+    // Hide the onscreen keyboard if it is currently visible.
+    $(document.activeElement).blur();
     
     var $element = this.$element;
     
@@ -322,6 +325,9 @@ Pushpop.ViewStack.prototype = {
     }
     
     this.isTransitioning = true;
+
+    // Hide the onscreen keyboard if it is currently visible.
+    $(document.activeElement).blur();
     
     var views = this.views;
     if (views.length <= 1) return;
