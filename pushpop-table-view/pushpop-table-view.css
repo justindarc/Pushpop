@@ -1071,9 +1071,9 @@
 }
 
 /**
-  Pushpop.TableViewCell.AccessoryType.AddButton
-  =============================================
-  pp-table-view-cell-accessory-add-button
+  Pushpop.TableViewCell.EditingAccessoryType.AddButton
+  ====================================================
+  pp-table-view-cell-editing-accessory-add-button
 */
 .pp-table-view-cell-editing-accessory-add-button::before {
   background: #5fb860; /* Old browsers */
@@ -1107,9 +1107,9 @@
 }
 
 /**
-  Pushpop.TableViewCell.AccessoryType.DeleteButton
-  =============================================
-  pp-table-view-cell-accessory-delete-button
+  Pushpop.TableViewCell.EditingAccessoryType.DeleteButton
+  =======================================================
+  pp-table-view-cell-editing-accessory-delete-button
 */
 .pp-table-view-cell-editing-accessory-delete-button {
   -webkit-transition: visibility 0s linear 0.2s, opacity 0.2s linear, -webkit-transform 0.2s linear;
