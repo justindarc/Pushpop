@@ -258,7 +258,7 @@ Pushpop.PickerTableViewDataSource.prototype.getCellForRowAtIndex = function(tabl
   cell.setData(item);
   
   return cell;
-}
+};
 
 /**
   Returns an object containing the data for all "values" contained within the data source.

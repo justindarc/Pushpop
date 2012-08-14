@@ -36,17 +36,17 @@ Pushpop.defaultTransition = 'slide-horizontal';
 /**
 
 */
-Pushpop.Util = {  
+Pushpop.Util = {
   _dashedToCamelCaseRegExp: /(\-[a-z])/g,
   _dashedToCamelCaseReplacer: function($1) { return $1.toUpperCase().replace('-', ''); },
   convertDashedStringToCamelCase: function(dashedString) {
-    return new String(dashedString).replace(this._dashedToCamelCaseRegExp, this._dashedToCamelCaseReplacer);
+    return ('' + dashedString).replace(this._dashedToCamelCaseRegExp, this._dashedToCamelCaseReplacer);
   },
   
   _camelCaseToDashedRegExp: /([A-Z])/g,
   _camelCaseToDashedReplacer: function($1) { return '-' + $1.toLowerCase(); },
   convertCamelCaseStringToDashed: function(camelCaseString) {
-    var dashedString = new String(camelCaseString).replace(this._camelCaseToDashedRegExp, this._camelCaseToDashedReplacer);
+    var dashedString = ('' + camelCaseString).replace(this._camelCaseToDashedRegExp, this._camelCaseToDashedReplacer);
     if (dashedString.length > 0 && dashedString.charAt(0) === '-') dashedString = dashedString.slice(1);
     return dashedString;
   }
@@ -301,7 +301,7 @@ Pushpop.ViewStack.prototype = {
   
   /**
     Pops the current or specified view off the view stack using the optionally specified transition.
-    If a view is not specified, the current view will be popped (unless it is the root view). If a 
+    If a view is not specified, the current view will be popped (unless it is the root view). If a
     transition is not specified, the default will be used. A callback may optionally be provided to
     be called after the transition completes.
     @param {Pushpop.View|String} viewOrTransition Either the view to be popped to on the view stack
@@ -504,27 +504,27 @@ Pushpop.ViewStack.prototype = {
   },
   
 	/**
-	  Convenience accessor for jQuery's .bind() method.
+    Convenience accessor for jQuery's .bind() method.
 	*/
 	$bind: function() { this.$element.bind.apply(this.$element, arguments); },
 	
 	/**
-	  Convenience accessor for jQuery's .unbind() method.
+    Convenience accessor for jQuery's .unbind() method.
 	*/
 	$unbind: function() { this.$element.unbind.apply(this.$element, arguments); },
 	
 	/**
-	  Convenience accessor for jQuery's .delegate() method.
+    Convenience accessor for jQuery's .delegate() method.
 	*/
 	$delegate: function() { this.$element.delegate.apply(this.$element, arguments); },
 	
 	/**
-	  Convenience accessor for jQuery's .undelegate() method.
+    Convenience accessor for jQuery's .undelegate() method.
 	*/
 	$undelegate: function() { this.$element.undelegate.apply(this.$element, arguments); },
 	
 	/**
-	  Convenience accessor for jQuery's .trigger() method.
+    Convenience accessor for jQuery's .trigger() method.
 	*/
 	$trigger: function() { this.$element.trigger.apply(this.$element, arguments); }
 };
@@ -731,34 +731,34 @@ Pushpop.View.prototype = {
   /**
     Forces a reflow in the browser for this view.
   */
-  forceReflow: function() { this.element.offsetWidth; },
+  forceReflow: function() { var doNothing = this.element.offsetWidth; },
   
 	setBackButtonVisible: function(visible) {
-	  if (this.$navbarButtons.filter('.pp-barbutton-align-left').length === 0) this.hideNavBackButton = !visible;
+    if (this.$navbarButtons.filter('.pp-barbutton-align-left').length === 0) this.hideNavBackButton = !visible;
 	},
 	
 	/**
-	  Convenience accessor for jQuery's .bind() method.
+    Convenience accessor for jQuery's .bind() method.
 	*/
 	$bind: function() { this.$element.bind.apply(this.$element, arguments); },
 	
 	/**
-	  Convenience accessor for jQuery's .unbind() method.
+    Convenience accessor for jQuery's .unbind() method.
 	*/
 	$unbind: function() { this.$element.unbind.apply(this.$element, arguments); },
 	
 	/**
-	  Convenience accessor for jQuery's .delegate() method.
+    Convenience accessor for jQuery's .delegate() method.
 	*/
 	$delegate: function() { this.$element.delegate.apply(this.$element, arguments); },
 	
 	/**
-	  Convenience accessor for jQuery's .undelegate() method.
+    Convenience accessor for jQuery's .undelegate() method.
 	*/
 	$undelegate: function() { this.$element.undelegate.apply(this.$element, arguments); },
 	
 	/**
-	  Convenience accessor for jQuery's .trigger() method.
+    Convenience accessor for jQuery's .trigger() method.
 	*/
 	$trigger: function() { this.$element.trigger.apply(this.$element, arguments); }
 };
@@ -772,7 +772,7 @@ Pushpop.NavigationBar = function NavigationBar(element) {
   if (!element) return;
   
   var $element = this.$element = $(element);
-  var element = this.element = $element[0];
+  element = this.element = $element[0];
   
   var navigationBar = element.navigationBar;
   if (navigationBar) return navigationBar;
@@ -848,7 +848,7 @@ Pushpop.NavigationBar = function NavigationBar(element) {
     this.setTitle(activeView.getTitle());
     this.setBarButtonItems(activeView.getBarButtonItems());
     
-    backBarButtonItem.setHidden(activeView.getHideBackBarButtonItem() || (viewStack.containsView(activeView) && viewStack.views.length === 1))
+    backBarButtonItem.setHidden(activeView.getHideBackBarButtonItem() || (viewStack.containsView(activeView) && viewStack.views.length === 1));
   }
 };
 
@@ -1034,7 +1034,7 @@ Pushpop.NavigationBar.prototype = {
   getViewStack: function() {
     var parents = this.$element.parents();
     var viewStack;
-    for (var i = 0, length = parents.length; i < length; i++) if (viewStack = parents[i].viewStack) return viewStack;
+    for (var i = 0, length = parents.length; i < length; i++) if ((viewStack = parents[i].viewStack)) return viewStack;
     return null;
   },
   
@@ -1073,7 +1073,6 @@ Pushpop.Button = function Button(elementOrTitle, action, buttonAlignmentType, bu
   var buttonStyleTypes = Pushpop.Button.ButtonStyleType;
   var key;
   
-  var buttonAlignmentType = buttonAlignmentType;
   if (!buttonAlignmentType) for (key in buttonAlignmentTypes) {
     if ($element.hasClass(buttonAlignmentTypes[key])) {
       buttonAlignmentType = buttonAlignmentTypes[key];
@@ -1081,7 +1080,6 @@ Pushpop.Button = function Button(elementOrTitle, action, buttonAlignmentType, bu
     }
   }
   
-  var buttonStyleType = buttonStyleType;
   if (!buttonStyleType) for (key in buttonStyleTypes) {
     if ($element.hasClass(buttonStyleTypes[key])) {
       buttonStyleType = buttonStyleTypes[key];
@@ -1112,7 +1110,7 @@ Pushpop.Button.ButtonStyleType = {
   Black: 'pp-button-style-black',
   Blue: 'pp-button-style-blue',
   Green: 'pp-button-style-green',
-  Red: 'pp-button-style-red',
+  Red: 'pp-button-style-red'
 };
 
 /**
@@ -1164,7 +1162,7 @@ Pushpop.Button.prototype = {
   
   */
   setActive: function(active) {
-    if (this._active = active) {
+    if ((this._active = active)) {
       this.$element.addClass('pp-button-state-active');
     } else {
       this.$element.removeClass('pp-button-state-active');
@@ -1202,7 +1200,7 @@ Pushpop.Button.prototype = {
   
   */
   setHidden: function(hidden) {
-    if (this._hidden = hidden) {
+    if ((this._hidden = hidden)) {
       this.$element.addClass('pp-hidden');
     } else {
       this.$element.removeClass('pp-hidden');
@@ -1264,7 +1262,7 @@ Pushpop.Button.prototype = {
   /**
     Forces a reflow in the browser for this button.
   */
-  forceReflow: function() { this.element.offsetWidth; },
+  forceReflow: function() { var doNothing = this.element.offsetWidth; },
   
   /**
     Returns the view that contains this button.
@@ -1274,7 +1272,7 @@ Pushpop.Button.prototype = {
   getView: function() {
     var parents = this.$element.parents();
     var view;
-    for (var i = 0, length = parents.length; i < length; i++) if (view = parents[i].view) return view;
+    for (var i = 0, length = parents.length; i < length; i++) if ((view = parents[i].view)) return view;
     return null;
   },
   
@@ -1286,10 +1284,10 @@ Pushpop.Button.prototype = {
   getViewStack: function() {
     var parents = this.$element.parents();
     var viewStack;
-    for (var i = 0, length = parents.length; i < length; i++) if (viewStack = parents[i].viewStack) return viewStack;
+    for (var i = 0, length = parents.length; i < length; i++) if ((viewStack = parents[i].viewStack)) return viewStack;
     return null;
   }
-}
+};
 
 $(function() {
   var buttons = Pushpop.buttons = Pushpop.buttons || {};
@@ -1378,7 +1376,7 @@ $(function() {
 
         view = $viewElement[0].view || new Pushpop.View($viewElement);
 
-        viewStack = view.getViewStack();      
+        viewStack = view.getViewStack();
         if (viewStack) viewStack.pop(view, transition);
       }
     }
@@ -1425,7 +1423,7 @@ $(function() {
       
       view = $viewElement[0].view || new Pushpop.View($viewElement);
       
-      viewStack = view.getViewStack();      
+      viewStack = view.getViewStack();
       if (viewStack) viewStack.pop(view, $this.attr('data-transition'));
     }
   });
