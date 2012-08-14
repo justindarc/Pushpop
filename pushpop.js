@@ -183,6 +183,14 @@ Pushpop.ViewStack.prototype = {
           }));
         });
         
+        // Hack to reset the scroll view position for views using ScrollKit on desktop browsers.
+        var newActiveScrollView, newActiveScrollPosition;
+        if ($newActiveViewElement.hasClass('sk-no-touch') && (newActiveScrollView = newActiveView.getScrollView())) {
+          newActiveScrollPosition = newActiveScrollView.getScrollPosition();
+          newActiveScrollView.setScrollPosition(newActiveScrollPosition.x + 1, newActiveScrollPosition.y + 1);
+          newActiveScrollView.setScrollPosition(newActiveScrollPosition.x, newActiveScrollPosition.y);
+        }
+        
         // Remove the previous active view from the DOM if it is marked for removal when popped.
         if (action === 'pop' && oldActiveView.getShouldRemoveWhenPopped()) $oldActiveViewElement.remove();
         
