@@ -93,7 +93,7 @@ Pushpop.ModalViewStack.prototype.push = function(view, transitionOrCallback, cal
 
 /**
   Pops the current or specified view off the view stack using the optionally specified transition.
-  If a view is not specified, the current view will be popped (unless it is the root view). If a 
+  If a view is not specified, the current view will be popped (unless it is the root view). If a
   transition is not specified, the default will be used. A callback may optionally be provided to
   be called after the transition completes. In the case of a Pushpop.ModalViewStack, the modal
   view stack will be dismissed if this method is called when there is only one remaining view on
@@ -262,7 +262,7 @@ $(function() {
 
         view = $viewElement[0].view || new Pushpop.View($viewElement);
 
-        viewStack = view.getViewStack();      
+        viewStack = view.getViewStack();
         if (viewStack) viewStack.dismiss();
       }
     }
@@ -298,7 +298,7 @@ $(function() {
 
         view = $viewElement[0].view || new Pushpop.View($viewElement);
 
-        viewStack = view.getViewStack();      
+        viewStack = view.getViewStack();
         if (viewStack) viewStack.dismiss();
       }
     }

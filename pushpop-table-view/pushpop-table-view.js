@@ -12,7 +12,7 @@ Pushpop.TableView = function TableView(element) {
   if (!element) return;
   
   var $element = this.$element = $(element);
-  var element = this.element = $element[0];
+  element = this.element = $element[0];
   
   var tableView = element.tableView;
   if (tableView) return tableView;
@@ -29,7 +29,6 @@ Pushpop.TableView = function TableView(element) {
   var selectedRowIndexes = this._selectedRowIndexes = [];
   
   var scrollView = this.scrollView = scrollViewElement.scrollView;
-  var scrollContent = scrollView.getScrollContent();
   
   var containsSearchBar = $element.attr('data-contains-search-bar') || 'false';
   containsSearchBar = containsSearchBar !== 'false';
@@ -39,14 +38,14 @@ Pushpop.TableView = function TableView(element) {
   
   var numberOfBufferedCells = this._numberOfBufferedCells;
   var selectionTimeoutDuration = this._selectionTimeoutDuration;
-  var lastOffset = -scrollView.getScrollOffset().y;
+  var lastScrollPosition = scrollView.getScrollPosition().y;
   var topMargin = window.parseInt($element.css('margin-top'), 10);
   
   // Render table view cells "virtually" when the view is scrolled.
-  scrollView.$element.bind(ScrollKit.ScrollView.EventType.ScrollChange, function(evt) {
-    var scrollOffset = scrollView.getScrollOffset();
-    var offset = -scrollOffset.y;
-    if (offset < 0) return;
+  scrollView.$element.bind('scroll', function(evt) {
+    var scrollOffset = scrollView.getScrollPosition();
+    var scrollPosition = scrollOffset.y;
+    if (scrollPosition < 0) return;
     
     var firstCellElement = $element.children('li:first-child')[0];
     var lastCellElement = $element.children('li:last-child')[0];
@@ -63,13 +62,13 @@ Pushpop.TableView = function TableView(element) {
     var lastCellIndex = firstCellIndex + visibleCellCount - 1;
     
     // Manually calculate offset instead of calling .offset().
-    var margin = scrollContent.getMargin();
-    var firstCellOffset = margin.top - offset;
+    var margin = scrollView.getMargin();
+    var firstCellOffset = margin.top - scrollPosition;
     var lastCellOffset = firstCellOffset + (visibleCellCount * rowHeight);
-    var delta = offset - lastOffset;
+    var delta = scrollPosition - lastScrollPosition;
     var visibleHeight = self.getVisibleHeight();
     
-    lastOffset = offset;
+    lastScrollPosition = scrollPosition;
     
     var newMarginTopDelta = 0;
     var newMarginBottomDelta = 0;
@@ -91,10 +90,7 @@ Pushpop.TableView = function TableView(element) {
         newMarginBottomDelta -= rowHeight;
       });
       
-      scrollContent.setMargin({
-        top: margin.top + newMarginTopDelta,
-        bottom: margin.bottom + newMarginBottomDelta
-      });
+      scrollView.setMargin(margin.top + newMarginTopDelta, margin.right, margin.bottom + newMarginBottomDelta, margin.left);
     }
     
     // Handle scrolling when swiping down (scrolling towards the top).
@@ -114,17 +110,14 @@ Pushpop.TableView = function TableView(element) {
         newMarginBottomDelta += rowHeight;
       });
       
-      scrollContent.setMargin({
-        top: margin.top + newMarginTopDelta,
-        bottom: margin.bottom + newMarginBottomDelta
-      });
+      scrollView.setMargin(margin.top + newMarginTopDelta, margin.right, margin.bottom + newMarginBottomDelta, margin.left);
     }
   });
   
   // Handle case when table view is scrolled to the top (e.g.: tapping top of navigation bar).
   var view = this.getView();
   if (view) {
-    view.$bind(ScrollKit.ScrollView.EventType.WillScrollToTop, function(evt) {    
+    view.$bind(ScrollKit.ScrollView.EventType.WillScrollToTop, function(evt) {
       var firstCellElement = $element.children('li:first-child')[0];
       if (firstCellElement) firstCellElement.tableViewCell.setIndex(0);
     });
@@ -339,7 +332,7 @@ Pushpop.TableView.prototype = {
   getView: function() {
     var parents = this.$element.parents();
     var view;
-    for (var i = 0, length = parents.length; i < length; i++) if (view = parents[i].view) return view;
+    for (var i = 0, length = parents.length; i < length; i++) if ((view = parents[i].view)) return view;
     return null;
   },
   
@@ -351,7 +344,7 @@ Pushpop.TableView.prototype = {
   getViewStack: function() {
     var parents = this.$element.parents();
     var viewStack;
-    for (var i = 0, length = parents.length; i < length; i++) if (viewStack = parents[i].viewStack) return viewStack;
+    for (var i = 0, length = parents.length; i < length; i++) if ((viewStack = parents[i].viewStack)) return viewStack;
     return null;
   },
   
@@ -412,7 +405,7 @@ Pushpop.TableView.prototype = {
     (e.g.: Immediately following an orientation change or window resize).
     @type Number
   */
-  getCalculatedNumberOfVisibleCells: function() { return Math.ceil(this.getVisibleHeight() / this.getRowHeight()) + this._numberOfBufferedCells },
+  getCalculatedNumberOfVisibleCells: function() { return Math.ceil(this.getVisibleHeight() / this.getRowHeight()) + this._numberOfBufferedCells; },
   
   _selectedRowIndexes: null,
   
@@ -530,7 +523,8 @@ Pushpop.TableView.prototype = {
   deselectRowAtIndex: function(index, animated) {
     var $element = this.$element;
     var selectedRowIndexes = this._selectedRowIndexes;
-    for (var i = 0, length = selectedRowIndexes.length; i < length; i++) {
+    var i, length;
+    for (i = 0, length = selectedRowIndexes.length; i < length; i++) {
       if (selectedRowIndexes[i] === index) {
         selectedRowIndexes.splice(i, 1);
         break;
@@ -538,7 +532,7 @@ Pushpop.TableView.prototype = {
     }
     
     var tableViewCell, $selectedCells = $element.children('.pp-table-view-selected-state');
-    for (var i = 0, length = $cells.length; i < length; i++) {
+    for (i = 0, length = $cells.length; i < length; i++) {
       tableViewCell = $cells[i].tableViewCell;
       if (tableViewCell.getIndex() === index) {
         tableViewCell.setSelected(false);
@@ -581,15 +575,13 @@ Pushpop.TableView.prototype = {
     var hiddenCellCount = numberOfRows - visibleCellCount;
     
     var scrollView = this.scrollView;
+    var margin = scrollView.getMargin();
     
     // Set the scroll view margin.
-    scrollView.getScrollContent().setMargin({
-      top: 0,
-      bottom: hiddenCellCount * this.getRowHeight()
-    });
+    scrollView.setMargin(0, margin.right, hiddenCellCount * this.getRowHeight(), margin.left);
     
     // Scroll to the top of the table view without animating.
-    scrollView.setScrollOffset({ x: 0, y: 0 });
+    scrollView.setScrollPosition(0, 0);
   },
   
   /**
@@ -599,7 +591,7 @@ Pushpop.TableView.prototype = {
     if there is a change in the search string.
   */
   reloadData: function() {
-    var $element = this.$element;    
+    var $element = this.$element;
     
     // Recalculate the visible height of this table view.
     this.recalculateVisibleHeight();
@@ -616,7 +608,7 @@ Pushpop.TableView.prototype = {
     var hiddenCellCount = numberOfRows - visibleCellCount;
     
     for (i = 0; i < visibleCellCount; i++) {
-      var cell = dataSource.getCellForRowAtIndex(this, i);      
+      var cell = dataSource.getCellForRowAtIndex(this, i);
       $element.append(cell.$element);
     }
     
@@ -747,7 +739,7 @@ Pushpop.TableView.prototype = {
     editing mode should be animated (default: true).
   */
   setEditing: function(editing, animated) {
-    if (this._editing = editing) {
+    if ((this._editing = editing)) {
       this.$element.addClass('pp-table-view-editing');
     } else {
       this.$element.removeClass('pp-table-view-editing');
@@ -755,27 +747,27 @@ Pushpop.TableView.prototype = {
   },
   
 	/**
-	  Convenience accessor for jQuery's .bind() method.
+    Convenience accessor for jQuery's .bind() method.
 	*/
 	$bind: function() { this.$element.bind.apply(this.$element, arguments); },
 	
 	/**
-	  Convenience accessor for jQuery's .unbind() method.
+    Convenience accessor for jQuery's .unbind() method.
 	*/
 	$unbind: function() { this.$element.unbind.apply(this.$element, arguments); },
 	
 	/**
-	  Convenience accessor for jQuery's .delegate() method.
+    Convenience accessor for jQuery's .delegate() method.
 	*/
 	$delegate: function() { this.$element.delegate.apply(this.$element, arguments); },
 	
 	/**
-	  Convenience accessor for jQuery's .undelegate() method.
+    Convenience accessor for jQuery's .undelegate() method.
 	*/
 	$undelegate: function() { this.$element.undelegate.apply(this.$element, arguments); },
 	
 	/**
-	  Convenience accessor for jQuery's .trigger() method.
+    Convenience accessor for jQuery's .trigger() method.
 	*/
 	$trigger: function() { this.$element.trigger.apply(this.$element, arguments); }
 };
@@ -840,8 +832,8 @@ Pushpop.TableViewDataSource.prototype = {
     @type Array
   */
   getValuesArray: function(keyFieldName, valueFieldName) {
-    var keyFieldName = keyFieldName || 'name';
-    var valueFieldName = valueFieldName || 'value';
+    keyFieldName = keyFieldName || 'name';
+    valueFieldName = valueFieldName || 'value';
     
     var numberOfItems = this.getNumberOfItems();
     var valuesArray = [];
@@ -884,7 +876,7 @@ Pushpop.TableViewDataSource.prototype = {
         if (!valuesObject[value.name].push) valuesObject[value.name] = [valuesObject[value.name]];
         valuesObject[value.name].push(value.value);
       } else {
-        valuesObject[value.name] = value.value; 
+        valuesObject[value.name] = value.value;
       }
     }
     
@@ -903,8 +895,8 @@ Pushpop.TableViewDataSource.prototype = {
   setValuesFromObject: function(object, keyFieldName, valueFieldName) {
     if (!object) return;
     
-    var keyFieldName = keyFieldName || 'name';
-    var valueFieldName = valueFieldName || 'value';
+    keyFieldName = keyFieldName || 'name';
+    valueFieldName = valueFieldName || 'value';
     
     var numberOfItems = this.getNumberOfItems();
     var i, item;
@@ -925,8 +917,8 @@ Pushpop.TableViewDataSource.prototype = {
   },
   
   clearValues: function(valueFieldName, defaultValueFieldName) {
-    var valueFieldName = valueFieldName || 'value';
-    var defaultValueFieldName = defaultValueFieldName || 'defaultValue';
+    valueFieldName = valueFieldName || 'value';
+    defaultValueFieldName = defaultValueFieldName || 'defaultValue';
     
     var numberOfItems = this.getNumberOfItems();
     var item, value, defaultValue;
@@ -1012,7 +1004,7 @@ Pushpop.TableViewDataSource.prototype = {
   
   /**
     Returns a flag indicating whether or not the row at the specified index contains a child
-    data source. 
+    data source.
     @description NOTE: This is the default implementation and should be overridden for data
     sources that are not driven directly from an in-memory data set. In the default implementation,
     the |dataSourceKey| that is set using the setDataSourceKey() method is used to determine if an
@@ -1434,7 +1426,8 @@ Pushpop.TableViewSearchBar.prototype = {
   @constructor
 */
 Pushpop.TableViewCell = function TableViewCell(reuseIdentifier) {
-  var reuseIdentifier =  this._reuseIdentifier = reuseIdentifier || this._reuseIdentifier;
+  reuseIdentifier =  this._reuseIdentifier = reuseIdentifier || this._reuseIdentifier;
+  
   var $element = this.$element = $('<li data-reuse-identifier="' + reuseIdentifier + '"/>');
   var element = this.element = $element[0];
   
@@ -1519,7 +1512,7 @@ Pushpop.TableViewCell.prototype = {
     this.$element.html(this.getEditingAccessoryHtml() + this.getHtml() + this.getAccessoryHtml());
   },
   
-  forceReflow: function() { this.element.offsetWidth; },
+  forceReflow: function() { var doNothing = this.element.offsetWidth; },
   
   /**
     Performs any necessary actions when this cell has been tapped.
@@ -1683,7 +1676,7 @@ Pushpop.TableViewCell.prototype = {
     @param {Boolean} value A boolean value to determine if this cell should be selected.
   */
   setSelected: function(value) {
-    if (this._isSelected = value) {
+    if ((this._isSelected = value)) {
       this.$element.addClass('pp-table-view-selected-state');
     } else {
       this.$element.removeClass('pp-table-view-selected-state');
@@ -1850,7 +1843,7 @@ Pushpop.TextAreaInputTableViewCell.prototype.getHtml = function() {
 
 Pushpop.TextAreaInputTableViewCell.prototype.getAccessoryType = function() { return this._accessoryType || Pushpop.TableViewCell.AccessoryType.DisclosureIndicator; };
 
-Pushpop.TextAreaInputTableViewCell.prototype.didReceiveTap = function() {  
+Pushpop.TextAreaInputTableViewCell.prototype.didReceiveTap = function() {
   var tableView = this.tableView;
   var viewStack = tableView.getViewStack();
   if (!viewStack) return;
@@ -1946,7 +1939,6 @@ Pushpop.SelectInputTableViewCell.prototype.didReceiveTap = function() {
 
 Pushpop.SelectInputTableViewCell.prototype.setValue = function(value) {
   var data = this.getData();
-  var value = value;
   var childDataSource;
   
   if (data) {
