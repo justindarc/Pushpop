@@ -65,12 +65,17 @@
 
 .sk-scroll-view-plain .pp-table-view::before,
 .sk-scroll-view-plain .pp-table-view::after {
-  background: none;
+  display: none;
 }
 
 .pp-table-view-search-bar + .pp-table-view::before {
   background: #d6dde2;
   top: -1067px;
+}
+
+.sk-no-touch .pp-table-view::before,
+.sk-no-touch .pp-table-view::after {
+  display: none;
 }
 
 /* Clearfix */
