@@ -1802,9 +1802,12 @@ Pushpop.InlineTextInputTableViewCell.prototype.getHtml = function() {
   var title = $.trim((data && data.title) ? data.title : '&nbsp;');
   var name = $.trim((data && data.name) ? data.name : '');
   var value = $.trim((data && data.value) ? data.value : '');
+  var autoCapitalize = (data) ? (data.autoCapitalize === false) ? 'off' : (data.autoCapitalize === true) ? 'on' : (data.autoCapitalize) ? data.autoCapitalize : 'on' : 'on';
+  var autoCorrect = (data) ? (data.autoCorrect + '') : 'on';
+  autoCorrect = !!(autoCorrect !== 'false' && autoCorrect !== 'off');
   var isPassword = (data) ? (data.password || 'false') : 'false';
   isPassword = isPassword !== 'false';
-  return '<h1>' + title + '</h1><input type="' + (isPassword ? 'password' : 'text') + '" name="' + name + '" value="' + value + '"/>';
+  return '<h1>' + title + '</h1><input type="' + (isPassword ? 'password' : 'text') + '" name="' + name + '" value="' + value + '" autocapitalize="' + autoCapitalize + '" autocorrect="' + (autoCorrect ? 'on' : 'off') +'"/>';
 };
 
 Pushpop.InlineTextInputTableViewCell.prototype.didReceiveTap = function() {
