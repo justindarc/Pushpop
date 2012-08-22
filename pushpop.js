@@ -841,6 +841,10 @@ Pushpop.NavigationBar = function NavigationBar(element) {
   if (viewStack) {
     viewStack.$bind(Pushpop.EventType.WillPresentView, function(evt) {
       var view = evt.view;
+
+      // This event bubbles up, so make sure that the view is a child of this viewStack.
+      if (view.getViewStack() !== viewStack) return;
+
       self.setTitle(view.getTitle());
       
       var backBarButtonItem = self.getBackBarButtonItem();
