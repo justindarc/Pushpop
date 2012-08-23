@@ -17,263 +17,68 @@ Pushpop.TableView = function TableView(element) {
   var tableView = element.tableView;
   if (tableView) return tableView;
   
-  element.tableView = this;
+  var self = element.tableView = this;
   
-  var scrollViewElement = $element.parents('.sk-scroll-view')[0];
-  if (!scrollViewElement) return;
-  
-  var self = this;
-  
-  var reusableCells = this._reusableCells = {};
-  var visibleCells = this._visibleCells = [];
-  var selectedRowIndexes = this._selectedRowIndexes = [];
-  
-  var scrollView = this.scrollView = scrollViewElement.scrollView;
-  
-  var containsSearchBar = $element.attr('data-contains-search-bar') || 'false';
-  containsSearchBar = containsSearchBar !== 'false';
-  
-  var searchBar = null;
-  if (containsSearchBar) this.setSearchBar(searchBar = new Pushpop.TableViewSearchBar(this));
-  
-  var numberOfBufferedCells = this._numberOfBufferedCells;
-  var selectionTimeoutDuration = this._selectionTimeoutDuration;
-  var lastScrollPosition = scrollView.getScrollPosition().y;
-  var topMargin = window.parseInt($element.css('margin-top'), 10);
-
-  // Render table view cells "virtually" when the view is scrolled.
-  scrollView.$element.bind('scroll', function(evt) {
-    var scrollOffset = scrollView.getScrollPosition();
-    var scrollPosition = scrollOffset.y;
-    if (scrollPosition < 0) return;
-    
-    var firstCellElement = $element.children('li:first-child')[0];
-    var lastCellElement = $element.children('li:last-child')[0];
-    if (!firstCellElement || !lastCellElement || firstCellElement === lastCellElement) return;
-    
-    var dataSource = self.getDataSource();
-    var rowHeight = self.getRowHeight();
-    var numberOfRows = self._numberOfRows;
-    var visibleCellCount = self.getCalculatedNumberOfVisibleCells();
-    var selectedRowIndex = self.getIndexForSelectedRow();
-    
-    var firstCell = firstCellElement.tableViewCell;
-    var firstCellIndex = firstCell.getIndex();
-    var lastCellIndex = firstCellIndex + visibleCellCount - 1;
-    
-    // Manually calculate offset instead of calling .offset().
-    var margin = scrollView.getMargin();
-    var firstCellOffset = margin.top - scrollPosition;
-    var lastCellOffset = firstCellOffset + (visibleCellCount * rowHeight);
-    var delta = scrollPosition - lastScrollPosition;
-    var visibleHeight = self.getVisibleHeight();
-    
-    lastScrollPosition = scrollPosition;
-    
-    var newMarginTopDelta = 0;
-    var newMarginBottomDelta = 0;
-    
-    // Handle scrolling when swiping up (scrolling towards the bottom).
-    if (delta > 0 && lastCellIndex + 1 < numberOfRows && firstCellOffset < 0 - (rowHeight * numberOfBufferedCells)) {
-      $element.children('li:nth-child(-n+' + numberOfBufferedCells + ')').each(function(index, element) {
-        var newCellIndex = lastCellIndex + index + 1;
-        if (newCellIndex >= numberOfRows) return;
-        
-        var cell = element.tableViewCell;
-        cell.prepareForReuse();
-        
-        var newCell = dataSource.getCellForRowAtIndex(self, newCellIndex);
-        if (self.isRowSelectedAtIndex(newCellIndex)) newCell.setSelected(true);
-        $element.append(newCell.$element);
-        
-        newMarginTopDelta += rowHeight;
-        newMarginBottomDelta -= rowHeight;
-      });
-      
-      scrollView.setMargin(margin.top + newMarginTopDelta, margin.right, margin.bottom + newMarginBottomDelta, margin.left);
-    }
-    
-    // Handle scrolling when swiping down (scrolling towards the top).
-    else if (delta < 0 && firstCellIndex - 1 >= 0 && lastCellOffset > visibleHeight + (rowHeight * numberOfBufferedCells)) {
-      $element.children('li:nth-child(n+' + (visibleCellCount - numberOfBufferedCells + 1) + ')').each(function(index, element) {
-        var newCellIndex = firstCellIndex - index - 1;
-        if (newCellIndex < 0) return;
-        
-        var cell = element.tableViewCell;
-        cell.prepareForReuse();
-        
-        var newCell = dataSource.getCellForRowAtIndex(self, newCellIndex);
-        if (self.isRowSelectedAtIndex(newCellIndex)) newCell.setSelected(true);
-        $element.prepend(newCell.$element);
-        
-        newMarginTopDelta -= rowHeight;
-        newMarginBottomDelta += rowHeight;
-      });
-      
-      scrollView.setMargin(margin.top + newMarginTopDelta, margin.right, margin.bottom + newMarginBottomDelta, margin.left);
-    }
-  });
-  
-  // Handle case when table view is scrolled to the top (e.g.: tapping top of navigation bar).
+  // Make sure this table view has a scroll view, otherwise, stop initialization.
   var view = this.getView();
-  if (view) {
-    view.$bind(ScrollKit.ScrollView.EventType.WillScrollToTop, function(evt) {
-      var firstCellElement = $element.children('li:first-child')[0];
-      if (firstCellElement) firstCellElement.tableViewCell.setIndex(0);
-    });
-    view.$bind(ScrollKit.ScrollView.EventType.DidScrollToTop, function(evt) { self.reloadData(); });
-  }
+  var scrollView = this.scrollView = (view) ? (view.element.scrollView || null) : null;
+  if (!scrollView) return;
   
-  // Re-calculate the visible height of the table view when the view has been presented.
-  if (view) {
-    view.$bind(Pushpop.EventType.WillPresentView, function(evt) {
-      var visibleHeight = self.getVisibleHeight();
-      if (visibleHeight !== self.recalculateVisibleHeight()) self.reloadData();
-    });
-  }
+  // Determine if a search bar should be added to this table view.
+  var containsSearchBar = $element.attr('data-contains-search-bar') || 'false';
+  if ((containsSearchBar = containsSearchBar !== 'false')) this.setSearchBar(new Pushpop.TableViewSearchBar(this));
   
-  // Handle mouse/touch events to allow the user to tap accessory buttons.
-  var isPendingAccessoryButtonTap = false;
-
-  $element.delegate('.pp-table-view-cell-accessory', !!('ontouchstart' in window) ? 'touchstart' : 'mousedown', function(evt) {
-    isPendingAccessoryButtonTap = true;
-  });
+  // Instantiate instance variables.
+  this._renderedCells = [];
+  this._reusableCells = {};
   
-  $element.delegate('.pp-table-view-cell-accessory', !!('ontouchmove' in window) ? 'touchmove' : 'mousemove', function(evt) {
-    if (!isPendingAccessoryButtonTap) return;
-    isPendingAccessoryButtonTap = false;
-  });
-  
-  $element.delegate('.pp-table-view-cell-accessory', !!('ontouchend' in window) ? 'touchend' : 'mouseup', function(evt) {
-    if (!isPendingAccessoryButtonTap) return;
-    isPendingAccessoryButtonTap = false;
+  // Handle virtual rendering of table view cells when the table view is scrolled.
+  scrollView.$bind('scroll', function(evt) {
+    if (self.getDrawing()) return;
     
-    var tableViewCell = $(this).parent()[0].tableViewCell;
-    if (!tableViewCell) return;
+    var minimumScrollPositionThreshold = self.getMinimumScrollPositionThreshold();
+    var maximumScrollPositionThreshold = self.getMaximumScrollPositionThreshold();
+    var scrollPosition = self.getScrollPosition();
     
-    var index = tableViewCell.getIndex();
-    
-    $element.trigger($.Event(Pushpop.TableView.EventType.AccessoryButtonTappedForRowWithIndex, {
-      tableView: self,
-      tableViewCell: tableViewCell,
-      index: index,
-      item: self.getDataSource().getFilteredItemAtIndex(index),
-      element: this
-    }));
-  });
-  
-  // Handle mouse/touch events to allow the user to tap editing accessory buttons.
-  var isPendingEditingAccessoryButtonTap = false;
-
-  $element.delegate('.pp-table-view-cell-editing-accessory', !!('ontouchstart' in window) ? 'touchstart' : 'mousedown', function(evt) {
-    isPendingEditingAccessoryButtonTap = true;
-  });
-  
-  $element.delegate('.pp-table-view-cell-editing-accessory', !!('ontouchmove' in window) ? 'touchmove' : 'mousemove', function(evt) {
-    if (!isPendingEditingAccessoryButtonTap) return;
-    isPendingEditingAccessoryButtonTap = false;
-  });
-  
-  $element.delegate('.pp-table-view-cell-editing-accessory', !!('ontouchend' in window) ? 'touchend' : 'mouseup', function(evt) {
-    if (!isPendingEditingAccessoryButtonTap) return;
-    isPendingEditingAccessoryButtonTap = false;
-    
-    var tableViewCell = $(this).parent()[0].tableViewCell;
-    if (!tableViewCell) return;
-    
-    var index = tableViewCell.getIndex();
-    
-    $element.trigger($.Event(Pushpop.TableView.EventType.EditingAccessoryButtonTappedForRowWithIndex, {
-      tableView: self,
-      tableViewCell: tableViewCell,
-      index: index,
-      item: self.getDataSource().getFilteredItemAtIndex(index),
-      element: this
-    }));
-  });
-  
-  // Handle mouse/touch events to allow the user to make row selections.
-  var isPendingSelection = false, selectionTimeout = null;
-
-  $element.delegate('li', !!('ontouchstart' in window) ? 'touchstart' : 'mousedown', function(evt) {
-    var tableViewCell = this.tableViewCell;
-    if (!tableViewCell) return;
-    
-    // Don't allow row to be selected if an accessory button is pending a tap.
-    if (isPendingAccessoryButtonTap || isPendingEditingAccessoryButtonTap) return;
-    
-    isPendingSelection = true;
-    
-    selectionTimeout = window.setTimeout(function() {
-      if (!isPendingSelection) return;
-      isPendingSelection = false;
-      
-      tableViewCell.didReceiveTap();
-      self.selectRowAtIndex(tableViewCell.getIndex());
-    }, selectionTimeoutDuration);
-  });
-  
-  $element.bind(!!('ontouchmove' in window) ? 'touchmove' : 'mousemove', function(evt) {
-    if (!isPendingSelection) return;
-    isPendingSelection = false;
-    
-    window.clearTimeout(selectionTimeout);
-  });
-  
-  $element.delegate('li', !!('ontouchend' in window) ? 'touchend' : 'mouseup', function(evt) {
-    var tableViewCell = this.tableViewCell;
-    if (!tableViewCell || !isPendingSelection) return;
-    
-    isPendingSelection = false;
-    
-    window.clearTimeout(selectionTimeout);
-    
-    tableViewCell.didReceiveTap();
-    self.selectRowAtIndex(this.tableViewCell.getIndex());
-    evt.preventDefault();
+    if ((minimumScrollPositionThreshold !== -1 && scrollPosition < minimumScrollPositionThreshold) ||
+        (maximumScrollPositionThreshold !== -1 && scrollPosition > maximumScrollPositionThreshold)) self.draw();
   });
   
   // Create a new data source from a data set URL.
   var dataSetUrl = $element.attr('data-set-url');
-  if (dataSetUrl) {
-    $.getJSON(dataSetUrl, function(dataSet) {
-      $element.html(null);
-      self.setDataSource(new Pushpop.TableViewDataSource(dataSet));
-    });
-  }
+  if (dataSetUrl) $.getJSON(dataSetUrl, function(dataSet) {
+    $element.html(null);
+    self.setDataSource(new Pushpop.TableViewDataSource(dataSet));
+  });
   
   // Create a new data source from existing <li/> elements.
-  else {
-    (function(self, $element) {
-      var dataSet = [];
-      
-      var dashAlpha = /-([a-z]|[0-9])/ig;
-      var camelCase = function(string) { return string.replace(dashAlpha, function(all, letter) { return (letter + '').toUpperCase(); }); };
-      
-      $element.children('li').each(function(index, element) {
-        var data = { title: $(element).html() };
+  else (function(self, $element) {
+    var dataSet = [];
+    var dashAlpha = /-([a-z]|[0-9])/ig;
+    var camelCase = function(string) { return string.replace(dashAlpha, function(all, letter) { return (letter + '').toUpperCase(); }); };
+    
+    $element.children('li').each(function(index, element) {
+      var data = { title: $(element).html() };
+      var attributes = element.attributes;
+      var attribute, attributeName, attributeValue;
+      for (var i = 0, length = attributes.length; i < length; i++) {
+        attribute = attributes[i];
+        attributeName = attribute.name;
+        attributeValue = attribute.value;
         
-        var attributes = element.attributes;
-        var attribute, attributeName, attributeValue;
-        for (var i = 0, length = attributes.length; i < length; i++) {
-          attribute = attributes[i];
-          attributeName = attribute.name;
-          attributeValue = attribute.value;
-          
-          try { attributeValue = JSON.parse(attributeValue); } catch (ex) {}
-          
-          if (attributeName.indexOf('data-') === 0) data[camelCase(attributeName.substring(5))] = attributeValue;
-        }
+        try { attributeValue = JSON.parse(attributeValue); } catch (ex) {}
         
-        if (!data['reuseIdentifier']) data.reuseIdentifier = 'pp-table-view-cell-default';
+        if (attributeName.indexOf('data-') === 0) data[camelCase(attributeName.substring(5))] = attributeValue;
+      }
       
-        dataSet.push(data);
-      });
-      
-      $element.html(null);
-      self.setDataSource(new Pushpop.TableViewDataSource(dataSet));
-    })(self, $element);
-  }
+      data.reuseIdentifier = data.reuseIdentifier || 'pp-table-view-cell-default';
+    
+      dataSet.push(data);
+    });
+    
+    $element.html(null);
+    self.setDataSource(new Pushpop.TableViewDataSource(dataSet));
+  })(self, $element);
 };
 
 /**
@@ -299,11 +104,8 @@ Pushpop.TableView.getReusableCellPrototypes = function() {
 Pushpop.TableView.getReusableCellPrototypeWithIdentifier = function(reuseIdentifier) { return Pushpop.TableView._reusableCellPrototypes[reuseIdentifier]; };
 
 Pushpop.TableView.registerReusableCellPrototype = function(cellPrototype) {
-  if (!cellPrototype) return;
-  
-  var reuseIdentifier = cellPrototype.getReuseIdentifier();
-  if (!reuseIdentifier) return;
-  
+  var reuseIdentifier;
+  if (!cellPrototype || !(reuseIdentifier = cellPrototype.getReuseIdentifier())) return;
   Pushpop.TableView._reusableCellPrototypes[reuseIdentifier] = cellPrototype;
 };
 
@@ -315,65 +117,106 @@ Pushpop.TableView.prototype = {
   
   scrollView: null,
   
-  _numberOfBufferedCells: 16,
-  _numberOfRows: 0,
-  _selectionTimeoutDuration: 250,
+  /**
   
-  _visibleHeight: 0,
-  
-  getVisibleHeight: function() { return this._visibleHeight || this.recalculateVisibleHeight(); },
-  recalculateVisibleHeight: function() { return this._visibleHeight = this.scrollView.getSize().height; },
+  */
+  getVisibleHeight: function() { return this.scrollView.getSize().height; },
   
   /**
-    Returns the view that contains this table view.
-    @description NOTE: If this table view is not contained within a view, this method will return null.
-    @type Pushpop.View
+  
   */
-  getView: function() {
-    var parents = this.$element.parents();
-    var view;
-    for (var i = 0, length = parents.length; i < length; i++) if ((view = parents[i].view)) return view;
+  getTotalHeight: function() { return this.getDataSource().getNumberOfRows() * this.getRowHeight(); },
+  
+  /**
+  
+  */
+  getScrollPosition: function() { return this.scrollView.getScrollPosition().y; },
+  
+  _minimumScrollPositionThreshold: -1,
+  
+  /**
+  
+  */
+  getMinimumScrollPositionThreshold: function() { return this._minimumScrollPositionThreshold; },
+  
+  _maximumScrollPositionThreshold: -1,
+  
+  /**
+  
+  */
+  getMaximumScrollPositionThreshold: function() { return this._maximumScrollPositionThreshold; },
+  
+  /**
+  
+  */
+  getMinimumVisibleRowIndex: function() { return Math.min(Math.floor(this.getScrollPosition() / this.getRowHeight()), this.getDataSource().getNumberOfRows() - 1); },
+  
+  /**
+  
+  */
+  getMaximumVisibleRowIndex: function() { return Math.min(this.getMinimumVisibleRowIndex() + this.getNumberOfVisibleRows(), this.getDataSource().getNumberOfRows()) - 1; },
+  
+  /**
+  
+  */
+  getNumberOfVisibleRows: function() { return Math.min(Math.ceil(this.getVisibleHeight() / this.getRowHeight()), this.getDataSource().getNumberOfRows()); },
+  
+  _renderedCells: null, // []
+  
+  /**
+  
+  */
+  getRenderedCells: function() { return this._renderedCells; },
+  
+  /**
+  
+  */
+  getRenderedCellAtIndex: function(index) {
+    var renderedCells = this.getRenderedCells();
+    for (var i = 0, length = renderedCells.length, renderedCell; i < length; i++) if ((renderedCell = renderedCells[i]).getIndex() === index) return renderedCell;
     return null;
   },
   
+  _minimumRenderedRowIndex: -1,
+  
   /**
-    Returns the view stack that contains this table view.
-    @description NOTE: If this table view is not contained within a view stack, this method will return null.
-    @type Pushpop.ViewStack
+  
   */
-  getViewStack: function() {
-    var parents = this.$element.parents();
-    var viewStack;
-    for (var i = 0, length = parents.length; i < length; i++) if ((viewStack = parents[i].viewStack)) return viewStack;
-    return null;
-  },
+  getMinimumRenderedRowIndex: function() { return this._minimumRenderedRowIndex; },
   
-  _reusableCells: null,
+  _maximumRenderedRowIndex: -1,
   
   /**
-    Returns an object containing arrays of reusable cells that are not currently
-    visible.
-    @description The object contains an array property for each "reuse identifier"
-    in use. For example, if there are two types of TableViewCells in this TableView
-    with two different reuse identifiers (cellType1 and cellType2), this object
-    would contain two arrays that can be accessed using square bracket notation
-    like this: reusableCells['cellType1'] or reusableCells['cellType2']
-    @type Object
+  
+  */
+  getMaximumRenderedRowIndex: function() { return this._maximumRenderedRowIndex; },
+  
+  _reusableCells: null, // {}
+  
+  /**
+  
   */
   getReusableCells: function() { return this._reusableCells; },
+  
+  /**
+  
+  */
+  getReusableCellsWithIdentifier: function(reuseIdentifier) {
+    var reusableCells = this.getReusableCells();
+    return reusableCells[reuseIdentifier] || (reusableCells[reuseIdentifier] = []);
+  },
   
   /**
     Returns a new or recycled TableViewCell with the specified reuse identifier.
     @description This method will first attempt to reuse a recycled TableViewCell
     with the specified reuse identifier. If no recycled TableViewCells with that
     reuse identifier are available, a new one will be instantiated and returned.
-    The TableViewCell that is returned is always added to the |visibleCells| array.
+    The TableViewCell that is returned is always added to the |renderedCells| array.
     @type Pushpop.TableViewCell
   */
   dequeueReusableCellWithIdentifier: function(reuseIdentifier) {
-    var visibleCells = this.getVisibleCells();
-    var reusableCells = this.getReusableCells();
-    reusableCells = reusableCells[reuseIdentifier] || (reusableCells[reuseIdentifier] = []);
+    var renderedCells = this.getRenderedCells();
+    var reusableCells = this.getReusableCellsWithIdentifier(reuseIdentifier);
     
     var cell = null, cellPrototype = null;
     
@@ -384,299 +227,114 @@ Pushpop.TableView.prototype = {
       cell = (cellPrototype) ? new cellPrototype.constructor(reuseIdentifier) : new Pushpop.TableViewCell(reuseIdentifier);
     }
     
-    visibleCells.push(cell);
+    renderedCells.push(cell);
     cell.tableView = this;
     
     return cell;
   },
   
-  _visibleCells: null,
+  _drawing: false,
+  
+  getDrawing: function() { return this._drawing; },
   
   /**
-    Returns an array of all of the currently visible TableViewCells.
-    @type Array
-  */
-  getVisibleCells: function() { return this._visibleCells; },
   
-  /**
-    Returns the calculated number of how many cells should currently be visible.
-    @description NOTE: There may be moments in time where this calculated number
-    differs from the number of cells in the array returned from getVisibleCells()
-    (e.g.: Immediately following an orientation change or window resize).
-    @type Number
   */
-  getCalculatedNumberOfVisibleCells: function() { return Math.ceil(this.getVisibleHeight() / this.getRowHeight()) + this._numberOfBufferedCells; },
-  
-  _selectedRowIndexes: null,
-  
-  /**
-    Returns the index in for the first selected row.
-    @description NOTE: This is an index of a row in the data source, NOT an index
-    of a cell in the DOM. If no rows are selected, this method will return -1.
-    @type Number
-  */
-  getIndexForSelectedRow: function() {
-    var selectedRowIndexes = this._selectedRowIndexes;
-    return (selectedRowIndexes && selectedRowIndexes.length > 0) ? selectedRowIndexes[0] : -1;
-  },
-  
-  /**
-    Returns the indexes in for the selected rows.
-    @description NOTE: The array contains indexes of rows in the data source, NOT
-    indexes of cells in the DOM. If no rows are selected, this array will be empty.
-    @type Array
-  */
-  getIndexesForSelectedRows: function() {
-    return this._selectedRowIndexes;
-  },
-  
-  /**
-    Determines if the specified index is a selected row.
-    @description NOTE: This is an index of a row in the data source, NOT an index
-    of a cell in the DOM.
-    @type Boolean
-  */
-  isRowSelectedAtIndex: function(index) {
-    var selectedRowIndexes = this._selectedRowIndexes;
-    for (var i = 0, length = selectedRowIndexes.length; i < length; i++) if (selectedRowIndexes[i] === index) return true;
-    return false;
-  },
-  
-  /**
-    Selects the row at the specified index and triggers the DidSelectRowAtIndex event on
-    this and all parent table view elements.
-    @description NOTE: If the row contains a child data source, this method will automatically
-    push a dynamic table view using the child data source. The DidSelectRowAtIndex event contains
-    a flag |hasChildDataSource| to indicate whether or not a new dynamic table view was pushed
-    prior to the event.
-    @param {Number} index The index of a row in the data source to select.
-    @param {Boolean} [animated] A flag indicating if the selection should be animated
-    if the row is currently visible.
-  */
-  selectRowAtIndex: function(index, animated) {
-    var dataSource = this.getDataSource();
-    var shouldSelectRowAtIndex = dataSource.shouldSelectRowAtIndex(index);
-    if (!shouldSelectRowAtIndex) return;
-    
-    this.deselectAllRows();
-    
-    var $element = this.$element;
-    this._selectedRowIndexes.push(index);
-    
-    var tableViewCell, $cells = this.$element.children();
-    for (var i = 0, length = $cells.length; i < length; i++) {
-      tableViewCell = $cells[i].tableViewCell;
-      if (tableViewCell.getIndex() === index) {
-        tableViewCell.setSelected(true);
-        tableViewCell.forceReflow();
-        break;
-      }
-    }
+  draw: function() {
+    if (this._drawing) return;
+    this._drawing = true;
     
     var self = this;
     
-    // If this row contains a child data source, automatically push a new dynamic table view with it.
-    if (dataSource.rowHasChildDataSourceAtIndex(index)) {
-      var childDataSource = dataSource.getChildDataSourceForRowAtIndex(index);
-      var viewStack = this.getViewStack();
-      
-      if (childDataSource && viewStack) {
-        viewStack.pushNewTableView(function(childTableView) {
-          if (self.getSearchBar()) childTableView.setSearchBar(new Pushpop.TableViewSearchBar(childTableView));
-          childTableView.setDataSource(childDataSource);
-          childTableView.setParentTableView(self);
-        });
-        
-        // Trigger the DidSelectRowAtIndex event on this and all parent table view elements.
-        window.setTimeout(function() {
-          self.triggerEventOnParentTableViews($.Event(Pushpop.TableView.EventType.DidSelectRowAtIndex, {
-            tableView: self,
-            index: index,
-            item: dataSource.getFilteredItemAtIndex(index),
-            hasChildDataSource: true
-          }), true);
-        }, 1);
-        
-        return;
-      }
-    }
+    //console.log('draw()');
     
-    // Trigger the DidSelectRowAtIndex event on this and all parent table view elements.
     window.setTimeout(function() {
-      self.triggerEventOnParentTableViews($.Event(Pushpop.TableView.EventType.DidSelectRowAtIndex, {
-        tableView: self,
-        index: index,
-        item: dataSource.getFilteredItemAtIndex(index),
-        hasChildDataSource: false
-      }), true);
-    }, 1);
-  },
-  
-  /**
-    De-selects the row at the specified index and optionally animates the de-selection
-    if the row is currently visible.
-    @description NOTE: This method will not modify any other existing selections.
-    @param {Number} index The index of a row in the data source to de-select.
-    @param {Boolean} [animated] A flag indicating if the de-selection should be
-    animated if the row is currently visible.
-  */
-  deselectRowAtIndex: function(index, animated) {
-    var $element = this.$element;
-    var selectedRowIndexes = this._selectedRowIndexes;
-    var i, length;
-    for (i = 0, length = selectedRowIndexes.length; i < length; i++) {
-      if (selectedRowIndexes[i] === index) {
-        selectedRowIndexes.splice(i, 1);
-        break;
+      var dataSource = self.getDataSource();
+      
+      var minimumVisibleRowIndex = self.getMinimumVisibleRowIndex();
+      var maximumVisibleRowIndex = self.getMaximumVisibleRowIndex();
+      
+      var numberOfRows = dataSource.getNumberOfRows();
+      var numberOfVisibleRows = self.getNumberOfVisibleRows();
+      var numberOfLeadingRows = Math.min(numberOfVisibleRows, minimumVisibleRowIndex);
+      var numberOfTrailingRows = Math.min(numberOfVisibleRows, numberOfRows - maximumVisibleRowIndex - 1);
+      
+      var lastMinimumRenderedRowIndex = self.getMinimumRenderedRowIndex();
+      var lastMaximumRenderedRowIndex = self.getMaximumRenderedRowIndex();
+      
+      var minimumRenderedRowIndex = self._minimumRenderedRowIndex = minimumVisibleRowIndex - numberOfLeadingRows;
+      var maximumRenderedRowIndex = self._maximumRenderedRowIndex = maximumVisibleRowIndex + numberOfTrailingRows;
+      
+      var lastMinimumScrollPositionThreshold = self._minimumScrollPositionThreshold;
+      var lastMaximumScrollPositionThreshold = self._maximumScrollPositionThreshold;
+      
+      var scrollPosition = self.getScrollPosition();
+      
+      var visibleHeight = self.getVisibleHeight();
+      var totalHeight = self.getTotalHeight();
+      var rowHeight = self.getRowHeight();
+      
+      var scrollView = self.scrollView;
+      var lastScrollViewMargin = scrollView.getMargin();
+      var scrollViewMarginTop = minimumRenderedRowIndex * rowHeight;
+      var scrollViewMarginBottom = (numberOfRows - maximumRenderedRowIndex - 1) * rowHeight;
+      
+      self.scrollView.setMargin(scrollViewMarginTop, lastScrollViewMargin.right, scrollViewMarginBottom, lastScrollViewMargin.left);
+      
+      var $element = self.$element;
+      var minimumRowIndexToRender, maximumRowIndexToRender;
+      var minimumRowIndexToRemove, maximumRowIndexToRemove;
+      var i, renderedCellToRemove;
+      
+      // Render higher-indexed rows.
+      if (minimumRenderedRowIndex > lastMinimumRenderedRowIndex || maximumRenderedRowIndex > lastMaximumRenderedRowIndex) {
+        minimumRowIndexToRender = lastMaximumRenderedRowIndex + 1;
+        maximumRowIndexToRender = maximumRenderedRowIndex;
+        minimumRowIndexToRemove = lastMinimumRenderedRowIndex;
+        maximumRowIndexToRemove = minimumRenderedRowIndex - 1;
+        
+        for (i = minimumRowIndexToRender; i <= maximumRowIndexToRender; i++) $element.append(dataSource.getCellForRowAtIndex(self, i).$element);
       }
-    }
-    
-    var tableViewCell, $selectedCells = $element.children('.pp-table-view-selected-state');
-    for (i = 0, length = $cells.length; i < length; i++) {
-      tableViewCell = $cells[i].tableViewCell;
-      if (tableViewCell.getIndex() === index) {
-        tableViewCell.setSelected(false);
-        break;
+      
+      // Render lower-indexed rows.
+      else if (minimumRenderedRowIndex < lastMinimumRenderedRowIndex || maximumRenderedRowIndex < lastMaximumRenderedRowIndex) {
+        minimumRowIndexToRender = minimumRenderedRowIndex;
+        maximumRowIndexToRender = lastMinimumRenderedRowIndex - 1;
+        minimumRowIndexToRemove = maximumRenderedRowIndex + 1;
+        maximumRowIndexToRemove = lastMaximumRenderedRowIndex;
+        
+        for (i = maximumRowIndexToRender; i >= minimumRowIndexToRender; i--) $element.prepend(dataSource.getCellForRowAtIndex(self, i).$element);
       }
-    }
+
+      for (i = minimumRowIndexToRemove; i <= maximumRowIndexToRemove; i++) if ((renderedCellToRemove = self.getRenderedCellAtIndex(i))) renderedCellToRemove.prepareForReuse();
     
-    $element.trigger($.Event(Pushpop.TableView.EventType.DidDeselectRowAtIndex, {
-      tableView: this,
-      index: index
-    }));
+      var minimumScrollPositionThreshold = self._minimumScrollPositionThreshold = (minimumRenderedRowIndex > 0) ? scrollPosition - visibleHeight : -1;
+      var maximumScrollPositionThreshold = self._maximumScrollPositionThreshold = (maximumRenderedRowIndex < numberOfRows - 1) ? scrollPosition + visibleHeight : -1;
+      
+      // console.log('Minimum Visible Index: ' + minimumVisibleRowIndex + ', Maximum Visible Index: ' + maximumVisibleRowIndex);
+      // console.log('Visible Rows: ' + numberOfVisibleRows + ', Leading Rows: ' + numberOfLeadingRows + ', Trailing Rows: ' + numberOfTrailingRows);
+      // console.log(lastMinimumRenderedRowIndex + ' -> ' + minimumRenderedRowIndex + ', ' + lastMaximumRenderedRowIndex + ' -> ' + maximumRenderedRowIndex);
+      // console.log('Row Indexes To Render: ' + minimumRowIndexToRender + ' - ' + maximumRowIndexToRender);
+      // console.log('Row Indexes To Remove: ' + minimumRowIndexToRemove + ' - ' + maximumRowIndexToRemove);
+      // console.log('================================================================');
+      
+      self._drawing = false;
+    }, 0);
   },
   
   /**
-    De-selects all rows in the table.
-  */
-  deselectAllRows: function() {
-    var $element = this.$element;
-    var selectedRowIndexes = this._selectedRowIndexes;
-    for (var i = 0, length = selectedRowIndexes.length; i < length; i++) {
-      $element.trigger($.Event(Pushpop.TableView.EventType.DidDeselectRowAtIndex, {
-        tableView: this,
-        index: selectedRowIndexes[i]
-      }));
-    }
-    
-    selectedRowIndexes.length = 0;
-    
-    $element.children('.pp-table-view-selected-state').each(function(index, element) {
-      element.tableViewCell.setSelected(false);
-    });
-  },
   
-  /**
-    Resets the scroll position back to the top of the TableView.
-  */
-  resetScrollView: function() {
-    var numberOfRows = this._numberOfRows;
-    var visibleCellCount = Math.min(this.getCalculatedNumberOfVisibleCells(), numberOfRows);
-    var hiddenCellCount = numberOfRows - visibleCellCount;
-    
-    var scrollView = this.scrollView;
-    var margin = scrollView.getMargin();
-    
-    // Set the scroll view margin.
-    scrollView.setMargin(0, margin.right, hiddenCellCount * this.getRowHeight(), margin.left);
-    
-    // Scroll to the top of the table view without animating.
-    scrollView.setScrollPosition(0, 0);
-  },
-  
-  /**
-    Reloads the data source for the TableView and resets the scroll position back
-    to the top of the TableView.
-    @description Typically this method is called if/when the data source changes or
-    if there is a change in the search string.
   */
   reloadData: function() {
-    var $element = this.$element;
+    var renderedCells = this.getRenderedCells();
+    var renderedCellsToReuse = [];
     
-    // Recalculate the visible height of this table view.
-    this.recalculateVisibleHeight();
+    var i, length;
+    for (i = 0, length = renderedCells.length; i < length; i++) renderedCellsToReuse.push(renderedCells[i]);
+    for (i = 0, length = renderedCellsToReuse.length; i < length; i++) renderedCellsToReuse[i].prepareForReuse();
     
-    var dataSource = this.getDataSource();
-    var visibleCells = this.getVisibleCells();
-    
-    var i, length, visibleCellsToReuse = [];
-    for (i = 0, length = visibleCells.length; i < length; i++) visibleCellsToReuse.push(visibleCells[i]);
-    for (i = 0, length = visibleCellsToReuse.length; i < length; i++) visibleCellsToReuse[i].prepareForReuse();
-    
-    var numberOfRows = this._numberOfRows = dataSource.getNumberOfRows();
-    var visibleCellCount = Math.min(this.getCalculatedNumberOfVisibleCells(), numberOfRows);
-    var hiddenCellCount = numberOfRows - visibleCellCount;
-    
-    for (i = 0; i < visibleCellCount; i++) {
-      var cell = dataSource.getCellForRowAtIndex(this, i);
-      $element.append(cell.$element);
-    }
-    
-    this.resetScrollView();
-    
-    this.$trigger($.Event(Pushpop.TableView.EventType.DidReloadData, { tableView: this }));
+    this.draw();
   },
-  
-  _parentTableView: null,
-  
-  /**
-    Returns the parent table view if this table view has one.
-    @type Pushpop.TableView
-  */
-  getParentTableView: function() { return this._parentTableView; },
-  
-  /**
-    Sets the parent table view for this table view.
-    @param {Pushpop.TableView} parentTableView The table view to set as the parent for this table view.
-    @description NOTE: To remove this table view from its parent, call this method
-    and pass in a |null| value.
-  */
-  setParentTableView: function(parentTableView) { this._parentTableView = parentTableView; },
-  
-  /**
-    Traverses the parent table views up the chain until it encounters a table view
-    with no parent then returns an array of Pushpop.TableView objects.
-    @type Array
-  */
-  getParentTableViews: function() {
-    var parentTableViews = [];
-    var currentParentTableView = this.getParentTableView();
-    
-    while (currentParentTableView) {
-      parentTableViews.push(currentParentTableView);
-      currentParentTableView = currentParentTableView.getParentTableView();
-    }
-    
-    return parentTableViews;
-  },
-  
-  /**
-    Triggers the specified event on the parent table view elements and optionally
-    also on this own table view's element.
-    @param {$.Event|String} evt The event to be triggered on the table view element(s).
-    @param {Boolean} [includeSelf] A flag indicating whether or not the event should
-    also be triggered on this table view's element.
-  */
-  triggerEventOnParentTableViews: function(evt, includeSelf) {
-    var parentTableViews = this.getParentTableViews();
-    for (var i = 0, length = parentTableViews.length; i < length; i++) parentTableViews[i].$trigger(evt);
-    if (includeSelf) this.$trigger(evt);
-  },
-  
-  _searchBar: null,
-  
-  /**
-    Returns the TableViewSearchBar for this TableView if it contains one.
-    @type Pushpop.TableViewSearchBar
-  */
-  getSearchBar: function() { return this._searchBar; },
-  
-  /**
-    Sets a TableViewSearchBar for this TableView.
-    @param {Pushpop.TableViewSearchBar} searchBar The TableViewSearchBar to attach
-    to this TableView.
-  */
-  setSearchBar: function(searchBar) { this._searchBar = searchBar; },
   
   _dataSource: null,
   
@@ -706,71 +364,94 @@ Pushpop.TableView.prototype = {
     this.reloadData();
   },
   
+  _searchBar: null,
+  
+  /**
+    Returns the TableViewSearchBar for this TableView if it contains one.
+    @type Pushpop.TableViewSearchBar
+  */
+  getSearchBar: function() { return this._searchBar; },
+  
+  /**
+    Sets a TableViewSearchBar for this TableView.
+    @param {Pushpop.TableViewSearchBar} searchBar The TableViewSearchBar to attach
+    to this TableView.
+  */
+  setSearchBar: function(searchBar) { this._searchBar = searchBar; },
+  
   _rowHeight: 44,
   
   /**
-    Returns the fixed row height for this TableView.
-    @type Number
+  
   */
   getRowHeight: function() { return this._rowHeight; },
   
   /**
-    Sets the fixed row height for this TableView and reloads the data.
-    @param {Number} rowHeight The fixed row height for this TableView to use
-    when drawing TableViewCells.
-  */
-  setRowHeight: function(rowHeight) {
-    this._rowHeight = rowHeight;
-    this.reloadData();
-  },
   
-  _editing: false,
+  */
+  setRowHeight: function(rowHeight) { this._rowHeight = rowHeight; },
   
   /**
-    Determines if this TableView is in editing mode.
-    @type Boolean
+    Returns the view that contains this table view.
+    @description NOTE: If this table view is not contained within a view, this method will return null.
+    @type Pushpop.View
   */
-  getEditing: function() { return this._editing; },
-  
-  /**
-    Used for setting the table view in or out of editing mode.
-    @param {Boolean} editing A flag indicating if the TableView should be in editing mode.
-    @param {Boolean} [animated] An optional flag indicating if the transition in or out of
-    editing mode should be animated (default: true).
-  */
-  setEditing: function(editing, animated) {
-    if ((this._editing = editing)) {
-      this.$element.addClass('pp-table-view-editing');
-    } else {
-      this.$element.removeClass('pp-table-view-editing');
-    }
+  getView: function() {
+    var parents = this.$element.parents();
+    var view;
+    for (var i = 0, length = parents.length; i < length; i++) if ((view = parents[i].view)) return view;
+    return null;
   },
   
-	/**
+  /**
+    Returns the view stack that contains this table view.
+    @description NOTE: If this table view is not contained within a view stack, this method will return null.
+    @type Pushpop.ViewStack
+  */
+  getViewStack: function() {
+    var parents = this.$element.parents();
+    var viewStack;
+    for (var i = 0, length = parents.length; i < length; i++) if ((viewStack = parents[i].viewStack)) return viewStack;
+    return null;
+  },
+  
+  /**
     Convenience accessor for jQuery's .bind() method.
-	*/
-	$bind: function() { this.$element.bind.apply(this.$element, arguments); },
-	
-	/**
+  */
+  $bind: function() { this.$element.bind.apply(this.$element, arguments); },
+  
+  /**
     Convenience accessor for jQuery's .unbind() method.
-	*/
-	$unbind: function() { this.$element.unbind.apply(this.$element, arguments); },
-	
-	/**
+  */
+  $unbind: function() { this.$element.unbind.apply(this.$element, arguments); },
+  
+  /**
     Convenience accessor for jQuery's .delegate() method.
-	*/
-	$delegate: function() { this.$element.delegate.apply(this.$element, arguments); },
-	
-	/**
+  */
+  $delegate: function() { this.$element.delegate.apply(this.$element, arguments); },
+  
+  /**
     Convenience accessor for jQuery's .undelegate() method.
-	*/
-	$undelegate: function() { this.$element.undelegate.apply(this.$element, arguments); },
-	
-	/**
+  */
+  $undelegate: function() { this.$element.undelegate.apply(this.$element, arguments); },
+  
+  /**
     Convenience accessor for jQuery's .trigger() method.
-	*/
-	$trigger: function() { this.$element.trigger.apply(this.$element, arguments); }
+  */
+  $trigger: function() { this.$element.trigger.apply(this.$element, arguments); }
 };
+
+
+
+
+
+
+
+
+
+
+
+
 
 /**
   Creates a new data source for a TableView.
@@ -1535,15 +1216,15 @@ Pushpop.TableViewCell.prototype = {
     
     var tableView = this.tableView;
     var reuseIdentifier = this.getReuseIdentifier();
-    var visibleCells = tableView.getVisibleCells();
+    var renderedCells = tableView.getRenderedCells();
     var reusableCells = tableView.getReusableCells();
     reusableCells = reusableCells[reuseIdentifier] || (reusableCells[reuseIdentifier] = []);
     
     reusableCells.push(this);
     
-    for (var i = 0, length = visibleCells.length; i < length; i++) {
-      if (visibleCells[i] === this) {
-        visibleCells.splice(i, 1);
+    for (var i = 0, length = renderedCells.length; i < length; i++) {
+      if (renderedCells[i] === this) {
+        renderedCells.splice(i, 1);
         break;
       }
     }

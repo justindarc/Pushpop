@@ -5,8 +5,18 @@ var fs = require('fs');
 var numberOfRecords = process.argv[2];
 var outputFile = process.argv[3];
 
-var records = [];
+var records = [], title;
 
+// for (var i = 0; i < numberOfRecords; i++) {
+//   title = '';
+//   for (var j = 0; j < (i < 50 ? i : Math.abs(i - 100)); j++) title += '.';
+//   title += '| ' + i;
+//   records.push({
+//     id: i + 1,
+//     value: i,
+//     title: title
+//   });
+// }
 for (var i = 0; i < numberOfRecords; i++) {
   records.push({
     id: i + 1,
