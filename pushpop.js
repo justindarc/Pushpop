@@ -1313,6 +1313,16 @@ $(function() {
     if (element.id) views[Pushpop.Util.convertDashedStringToCamelCase(element.id)] = view;
   });
   
+  if (Pushpop.SplitView) $('.pp-split-view').each(function(index, element) {
+    var splitView = new Pushpop.SplitView(element);
+    if (element.id) views[Pushpop.Util.convertDashedStringToCamelCase(element.id)] = splitView;
+  });
+  
+  if (Pushpop.TabView) $('.pp-tab-view').each(function(index, element) {
+    var tabView = new Pushpop.TabView(element);
+    if (element.id) views[Pushpop.Util.convertDashedStringToCamelCase(element.id)] = tabView;
+  });
+  
   $('.pp-view-stack').each(function(index, element) {
     var viewStack = new Pushpop.ViewStack(element);
     if (element.id) viewStacks[Pushpop.Util.convertDashedStringToCamelCase(element.id)] = viewStack;
@@ -1322,8 +1332,6 @@ $(function() {
     var viewStack = new Pushpop.ModalViewStack(element);
     if (element.id) viewStacks[Pushpop.Util.convertDashedStringToCamelCase(element.id)] = viewStack;
   });
-  
-  if (Pushpop.SplitView) $('.pp-split-view').each(function(index, element) { new Pushpop.SplitView(element); });
   
   $('.pp-navigation-bar').each(function(index, element) {
     var navigationBar = new Pushpop.NavigationBar(element);

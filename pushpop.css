@@ -141,6 +141,7 @@ body {
   font-family: PushpopGlyphs;
   font-weight: normal;
   font-style: normal;
+  line-height: 1em;
   display: inline-block;
   text-decoration: inherit;
 }

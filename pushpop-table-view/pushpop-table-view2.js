@@ -246,8 +246,6 @@ Pushpop.TableView.prototype = {
     
     var self = this;
     
-    //console.log('draw()');
-    
     window.setTimeout(function() {
       var dataSource = self.getDataSource();
       
@@ -286,8 +284,17 @@ Pushpop.TableView.prototype = {
       var minimumRowIndexToRemove, maximumRowIndexToRemove;
       var i, renderedCellToRemove;
       
+      if (minimumRenderedRowIndex === lastMinimumRenderedRowIndex || maximumRenderedRowIndex === lastMaximumRenderedRowIndex) {
+        minimumRowIndexToRender = minimumRenderedRowIndex;
+        maximumRowIndexToRender = maximumRenderedRowIndex;
+        minimumRowIndexToRemove = -1;
+        maximumRowIndexToRemove = -1;
+        
+        for (i = minimumRowIndexToRender; i <= maximumRowIndexToRender; i++) $element.append(dataSource.getCellForRowAtIndex(self, i).$element);
+      }
+      
       // Render higher-indexed rows.
-      if (minimumRenderedRowIndex > lastMinimumRenderedRowIndex || maximumRenderedRowIndex > lastMaximumRenderedRowIndex) {
+      else if (minimumRenderedRowIndex > lastMinimumRenderedRowIndex || maximumRenderedRowIndex > lastMaximumRenderedRowIndex) {
         minimumRowIndexToRender = lastMaximumRenderedRowIndex + 1;
         maximumRowIndexToRender = maximumRenderedRowIndex;
         minimumRowIndexToRemove = lastMinimumRenderedRowIndex;
@@ -332,7 +339,6 @@ Pushpop.TableView.prototype = {
     var i, length;
     for (i = 0, length = renderedCells.length; i < length; i++) renderedCellsToReuse.push(renderedCells[i]);
     for (i = 0, length = renderedCellsToReuse.length; i < length; i++) renderedCellsToReuse[i].prepareForReuse();
-    
     this.draw();
   },
   
@@ -967,9 +973,7 @@ Pushpop.TableViewSearchBar = function TableViewSearchBar(tableView) {
   var $element = this.$element = $('<div class="pp-table-view-search-bar"/>');
   var element = this.element = $element[0];
   
-  element.tableViewSearchBar = this;
-  
-  var self = this;
+  var self = element.tableViewSearchBar = this;
   
   var $input = this.$input = $('<input type="text" placeholder="Search"/>').appendTo($element);
   var $cancelButton = this.$cancelButton = $('<a class="pp-table-view-search-bar-button" href="#">Cancel</a>').appendTo($element);
@@ -1029,12 +1033,13 @@ Pushpop.TableViewSearchBar = function TableViewSearchBar(tableView) {
     }
     
     willFocus = false;
-    self._tableView.resetScrollView();
     
     window.setTimeout(function() {
       $overlay.addClass('pp-active');
       if ($input.val()) $clearButton.addClass('pp-active');
-    }, 0);
+    }, 1);
+    
+    self.getTableView().scrollView.scrollToTop();
   });
   $input.bind('blur', function(evt) { $overlay.removeClass('pp-active'); $clearButton.removeClass('pp-active'); });
   $overlay.bind('mousedown touchstart', function(evt) { evt.stopPropagation(); evt.preventDefault(); });
@@ -1058,7 +1063,10 @@ Pushpop.TableViewSearchBar = function TableViewSearchBar(tableView) {
       $clearButton.addClass('pp-active');
     }
     
-    if (tableView.getDataSource().shouldReloadTableForSearchString(searchString)) tableView.reloadData();
+    if (tableView.getDataSource().shouldReloadTableForSearchString(searchString)) {
+      console.log('reloading...');
+      tableView.reloadData();
+    }
   });
   
   this.attachToTableView(tableView);
@@ -1075,6 +1083,11 @@ Pushpop.TableViewSearchBar.prototype = {
   $overlay: null,
   
   _tableView: null,
+  
+  /**
+  
+  */
+  getTableView: function() { return this._tableView; },
   
   /**
     Attaches this TableViewSearchBar to a TableView.
