@@ -183,11 +183,12 @@
   content: '\f008';
   color: #959aa0;
   font-family: PushpopGlyphs;
-  font-size: 1.6em;
+  font-size: 20px;
+  text-decoration: none;
   display: inline-block;
   position: absolute;
-  top: 13px;
-  left: 17px;
+  top: 12px;
+  left: 16px;
   z-index: 2;
 }
 
@@ -208,7 +209,7 @@
   line-height: 1.1em;
   outline: none;
   margin: 5px 7px;
-  padding: 6px 7px 6px 28px;
+  padding: 6px 7px 6px 26px;
   position: absolute;
   top: 0;
   right: 0;
@@ -253,10 +254,11 @@
 .pp-table-view-search-bar-clear-button {
   color: #b2b2b2;
   font-family: PushpopGlyphs;
-  font-size: 1.9em;
+  font-size: 26px;
+  text-decoration: none;
   position: absolute;
   top: 13px;
-  right: 84px;
+  right: 82px;
   z-index: 2;
   visibility: hidden;
 }
@@ -432,11 +434,21 @@
 }
 
 .pp-table-view-cell-default {
+  padding: 0 10px;
+}
+
+.pp-table-view-cell-default > h1 {
   color: #000;
+  display: block;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 1em;
   font-weight: bold;
   line-height: 1.2em;
-  padding: 11px 10px;
+  text-rendering: auto;
+}
+
+.pp-table-view-cell-default.pp-table-view-selected-state > h1 {
+  color: #fff;
 }
 
 .pp-table-view.pp-table-view-editing > li {

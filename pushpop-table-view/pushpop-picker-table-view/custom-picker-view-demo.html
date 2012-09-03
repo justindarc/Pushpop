@@ -7,13 +7,11 @@
 	<title>Pushpop Custom Picker View Demo</title>
 	<link rel="stylesheet" href="../../externals/scrollkit/scrollkit.css">
 	<link rel="stylesheet" href="../../pushpop.css">
-	<link rel="stylesheet" href="../../pushpop-navigationbar/pushpop-navigationbar.css">
 	<link rel="stylesheet" href="../pushpop-table-view.css">
 	<link rel="stylesheet" href="pushpop-picker-table-view.css">
 	<script src="../../jquery-1.8.0.js"></script>
 	<script src="../../externals/scrollkit/scrollkit.js"></script>
 	<script src="../../pushpop.js"></script>
-	<script src="../../pushpop-navigationbar/pushpop-navigationbar.js"></script>
 	<script src="../pushpop-table-view.js"></script>
 	<script src="pushpop-picker-table-view.js"></script>
 	<script>
@@ -51,18 +49,18 @@
 </head>
 <body>
   <div class="pp-view-stack" id="root-view-stack">
-    <div class="pp-navigationbar" id="root-navigation-bar" data-tap-to-top="true"></div>
+    <div class="pp-navigation-bar" id="root-navigation-bar" data-tap-to-top="true"></div>
     <div class="pp-view sk-scroll-view" id="root-view" data-view-title="Custom Picker View Demo" data-always-bounce-vertical="true">
-      <div class="pp-navigationbar-buttons">
-        <a class="pp-barbutton pp-barbutton-align-right active" href="#save">Save</a>
+      <div class="pp-navigation-bar-button-items">
+        <a class="pp-button pp-button-alignment-right" href="#save">Save</a>
       </div>
       <ul class="pp-picker-table-view pp-table-view-style-grouped" id="picker-table-view" data-contains-search-bar="true">
         
       </ul>
     </div>
     <div class="pp-view sk-scroll-view" id="form-view" data-view-title="Add User" data-always-bounce-vertical="true">
-      <div class="pp-navigationbar-buttons">
-        <a class="pp-barbutton pp-barbutton-align-right pp-barbutton-style-blue active" href="#done">Done</a>
+      <div class="pp-navigation-bar-button-items">
+        <a class="pp-button pp-button-alignment-right pp-button-style-blue" href="#done">Done</a>
       </div>
       <ul class="pp-table-view pp-table-view-style-grouped" id="form-table-view">
         <li data-reuse-identifier="pp-inline-text-input-table-view-cell" data-name="full_name" data-value="">full name</li>
