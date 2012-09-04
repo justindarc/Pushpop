@@ -89,6 +89,9 @@ Pushpop.ViewStack = function ViewStack(element) {
   
   var rootView = this.rootView = rootViewElement.view || new Pushpop.View($rootViewElement.addClass('root'));
   views.push(rootView);
+  
+  var rootScrollView = rootView.getScrollView();
+  if (rootScrollView) rootScrollView.recalculateDimensions();
 };
 
 Pushpop.ViewStack.prototype = {
@@ -259,6 +262,9 @@ Pushpop.ViewStack.prototype = {
     
     oldActiveView.forceReflow();
     newActiveView.forceReflow();
+        
+    var newActiveScrollView = newActiveView.getScrollView();
+    if (newActiveScrollView) newActiveScrollView.recalculateDimensions();
     
     // Trigger an event indicating that the new view is about to be pushed.
     $newActiveViewElement.trigger($.Event(Pushpop.EventType.WillPushView, {
@@ -380,6 +386,9 @@ Pushpop.ViewStack.prototype = {
     
     oldActiveView.forceReflow();
     newActiveView.forceReflow();
+    
+    var newActiveScrollView = newActiveView.getScrollView();
+    if (newActiveScrollView) newActiveScrollView.recalculateDimensions();
     
     // Trigger an event indicating that the previous view is about to be popped.
     $oldActiveViewElement.trigger($.Event(Pushpop.EventType.WillPopView, {
