@@ -1,6 +1,11 @@
 .pp-tab-view > .pp-view-stack {
   bottom: 49px;
   display: none;
+  -webkit-perspective: none;
+     -moz-perspective: none;
+      -ms-perspective: none;
+       -o-perspective: none;
+          perspective: none;
 }
 
 .pp-tab-view > .pp-view-stack.pp-active {
@@ -52,11 +57,15 @@
   cursor: pointer;
   display: inline-block;
   height: 44px;
-
   text-align: center;
+  text-decoration: none;
   -webkit-border-radius: 3px;
      -moz-border-radius: 3px;
           border-radius: 3px;
+}
+
+.pp-tab-bar-button:hover {
+  text-decoration: none;
 }
 
 .pp-tab-bar-button:first-child:nth-last-child(1) {
