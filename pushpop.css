@@ -65,6 +65,18 @@ body {
           transform:   translate(0, 0);
 }
 
+/* Sub-View */
+.pp-view > .pp-view,
+.pp-view > .sk-scroll-content > .pp-view {
+  background: none;
+  display: block;
+  position: relative;
+  top: auto;
+  right: auto;
+  bottom: auto;
+  left: auto;
+}
+
 .pp-view.sk-scroll-view {
   background: #333 url('externals/scrollkit/background.png');
   background-size: 256px 256px;
@@ -83,7 +95,9 @@ body {
           box-shadow: none;
 }
 
-.pp-view.pp-active, .pp-view.push, .pp-view.pop {
+.pp-view.pp-active,
+.pp-view.push,
+.pp-view.pop {
   display: block;
 }
 
