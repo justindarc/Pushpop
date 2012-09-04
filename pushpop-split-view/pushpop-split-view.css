@@ -12,6 +12,7 @@
 .pp-split-view > .pp-split-view-stack-master {
   border-right: 1px solid #000;
   position: absolute;
+  top: 0;
   left: 0;
   width: 320px;
   height: 100%;
@@ -24,8 +25,9 @@
 
 .pp-split-view > .pp-split-view-stack-detail {
   position: absolute;
-  left: 321px;
+  top: 0;
   right: 0;
+  left: 321px;
   width: auto;
   height: 100%;
   -webkit-perspective: none;

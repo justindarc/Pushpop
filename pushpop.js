@@ -497,11 +497,10 @@ Pushpop.ViewStack.prototype = {
     transition.
   */
   pushNewTableView: function(beforePushCallback, transitionOrCallback, callback) {
-    var $viewElement = $('<div class="pp-view"/>').appendTo(this.$element);
-    var $scrollViewElement = $('<div class="sk-scroll-view" data-always-bounce-vertical="true"/>').appendTo($viewElement);
-    var $tableViewElement = $('<ul class="pp-table-view"/>').appendTo($scrollViewElement);
+    var $viewElement = $('<div class="pp-view sk-scroll-view" data-always-bounce-vertical="true"/>').appendTo(this.$element);
+    var $tableViewElement = $('<ul class="pp-table-view"/>').appendTo($viewElement);
     var view = new Pushpop.View($viewElement);
-    var scrollView = new ScrollKit.ScrollView($scrollViewElement);
+    var scrollView = new ScrollKit.ScrollView($viewElement);
     var tableView = new Pushpop.TableView($tableViewElement);
     
     view.setShouldRemoveWhenPopped(true);
@@ -1317,6 +1316,16 @@ $(function() {
     if (element.id) views[Pushpop.Util.convertDashedStringToCamelCase(element.id)] = view;
   });
   
+  if (Pushpop.SplitView) $('.pp-split-view').each(function(index, element) {
+    var splitView = new Pushpop.SplitView(element);
+    if (element.id) views[Pushpop.Util.convertDashedStringToCamelCase(element.id)] = splitView;
+  });
+  
+  if (Pushpop.TabView) $('.pp-tab-view').each(function(index, element) {
+    var tabView = new Pushpop.TabView(element);
+    if (element.id) views[Pushpop.Util.convertDashedStringToCamelCase(element.id)] = tabView;
+  });
+  
   $('.pp-view-stack').each(function(index, element) {
     var viewStack = new Pushpop.ViewStack(element);
     if (element.id) viewStacks[Pushpop.Util.convertDashedStringToCamelCase(element.id)] = viewStack;
@@ -1326,8 +1335,6 @@ $(function() {
     var viewStack = new Pushpop.ModalViewStack(element);
     if (element.id) viewStacks[Pushpop.Util.convertDashedStringToCamelCase(element.id)] = viewStack;
   });
-  
-  if (Pushpop.SplitView) $('.pp-split-view').each(function(index, element) { new Pushpop.SplitView(element); });
   
   $('.pp-navigation-bar').each(function(index, element) {
     var navigationBar = new Pushpop.NavigationBar(element);

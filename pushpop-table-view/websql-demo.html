@@ -8,7 +8,7 @@
 	<link rel="stylesheet" href="../externals/scrollkit/scrollkit.css">
 	<link rel="stylesheet" href="../pushpop.css">
 	<link rel="stylesheet" href="pushpop-table-view.css">
-	<script src="../jquery-1.7.2.js"></script>
+	<script src="../jquery-1.8.0.js"></script>
 	<script src="../externals/scrollkit/scrollkit.js"></script>
 	<script src="../pushpop.js"></script>
 	<script src="pushpop-table-view.js"></script>
@@ -19,9 +19,9 @@
       var $websqlTableView = $('#websql-table-view');
       tableView = $websqlTableView[0].tableView;
       
-      if (!window['openDatabase']) return window.alert('WebSQL is not supported on this platform');
+      if (!window.openDatabase) return window.alert('WebSQL is not supported on this platform');
       
-      var db = window.openDatabase('PushpopTableViewWebSQLDemo', '1.0', null, 209715200, function(db) {        
+      var db = window.openDatabase('PushpopTableViewWebSQLDemo', '1.0', null, null, function(db) {        
         db.transaction(function(transaction) {
           transaction.executeSql('CREATE TABLE IF NOT EXISTS rows (id INTEGER PRIMARY KEY, value INTEGER, title TEXT)');
           transaction.executeSql('CREATE INDEX idx_id ON rows (id)');
@@ -34,7 +34,7 @@
         db.transaction(function(transaction) {
           if (showPrompt) {
             var numberOfRows = 0;
-            while (numberOfRows <= 0) numberOfRows = window.parseInt(window.prompt('Enter the number of rows to insert in the WebSQL database:', '100000'), 10);
+            while (numberOfRows <= 0) numberOfRows = window.parseInt(window.prompt('Enter the number of rows to insert in the WebSQL database:', '50000'), 10);
             window.alert('Depending on the number of rows being created, this may take a while; Press "OK" to begin');
             for (var i = 0; i < numberOfRows; i++) transaction.executeSql('INSERT INTO rows (id, value, title) VALUES (?, ?, ?)', [i + 1, i, 'Row ' + i]);
           }

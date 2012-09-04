@@ -7,7 +7,7 @@
 	<title>Pushpop Dynamic Views Demo</title>
 	<link rel="stylesheet" href="externals/scrollkit/scrollkit.css">
 	<link rel="stylesheet" href="pushpop.css">
-	<script src="jquery-1.7.2.js"></script>
+	<script src="jquery-1.8.0.js"></script>
 	<script src="externals/scrollkit/scrollkit.js"></script>
 	<script src="pushpop.js"></script>
 	<script>
@@ -21,7 +21,7 @@
           var $newViewElement = newView.$element;
           
           $newViewElement.append('<p>This view was created dynamically and will remove itself from the DOM when popped!</p>');
-          $newViewElement.append('<a class="pp-button pp-pop" href="#">Go Back</a>');
+          $newViewElement.append('<a class="pp-pop" href="#">Go Back</a>');
         });
       });
     });
