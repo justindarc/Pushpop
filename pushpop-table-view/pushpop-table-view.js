@@ -44,8 +44,8 @@ Pushpop.TableView = function TableView(element) {
     var maximumScrollPositionThreshold = self.getMaximumScrollPositionThreshold();
     var scrollPosition = self.getScrollPosition();
     
-    if ((minimumScrollPositionThreshold !== -1 && scrollPosition < minimumScrollPositionThreshold) ||
-        (maximumScrollPositionThreshold !== -1 && scrollPosition > maximumScrollPositionThreshold)) self.draw();
+    if ((minimumScrollPositionThreshold !== -1 && scrollPosition <  minimumScrollPositionThreshold) ||
+        (maximumScrollPositionThreshold !== -1 && scrollPosition >= maximumScrollPositionThreshold)) self.draw();
   });
   
   // Force a redraw when the DidScrollToTop event occurs on the scroll view.

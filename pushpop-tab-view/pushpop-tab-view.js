@@ -93,6 +93,12 @@ Pushpop.TabView.prototype.setSelectedIndex = function(selectedIndex) {
   if (previousSelectedTabViewStack) previousSelectedTabViewStack.$element.removeClass('pp-active');
   selectedTabViewStack.$element.addClass('pp-active');
   
+  var activeViewInSelectedTab = selectedTabViewStack.getActiveView();
+  if (activeViewInSelectedTab) activeViewInSelectedTab.forceReflow();
+  
+  var activeScrollViewInSelectedTab = (activeViewInSelectedTab) ? activeViewInSelectedTab.getScrollView() : null;
+  if (activeScrollViewInSelectedTab) activeScrollViewInSelectedTab.recalculateDimensions();
+  
   this.$element.trigger($.Event(Pushpop.TabView.EventType.DidSelectTabViewStack, {
     previousSelectedTabViewStack: previousSelectedTabViewStack,
     selectedTabViewStack: selectedTabViewStack
@@ -124,6 +130,12 @@ Pushpop.TabView.prototype.setSelectedTabViewStack = function(selectedTabViewStac
   
   if (previousSelectedTabViewStack) previousSelectedTabViewStack.$element.removeClass('pp-active');
   selectedTabViewStack.$element.addClass('pp-active');
+  
+  var activeViewInSelectedTab = selectedTabViewStack.getActiveView();
+  if (activeViewInSelectedTab) activeViewInSelectedTab.forceReflow();
+  
+  var activeScrollViewInSelectedTab = (activeViewInSelectedTab) ? activeViewInSelectedTab.getScrollView() : null;
+  if (activeScrollViewInSelectedTab) activeScrollViewInSelectedTab.recalculateDimensions();
   
   this.$element.trigger($.Event(Pushpop.TabView.EventType.DidSelectTabViewStack, {
     previousSelectedTabViewStack: previousSelectedTabViewStack,

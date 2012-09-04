@@ -303,6 +303,9 @@ Pushpop.ViewStack.prototype = {
       var activeView = viewStack.getActiveView();
       if (!activeView) return;
       
+      var activeScrollView = activeView.getScrollView();
+      if (activeScrollView) activeScrollView.recalculateDimensions();
+      
       activeView.$element.trigger($.Event(Pushpop.EventType.WillPresentView, {
         view: activeView,
         action: 'parent-push'
@@ -426,6 +429,9 @@ Pushpop.ViewStack.prototype = {
       var viewStack = element.viewStack;
       var activeView = viewStack.getActiveView();
       if (!activeView) return;
+      
+      var activeScrollView = activeView.getScrollView();
+      if (activeScrollView) activeScrollView.recalculateDimensions();
       
       activeView.$element.trigger($.Event(Pushpop.EventType.WillPresentView, {
         view: activeView,
