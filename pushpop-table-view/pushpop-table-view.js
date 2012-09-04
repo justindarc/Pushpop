@@ -21,7 +21,9 @@ Pushpop.TableView = function TableView(element) {
   
   // Make sure this table view has a scroll view, otherwise, stop initialization.
   var view = this.getView();
-  var scrollView = this.scrollView = (view) ? (view.element.scrollView || null) : null;
+  if (!view) return;
+  
+  var scrollView = this.scrollView = view.getScrollView();
   if (!scrollView) return;
   
   // Determine if a search bar should be added to this table view.

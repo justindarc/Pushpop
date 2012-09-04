@@ -748,7 +748,16 @@ Pushpop.View.prototype = {
   /**
   
   */
-  getScrollView: function() { return this.element.scrollView || null; },
+  getScrollView: function() {
+    var scrollViewElement = this.element;
+    var scrollView = scrollViewElement.scrollView;
+    if (!scrollView) {
+      scrollViewElement = this.$element.children('.sk-scroll-view')[0];
+      if (scrollViewElement) scrollView = scrollViewElement.scrollView;
+    }
+    
+    return scrollView || null;
+  },
   
   /**
     Forces a reflow in the browser for this view.
