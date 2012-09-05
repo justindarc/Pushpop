@@ -30,6 +30,23 @@ Pushpop.TableView = function TableView(element) {
   var containsSearchBar = $element.attr('data-contains-search-bar') || 'false';
   if ((containsSearchBar = containsSearchBar !== 'false')) this.setSearchBar(new Pushpop.TableViewSearchBar(this));
   
+  // Set up the loading message element for this table view.
+  var $loadingMessageElement = this._$loadingMessageElement = $('<div class="pp-table-view-loading-message pp-hidden"/>').insertBefore($element);
+  var $loadingSpinnerElement = this._$loadingSpinnerElement = $('<div class="pp-table-view-loading-spinner"/>');
+  var loadingSpinner = this._loadingSpinner = new Spinner({
+    lines: 12,      // The number of lines to draw
+    length: 6,      // The length of each line
+    width: 4,       // The line thickness
+    radius: 8,      // The radius of the inner circle
+    corners: 1,     // Corner roundness (0..1)
+    color: '#111',  // #rgb or #rrggbb
+    speed: 1,       // Rounds per second
+    trail: 60,      // Afterglow percentage
+    hwaccel: true   // Whether to use hardware acceleration
+  }).spin($loadingSpinnerElement[0]);
+  
+  this.setLoadingMessageHtml(this.getLoadingMessageHtml());
+  
   // Instantiate instance variables.
   this._renderedCells = [];
   this._reusableCells = {};
@@ -441,6 +458,47 @@ Pushpop.TableView.prototype = {
     this._maximumRenderedRowIndex = -1;
     
     this.draw();
+  },
+  
+  _$loadingMessageElement: null,
+  
+  _loadingMessageHtml: 'Loading...',
+  
+  /**
+  
+  */
+  getLoadingMessageHtml: function() { return this._loadingMessageHtml; },
+  
+  /**
+  
+  */
+  setLoadingMessageHtml: function(loadingMessageHtml) { this._$loadingMessageElement.html(this._loadingMessageHtml = loadingMessageHtml).append(this._$loadingSpinnerElement); },
+  
+  _$loadingSpinnerElement: null,
+  
+  _loadingSpinner: null,
+  
+  /**
+  
+  */
+  getLoadingSpinner: function() { return this._loadingSpinner; },
+  
+  _loadingMessageHidden: true,
+  
+  /**
+  
+  */
+  getLoadingMessageHidden: function() { return this._loadingMessageHidden; },
+  
+  /**
+  
+  */
+  setLoadingMessageHidden: function(loadingMessageHidden) {
+    if ((this._loadingMessageHidden = loadingMessageHidden)) {
+      this._$loadingMessageElement.addClass('pp-hidden');
+    } else {
+      this._$loadingMessageElement.removeClass('pp-hidden');
+    }
   },
   
   _dataSource: null,

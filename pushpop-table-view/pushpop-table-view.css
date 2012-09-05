@@ -141,6 +141,52 @@
 }
 
 /**
+  Pushpop.TableViewLoadingMessage
+  ===============================
+  pp-table-view-loading-message
+*/
+.pp-table-view-loading-message {
+  background: rgba(0, 0, 0, 0.2);
+  color: #333;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 20px;
+  line-height: 1em;
+  display: block;
+  position: absolute;
+  margin: -30px 0 0 -120px;
+  padding: 20px;
+  top: 50%;
+  left: 50%;
+  width: 200px;
+  height: 20px;
+  z-index: 2;
+  -webkit-border-radius: 10px;
+     -moz-border-radius: 10px;
+          border-radius: 10px;
+  -webkit-box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, 0.6);
+     -moz-box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, 0.8);
+          box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, 0.8);
+}
+
+.pp-table-view-loading-message.pp-hidden {
+  display: none;
+}
+
+.pp-table-view-loading-spinner {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+}
+
+.pp-table-view-loading-message + .pp-table-view {
+  display: none;
+}
+
+.pp-table-view-loading-message.pp-hidden + .pp-table-view {
+  display: block;
+}
+
+/**
   Pushpop.TableViewSearchBar
   ==========================
   pp-table-view-search-bar
