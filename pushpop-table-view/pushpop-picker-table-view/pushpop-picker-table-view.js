@@ -40,6 +40,8 @@ Pushpop.PickerTableView = function PickerTableView(element) {
   // Listen for tap events on the editing accessory buttons to add items and to toggle
   // the confirmation button to delete an item.
   this.$bind(Pushpop.TableView.EventType.EditingAccessoryButtonTappedForRowWithIndex, function(evt) {
+    if (evt.tableView !== self) return;
+    
     var dataSource = self.getDataSource();
     var index = evt.index;
     
@@ -58,6 +60,8 @@ Pushpop.PickerTableView = function PickerTableView(element) {
   });
   
   this.$bind(Pushpop.TableView.EventType.AccessoryButtonTappedForRowWithIndex, function(evt) {
+    if (evt.tableView !== self) return;
+    
     var dataSource = self.getDataSource();
     var index = evt.index;
     
