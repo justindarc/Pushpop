@@ -30,6 +30,8 @@ Pushpop.PickerTableView = function PickerTableView(element) {
   // Listen for the "picker cell" to be selected and push a new table view with the picker
   // cell's data source to present a list of items to select from.
   this.$bind(Pushpop.TableView.EventType.DidSelectRowAtIndex, function(evt) {
+    if (evt.tableView !== self) return;
+    
     var dataSource = self.getDataSource();
     var index = evt.index;
     
@@ -163,6 +165,7 @@ Pushpop.PickerTableView.prototype.pushPickerView = function() {
   
   if (pickerCellDataSource) {
     viewStack.pushNewTableView(function(newTableView) {
+      newTableView.setParentTableView(self);
       newTableView.setSearchBar(new Pushpop.TableViewSearchBar(newTableView));
       newTableView.setDataSource(pickerCellDataSource);
       
