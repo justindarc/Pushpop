@@ -85,13 +85,14 @@ Pushpop.TableView = function TableView(element) {
     
     var index = tableViewCell.getIndex();
     
-    $element.trigger($.Event(Pushpop.TableView.EventType.AccessoryButtonTappedForRowWithIndex, {
+    // Trigger the AccessoryButtonTappedForRowWithIndex event on this and all parent table view elements.
+    self.triggerEventOnParentTableViews($.Event(Pushpop.TableView.EventType.AccessoryButtonTappedForRowWithIndex, {
       tableView: self,
       tableViewCell: tableViewCell,
       index: index,
       item: self.getDataSource().getFilteredItemAtIndex(index),
       element: this
-    }));
+    }), true);
   });
   
   // Handle mouse/touch events to allow the user to tap editing accessory buttons.
@@ -109,13 +110,14 @@ Pushpop.TableView = function TableView(element) {
     
     var index = tableViewCell.getIndex();
     
-    $element.trigger($.Event(Pushpop.TableView.EventType.EditingAccessoryButtonTappedForRowWithIndex, {
+    // Trigger the EditingAccessoryButtonTappedForRowWithIndex event on this and all parent table view elements.
+    self.triggerEventOnParentTableViews($.Event(Pushpop.TableView.EventType.EditingAccessoryButtonTappedForRowWithIndex, {
       tableView: self,
       tableViewCell: tableViewCell,
       index: index,
       item: self.getDataSource().getFilteredItemAtIndex(index),
       element: this
-    }));
+    }), true);
   });
   
   // Handle mouse/touch events to allow the user to make row selections.
