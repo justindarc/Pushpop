@@ -58,6 +58,11 @@
   top: -1067px;
 }
 
+.sk-no-touch .pp-picker-table-view::before,
+.sk-no-touch .pp-picker-table-view::after {
+  display: none;
+}
+
 /* Clearfix */
 .pp-picker-table-view > li::before,
 .pp-picker-table-view > li::after { content: ''; display: table; }
