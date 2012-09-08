@@ -1327,11 +1327,71 @@ Pushpop.Button.prototype = {
   }
 };
 
+/**
+
+*/
+Pushpop.ActionSheet = function ActionSheet(element) {
+  if (!element) return;
+  
+  var $element = this.$element = $(element);
+  element = this.element = $element[0];
+  
+  var actionSheet = element.actionSheet;
+  if (actionSheet) return actionSheet;
+  
+  var self = element.actionSheet = this;
+  
+  this._visible = $element.hasClass('pp-active');
+  
+  $element.delegate('.pp-button', Pushpop.Button.EventType.DidTriggerAction, function(evt) {
+    var button = evt.button;
+    if (button && button.$element.hasClass('pp-action-sheet-dismiss')) self.dismiss();
+  });
+  
+  // Prevent dragging of the action sheet.
+  $element.bind('touchmove', function(evt) { evt.preventDefault(); });
+};
+
+Pushpop.ActionSheet.prototype = {
+  constructor: Pushpop.ActionSheet,
+  
+  element: null,
+  $element: null,
+  
+  _visible: false,
+  
+  /**
+  
+  */
+  getVisible: function() { return this._visible; },
+  
+  /**
+  
+  */
+  show: function() {
+    if (this.getVisible()) return;
+    
+    this.$element.addClass('pp-active');
+    this._visible = true;
+  },
+  
+  /**
+  
+  */
+  dismiss: function() {
+    if (!this.getVisible()) return;
+    
+    this.$element.removeClass('pp-active');
+    this._visible = false;
+  }
+};
+
 $(function() {
   var buttons = Pushpop.buttons = Pushpop.buttons || {};
   var views = Pushpop.views = Pushpop.views || {};
   var viewStacks = Pushpop.viewStacks = Pushpop.viewStacks || {};
   var navigationBars = Pushpop.navigationBars = Pushpop.navigationBars || {};
+  var actionSheets = Pushpop.actionSheets = Pushpop.actionSheets || {};
   
   $('.pp-button').each(function(index, element) {
     var button = new Pushpop.Button(element);
@@ -1366,6 +1426,11 @@ $(function() {
   $('.pp-navigation-bar').each(function(index, element) {
     var navigationBar = new Pushpop.NavigationBar(element);
     if (element.id) navigationBars[Pushpop.Util.convertDashedStringToCamelCase(element.id)] = navigationBar;
+  });
+  
+  $('.pp-action-sheet').each(function(index, element) {
+    var actionSheet = new Pushpop.ActionSheet(element);
+    if (element.id) actionSheets[Pushpop.Util.convertDashedStringToCamelCase(element.id)] = actionSheet;
   });
   
   // Handle mouse/touch events globally to trigger button actions.

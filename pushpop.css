@@ -803,6 +803,129 @@ li[class^='pp-icon-'].icon-large::before, li[class*=' pp-icon-'].icon-large::bef
 }
 
 /**
+  Pushpop.ActionSheet
+  ===================
+  pp-action-sheet
+*/
+.pp-action-sheet {
+  border-top: 1px solid rgba(0, 0, 0, 0.5);
+  position: absolute;
+  padding: 10px 0;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: auto;
+  overflow: hidden;
+  z-index: 99999;
+  visibility: hidden;
+  -webkit-backface-visibility: hidden;
+     -moz-backface-visibility: hidden;
+      -ms-backface-visibility: hidden;
+       -o-backface-visibility: hidden;
+          backface-visibility: hidden;
+  -webkit-transform: translate3d(0, 100%, 0);
+     -moz-transform:   translate(0, 100%);
+      -ms-transform:   translate(0, 100%);
+       -o-transform:   translate(0, 100%);
+          transform:   translate(0, 100%);
+  -webkit-transition: visibility 0s linear 0.4s, width 0s ease 0.4s, -webkit-transform 0.3s ease 0s;
+     -moz-transition: visibility 0s linear 0.4s, width 0s ease 0.4s,    -moz-transform 0.3s ease 0s;
+      -ms-transition: visibility 0s linear 0.4s, width 0s ease 0.4s,     -ms-transform 0.3s ease 0s;
+       -o-transition: visibility 0s linear 0.4s, width 0s ease 0.4s,      -o-transform 0.3s ease 0s;
+          transition: visibility 0s linear 0.4s, width 0s ease 0.4s,         transform 0.3s ease 0s;
+}
+
+.pp-action-sheet::before {
+  background: -moz-linear-gradient(top,  rgba(162,168,176,1) 0%, rgba(108,114,125,0.95) 50%, rgba(94,102,113,0.95) 51%, rgba(80,86,97,0.9) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(162,168,176,1)), color-stop(50%,rgba(108,114,125,0.95)), color-stop(51%,rgba(94,102,113,0.95)), color-stop(100%,rgba(80,86,97,0.9))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  rgba(162,168,176,1) 0%,rgba(108,114,125,0.95) 50%,rgba(94,102,113,0.95) 51%,rgba(80,86,97,0.9) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  rgba(162,168,176,1) 0%,rgba(108,114,125,0.95) 50%,rgba(94,102,113,0.95) 51%,rgba(80,86,97,0.9) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  rgba(162,168,176,1) 0%,rgba(108,114,125,0.95) 50%,rgba(94,102,113,0.95) 51%,rgba(80,86,97,0.9) 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  rgba(162,168,176,1) 0%,rgba(108,114,125,0.95) 50%,rgba(94,102,113,0.95) 51%,rgba(80,86,97,0.9) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a2a8b0', endColorstr='#e6505661',GradientType=0 ); /* IE6-9 */
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 42px;
+  -webkit-box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
+     -moz-box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
+          box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
+}
+
+.pp-action-sheet::after {
+  background: rgba(80, 86, 97, 0.9);
+  content: '';
+  display: block;
+  position: absolute;
+  top: 42px;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  z-index: 1;
+}
+
+.pp-action-sheet.pp-active {
+  width: 100%;
+  visibility: visible;
+  -webkit-transform: translate3d(0, 0, 0);
+     -moz-transform:   translate(0, 0);
+      -ms-transform:   translate(0, 0);
+       -o-transform:   translate(0, 0);
+          transform:   translate(0, 0);
+  -webkit-transition-delay: 0s;
+     -moz-transition-delay: 0s;
+      -ms-transition-delay: 0s;
+       -o-transition-delay: 0s;
+          transition-delay: 0s;
+}
+
+.pp-action-sheet > .pp-button {
+  border: none;
+  display: block;
+  font-size: 1.5em;
+  line-height: 1.5em;
+  position: relative;
+  padding: 0.3em 0.75em;
+  margin: 0.75em 1.25em;
+  min-width: auto;
+  overflow: visible;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.25);
+  z-index: 2;
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.8), inset 0 1px 0 0 rgba(255, 255, 255, 0.5), 0 0 0 3px rgba(0, 0, 0, 0.3);
+     -moz-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.8), inset 0 1px 0 0 rgba(255, 255, 255, 0.5), 0 0 0 3px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.8), inset 0 1px 0 0 rgba(255, 255, 255, 0.5), 0 0 0 3px rgba(0, 0, 0, 0.3);
+}
+
+.pp-action-sheet > .pp-button.pp-button-style-default {
+  background: rgb(239,239,240); /* Old browsers */
+  background: -moz-linear-gradient(top,  rgba(239,239,240,1) 0%, rgba(207,208,210,1) 50%, rgba(185,186,189,1) 51%, rgba(188,190,193,1) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(239,239,240,1)), color-stop(50%,rgba(207,208,210,1)), color-stop(51%,rgba(185,186,189,1)), color-stop(100%,rgba(188,190,193,1))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  rgba(239,239,240,1) 0%,rgba(207,208,210,1) 50%,rgba(185,186,189,1) 51%,rgba(188,190,193,1) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  rgba(239,239,240,1) 0%,rgba(207,208,210,1) 50%,rgba(185,186,189,1) 51%,rgba(188,190,193,1) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  rgba(239,239,240,1) 0%,rgba(207,208,210,1) 50%,rgba(185,186,189,1) 51%,rgba(188,190,193,1) 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  rgba(239,239,240,1) 0%,rgba(207,208,210,1) 50%,rgba(185,186,189,1) 51%,rgba(188,190,193,1) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#efeff0', endColorstr='#bcbec1',GradientType=0 ); /* IE6-9 */
+  color: #000;
+}
+
+.pp-action-sheet > .pp-button.pp-button-state-active {
+  background: rgb(145,159,215); /* Old browsers */
+  background: -moz-linear-gradient(top,  rgba(145,159,215,1) 0%, rgba(52,77,182,1) 50%, rgba(21,51,171,1) 51%, rgba(26,85,182,1) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(145,159,215,1)), color-stop(50%,rgba(52,77,182,1)), color-stop(51%,rgba(21,51,171,1)), color-stop(100%,rgba(26,85,182,1))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  rgba(145,159,215,1) 0%,rgba(52,77,182,1) 50%,rgba(21,51,171,1) 51%,rgba(26,85,182,1) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  rgba(145,159,215,1) 0%,rgba(52,77,182,1) 50%,rgba(21,51,171,1) 51%,rgba(26,85,182,1) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  rgba(145,159,215,1) 0%,rgba(52,77,182,1) 50%,rgba(21,51,171,1) 51%,rgba(26,85,182,1) 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  rgba(145,159,215,1) 0%,rgba(52,77,182,1) 50%,rgba(21,51,171,1) 51%,rgba(26,85,182,1) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#919fd7', endColorstr='#1a55b6',GradientType=0 ); /* IE6-9 */
+  color: #fff;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+
+/**
   Pushpop Transition
   ==================
   slide-horizontal (2D)
