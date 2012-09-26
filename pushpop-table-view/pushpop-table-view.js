@@ -209,6 +209,7 @@ Pushpop.TableView.EventType = {
   AccessoryButtonTappedForRowWithIndex: 'Pushpop:TableView:AccessoryButtonTappedForRowWithIndex',
   EditingAccessoryButtonTappedForRowWithIndex: 'Pushpop:TableView:EditingAccessoryButtonTappedForRowWithIndex',
   DidReloadData: 'Pushpop:TableView:DidReloadData',
+  DidDrawRowsWithIndexes: 'Pushpop:TableView:DidDrawRowsWithIndexes',
   DidChangeValueForItemInDataSource: 'Pushpop:TableView:DidChangeValueForItemInDataSource',
   DidChangeDataSource: 'Pushpop:TableView:DidChangeDataSource'
 };
@@ -441,6 +442,13 @@ Pushpop.TableView.prototype = {
     // console.log('================================================================');
     
     this._drawing = false;
+    
+    this.$trigger($.Event(Pushpop.TableView.EventType.DidDrawRowsWithIndexes, {
+      tableView: this,
+      dataSource: dataSource,
+      minimumRowIndex: minimumRenderedRowIndex,
+      maximumRowIndex: maximumRenderedRowIndex
+    }));
   },
   
   /**
