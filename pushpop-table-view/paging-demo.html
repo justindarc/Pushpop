@@ -14,22 +14,26 @@
 	<script src="pushpop-table-view.js"></script>
 	<script>
 	  var tableView;
-	  
-    var addRows = function() {
-      $.getJSON('sample-data/big-data-20.json', function(newDataSet) {
-        var dataSource = tableView.getDataSource();
-        var dataSet = dataSource.getDataSet();
-        
-        for (var i = 0, length = newDataSet.length; i < length; i++) {
-          dataSet.push(newDataSet[i]);
-        }
-
-        tableView.reloadData();
-      });
-    };
     
     $(function() {
       tableView = $('.pp-table-view')[0].tableView;
+      
+      tableView.$bind(Pushpop.TableView.EventType.DidDrawRowsWithIndexes, function(evt) {
+        var dataSource = evt.dataSource;
+        var numberOfRows = dataSource.getNumberOfRows();
+        
+        // Check if the last row in the current data set has been drawn.
+        if (evt.maximumRowIndex === numberOfRows - 1) {
+          
+          // Load the next set of data starting with the row index after the maximum row
+          // index drawn.
+          $.getJSON('sample-data/big-data-20.json?start=' + numberOfRows, function(dataSet) {
+            
+            // Append the next set of data to the existing data set.
+            if (dataSet && dataSet.length > 0) dataSource.setDataSet(dataSource.getDataSet().concat(dataSet));
+          });
+        }
+      });
       
       $.getJSON('sample-data/big-data-20.json', function(dataSet) {
         var dataSource = new Pushpop.TableViewDataSource(dataSet);
