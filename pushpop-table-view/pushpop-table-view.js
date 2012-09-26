@@ -447,6 +447,8 @@ Pushpop.TableView.prototype = {
   
   */
   reloadData: function() {
+    var scrollView = this.scrollView;
+    var scrollPosition = $.extend({}, scrollView.getScrollPosition());
     var renderedCells = this.getRenderedCells();
     var renderedCellsToReuse = [];
     
@@ -460,6 +462,8 @@ Pushpop.TableView.prototype = {
     this._maximumRenderedRowIndex = -1;
     
     this.draw();
+    
+    scrollView.setScrollPosition(scrollPosition.x, scrollPosition.y);
   },
   
   _$loadingMessageElement: null,
