@@ -178,11 +178,11 @@
   right: 30px;
 }
 
-.pp-table-view-loading-message + .pp-table-view {
+.pp-table-view-loading-message + .sk-scroll-content {
   display: none;
 }
 
-.pp-table-view-loading-message.pp-hidden + .pp-table-view {
+.pp-table-view-loading-message.pp-hidden + .sk-scroll-content {
   display: block;
 }
 

@@ -31,7 +31,7 @@ Pushpop.TableView = function TableView(element) {
   if ((containsSearchBar = containsSearchBar !== 'false')) this.setSearchBar(new Pushpop.TableViewSearchBar(this));
   
   // Set up the loading message element for this table view.
-  var $loadingMessageElement = this._$loadingMessageElement = $('<div class="pp-table-view-loading-message pp-hidden"/>').insertBefore($element);
+  var $loadingMessageElement = this._$loadingMessageElement = $('<div class="pp-table-view-loading-message pp-hidden"/>').insertBefore(scrollView.$content);
   var $loadingSpinnerElement = this._$loadingSpinnerElement = $('<div class="pp-table-view-loading-spinner"/>');
   var loadingSpinner = this._loadingSpinner = new Spinner({
     lines: 12,      // The number of lines to draw
