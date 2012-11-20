@@ -220,6 +220,7 @@ li[class^='pp-icon-'].icon-large::before, li[class*=' pp-icon-'].icon-large::bef
 .pp-icon-compose::before                                        { content: '\f017'; }
 .pp-icon-pull-to-refresh::before                                { content: '\f018'; }
 .pp-icon-text-box::before                                       { content: '\f019'; }
+.pp-icon-record::before                                         { content: '\f01a'; }
 
 /**
   Pushpop.Badge
