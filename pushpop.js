@@ -1423,6 +1423,11 @@ $(function() {
     if (element.id) viewStacks[Pushpop.Util.convertDashedStringToCamelCase(element.id)] = viewStack;
   });
   
+  if (Pushpop.PopoverViewStack) $('.pp-popover-view-stack').each(function(index, element) {
+    var viewStack = new Pushpop.PopoverViewStack(element);
+    if (element.id) viewStacks[Pushpop.Util.convertDashedStringToCamelCase(element.id)] = viewStack;
+  });
+  
   $('.pp-navigation-bar').each(function(index, element) {
     var navigationBar = new Pushpop.NavigationBar(element);
     if (element.id) navigationBars[Pushpop.Util.convertDashedStringToCamelCase(element.id)] = navigationBar;

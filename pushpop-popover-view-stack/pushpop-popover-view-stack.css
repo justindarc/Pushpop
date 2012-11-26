@@ -1,4 +1,4 @@
-.pp-modal-view-stack {
+.pp-popover-view-stack {
   background: #333 url('../background.png');
   background-size: 320px 460px;
   position: absolute;
@@ -11,6 +11,8 @@
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 13px;
   line-height: 1.25em;
+  width: 320px;
+  min-height: 440px;
   -webkit-border-radius: 6px;
      -moz-border-radius: 6px;
           border-radius: 6px;
@@ -32,84 +34,23 @@
       -ms-transform:   translate(0, 0);
        -o-transform:   translate(0, 0);
           transform:   translate(0, 0);
+  -webkit-transition: visibility 0s linear 0.4s, opacity 0.3s ease 0s;
+     -moz-transition: visibility 0s linear 0.4s, opacity 0.3s ease 0s;
+      -ms-transition: visibility 0s linear 0.4s, opacity 0.3s ease 0s;
+       -o-transition: visibility 0s linear 0.4s, opacity 0.3s ease 0s;
+          transition: visibility 0s linear 0.4s, opacity 0.3s ease 0s;
 }
 
 @media only screen and (-webkit-min-device-pixel-ratio: 2) {
-  .pp-modal-view-stack {
+  .pp-popover-view-stack {
     background: #333 url('../background@2x.png');
   }
 }
 
-.pp-modal-view-stack.pp-active {
+.pp-popover-view-stack.pp-active {
   pointer-events: auto;
-}
-
-.pp-modal-presentation-style-full-screen {
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  margin: 0;
-  width: auto;
-  height: auto;
-}
-
-.pp-modal-presentation-style-page-sheet {
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  margin: 0 0 0 -384px;
-  width: 768px;
-  height: auto;
-}
-
-.pp-modal-presentation-style-form-sheet {
-  top: 64px;
-  bottom: auto;
-  left: 50%;
-  margin: 0 0 0 -270px;
-  width: 540px;
-  height: 620px;
-}
-
-/* On screens smaller than 768px (e.g.: phones) all presentation styles should be full screen. */
-@media (max-width: 768px) {
-  .pp-modal-presentation-style-full-screen,
-  .pp-modal-presentation-style-page-sheet,
-  .pp-modal-presentation-style-form-sheet {
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    margin: 0;
-    width: auto;
-    height: auto;
-  }
-}
-
-.pp-modal-transition-style-cover-vertical {
-  visibility: hidden;
-  opacity: 0;
-  -webkit-transform: translate3d(0, 100%, 0);
-     -moz-transform:   translate(0, 100%);
-      -ms-transform:   translate(0, 100%);
-       -o-transform:   translate(0, 100%);
-          transform:   translate(0, 100%);
-  -webkit-transition: visibility 0s linear 0.4s, opacity 0.15s ease 0.15s, -webkit-transform 0.3s ease 0s;
-     -moz-transition: visibility 0s linear 0.4s, opacity 0.15s ease 0.15s,    -moz-transform 0.3s ease 0s;
-      -ms-transition: visibility 0s linear 0.4s, opacity 0.15s ease 0.15s,     -ms-transform 0.3s ease 0s;
-       -o-transition: visibility 0s linear 0.4s, opacity 0.15s ease 0.15s,      -o-transform 0.3s ease 0s;
-          transition: visibility 0s linear 0.4s, opacity 0.15s ease 0.15s,         transform 0.3s ease 0s;
-}
-
-.pp-modal-transition-style-cover-vertical.pp-active {
   visibility: visible;
   opacity: 1;
-  -webkit-transform: translate3d(0, 0, 0);
-     -moz-transform:   translate(0, 0);
-      -ms-transform:   translate(0, 0);
-       -o-transform:   translate(0, 0);
-          transform:   translate(0, 0);
   -webkit-transition-delay: 0s;
      -moz-transition-delay: 0s;
       -ms-transition-delay: 0s;
@@ -117,7 +58,7 @@
           transition-delay: 0s;
 }
 
-.pp-modal-view-stack-backdrop {
+.pp-popover-view-stack-backdrop {
   background: #000;
   position: absolute;
   top: 0;
@@ -137,7 +78,7 @@
           transition: visibility 0s linear 0.3s, opacity 0.3s linear 0s;
 }
 
-.pp-modal-view-stack.pp-active + .pp-modal-view-stack-backdrop {
+.pp-popover-view-stack.pp-active + .pp-popover-view-stack-backdrop {
   visibility: visible;
   opacity: 0.5;
   -webkit-transition-delay: 0s;
