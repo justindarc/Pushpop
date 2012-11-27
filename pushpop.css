@@ -86,12 +86,12 @@
   background: #333 url('background.png');
   background-size: 320px 460px;
   position: absolute;
-  height: auto;
-  width: 100%;
+  margin: 0;
+  padding: 0;
   top: 0;
   bottom: 0;
-  padding: 0;
-  margin: 0;
+  width: 100%;
+  height: auto;
   overflow: hidden;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 13px;
@@ -548,7 +548,7 @@ li[class^='pp-icon-'].icon-large::before, li[class*=' pp-icon-'].icon-large::bef
 
 .pp-navigation-bar-back-bar-button-item {
   border-left: none;
-  margin-left: 1.5em;
+  margin-left: 1.6em;
   padding-left: 0.25em;
   overflow: visible;
   position: relative;

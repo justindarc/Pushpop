@@ -18,14 +18,19 @@ Pushpop.PopoverViewStack = function PopoverViewStack(element) {
   
   // Insert the backdrop element after the popover view stack element.
   var $backdrop = $('<div class="pp-popover-view-stack-backdrop"/>').insertAfter($element);
+  
+  var $container = this.$container = $('<div class="pp-popover-view-stack-container"/>').insertAfter($element).append($element);
 
   // Make the popover view stack visible if it is initialized with the .pp-active CSS class.
   this.setHidden(!$element.hasClass('pp-active'));
+  $element.removeClass('pp-active');
 };
 
 // Create the prototype for the Pushpop.PopoverViewStack as a "sub-class" of Pushpop.ViewStack.
 Pushpop.PopoverViewStack.prototype = new Pushpop.ViewStack();
 Pushpop.PopoverViewStack.prototype.constructor = Pushpop.PopoverViewStack;
+
+Pushpop.PopoverViewStack.prototype.$container = null;
 
 Pushpop.PopoverViewStack.prototype._hidden = true;
 
@@ -68,7 +73,7 @@ Pushpop.PopoverViewStack.prototype.present = function(view) {
     action: 'popover-present'
   }));
   
-  this.$element.addClass('pp-active');
+  this.$container.addClass('pp-active');
   
   activeView.$trigger($.Event(Pushpop.EventType.DidPresentView, {
     view: activeView,
@@ -92,7 +97,7 @@ Pushpop.PopoverViewStack.prototype.dismiss = function() {
   
   var self = this;
   window.setTimeout(function() {
-    self.$element.removeClass('pp-active');
+    self.$container.removeClass('pp-active');
 
     activeView.$trigger($.Event(Pushpop.EventType.DidDismissView, {
       view: activeView,
