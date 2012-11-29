@@ -14,23 +14,37 @@ Pushpop.PopoverViewStack = function PopoverViewStack(element) {
   // Call the "super" constructor.
   Pushpop.ViewStack.prototype.constructor.apply(this, arguments);
   
+  var self = this;
+  
   var $element = this.$element;
   
   // Insert the backdrop element after the popover view stack element.
   var $backdrop = $('<div class="pp-popover-view-stack-backdrop"/>').insertAfter($element);
   
+  // Wrap the popover view stack element in a container.
   var $container = this.$container = $('<div class="pp-popover-view-stack-container"/>').insertAfter($element).append($element);
-
+  
+  // Insert an arrow element in the container.
+  var $arrow = this.$arrow = $('<div class="pp-popover-view-stack-arrow pp-popover-view-stack-arrow-top"/>').appendTo($container);
+  
   // Make the popover view stack visible if it is initialized with the .pp-active CSS class.
   this.setHidden(!$element.hasClass('pp-active'));
   $element.removeClass('pp-active');
+  
+  // Dismiss the popover view stack if the backdrop element is tapped/clicked.
+  $backdrop.bind(!!('ontouchstart' in window) ? 'touchstart' : 'mousedown', function(evt) {
+    self.dismiss();
+  });
 };
+
+Pushpop.PopoverViewStack.POPOVER_CONTAINER_MARGIN = 10;
 
 // Create the prototype for the Pushpop.PopoverViewStack as a "sub-class" of Pushpop.ViewStack.
 Pushpop.PopoverViewStack.prototype = new Pushpop.ViewStack();
 Pushpop.PopoverViewStack.prototype.constructor = Pushpop.PopoverViewStack;
 
 Pushpop.PopoverViewStack.prototype.$container = null;
+Pushpop.PopoverViewStack.prototype.$arrow = null;
 
 Pushpop.PopoverViewStack.prototype._hidden = true;
 
@@ -46,11 +60,92 @@ Pushpop.PopoverViewStack.prototype.getHidden = function() { return this._hidden;
 */
 Pushpop.PopoverViewStack.prototype.setHidden = function(hidden) { if (hidden) this.dismiss(); else this.present(); };
 
+Pushpop.PopoverViewStack.prototype._targetElement = null;
+
+/**
+  Returns the current target element for this popover view stack.
+  @type HTMLElement
+*/
+Pushpop.PopoverViewStack.prototype.getTargetElement = function() { return this._targetElement; };
+
+/**
+  Sets the current target element for this popover view stack.
+  @param {HTMLElement} targetElement The target element this popover view stack should point to.
+*/
+Pushpop.PopoverViewStack.prototype.setTargetElement = function(targetElement) {
+  this._targetElement = targetElement;
+  
+  var $targetElement = $(targetElement);
+  var $window = $(window);
+  var $container = this.$container;
+  var $arrow = this.$arrow;
+  
+  var targetSize = {
+    width:  $targetElement.outerWidth(),
+    height: $targetElement.outerHeight()
+  };
+  var windowSize = {
+    width:  $window.width(),
+    height: $window.height()
+  };
+  var containerOuterSize = {
+    width:  $container.outerWidth(),
+    height: $container.outerHeight()
+  };
+  var containerInnerSize = {
+    width:  $container.width(),
+    height: $container.height()
+  };
+  var arrowSize = {
+    width:  $arrow.width(),
+    height: $arrow.height()
+  };
+  
+  var targetPosition = $targetElement.offset();
+  targetPosition = {
+    x: targetPosition.left + (targetSize.width / 2),
+    y: targetPosition.top + targetSize.height
+  };
+  
+  var containerPosition = {
+    x: targetPosition.x - (containerOuterSize.width / 2),
+    y: targetPosition.y
+  };
+  
+  var minimumContainerPosition = {
+    x: -Pushpop.PopoverViewStack.POPOVER_CONTAINER_MARGIN,
+    y: -Pushpop.PopoverViewStack.POPOVER_CONTAINER_MARGIN
+  };
+  
+  var maximumContainerPosition = {
+    x: windowSize.width  - containerOuterSize.width  - Pushpop.PopoverViewStack.POPOVER_CONTAINER_MARGIN,
+    y: windowSize.height - containerOuterSize.height - Pushpop.PopoverViewStack.POPOVER_CONTAINER_MARGIN
+  };
+  
+  var adjustedContainerPosition = {
+    x: Math.min(Math.max(containerPosition.x, minimumContainerPosition.x), maximumContainerPosition.x),
+    y: containerPosition.y
+  };
+  
+  var adjustmentOffset = {
+    x: containerPosition.x - adjustedContainerPosition.x,
+    y: containerPosition.y - adjustedContainerPosition.y
+  };
+  
+  var arrowPosition = {
+    x: (containerInnerSize.width / 2) - (arrowSize.width / 2) + adjustmentOffset.x,
+    y: 1 - arrowSize.height
+  };
+  
+  this.$container.css({ left: adjustedContainerPosition.x + 'px', top: adjustedContainerPosition.y + 'px' });
+  this.$arrow.css({ left: arrowPosition.x + 'px', top: arrowPosition.y + 'px' });
+};
+
 /**
   Presents this popover view stack and transitions it to a visible state.
   @param {Pushpop.View} [view] Optional view to set as the active view before presenting.
 */
-Pushpop.PopoverViewStack.prototype.present = function(view) {
+Pushpop.PopoverViewStack.prototype.present = function(view, targetElement) {
   if (!this.getHidden()) return;
   
   this._hidden = false;
@@ -72,6 +167,8 @@ Pushpop.PopoverViewStack.prototype.present = function(view) {
     view: activeView,
     action: 'popover-present'
   }));
+  
+  if (targetElement) this.setTargetElement(targetElement);
   
   this.$container.addClass('pp-active');
   
@@ -123,7 +220,7 @@ $(function() {
       view = $viewElement[0].view || new Pushpop.View($viewElement);
       
       viewStack = view.getViewStack();
-      if (viewStack) viewStack.present(view);
+      if (viewStack) viewStack.present(view, button.element);
     }
     
     else if ($element.hasClass('pp-dismiss-popover')) {
@@ -159,7 +256,7 @@ $(function() {
       view = $viewElement[0].view || new Pushpop.View($viewElement);
 
       viewStack = view.getViewStack();
-      if (viewStack) viewStack.present(view);
+      if (viewStack) viewStack.present(view, this);
     }
     
     else if ($element.hasClass('pp-dismiss-popover')) {
