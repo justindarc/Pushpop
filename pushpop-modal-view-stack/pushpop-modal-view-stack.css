@@ -22,16 +22,16 @@
       -ms-backface-visibility: hidden;
        -o-backface-visibility: hidden;
           backface-visibility: hidden;
-  -webkit-transform: translate3d(0, 0, 0);
-     -moz-transform:   translate(0, 0);
-      -ms-transform:   translate(0, 0);
-       -o-transform:   translate(0, 0);
-          transform:   translate(0, 0);
   -webkit-text-size-adjust: 100%;
      -moz-text-size-adjust: 100%;
       -ms-text-size-adjust: 100%;
        -o-text-size-adjust: 100%;
           text-size-adjust: 100%;
+  -webkit-transform: translate3d(0, 0, 0);
+     -moz-transform:   translate(0, 0);
+      -ms-transform:   translate(0, 0);
+       -o-transform:   translate(0, 0);
+          transform:   translate(0, 0);
 }
 
 @media only screen and (-webkit-min-device-pixel-ratio: 2) {
