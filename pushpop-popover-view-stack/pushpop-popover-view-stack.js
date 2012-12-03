@@ -22,7 +22,8 @@ Pushpop.PopoverViewStack = function PopoverViewStack(element) {
   var $backdrop = $('<div class="pp-popover-view-stack-backdrop"/>').insertAfter($element);
   
   // Wrap the popover view stack element in a container.
-  var $container = this.$container = $('<div class="pp-popover-view-stack-container"/>').insertAfter($element).append($element);
+  var popoverStyle = $element.data('popoverStyle');
+  var $container = this.$container = $('<div class="pp-popover-view-stack-container' + (popoverStyle ? ' pp-popover-view-stack-container-style-' + popoverStyle : '') + '"/>').insertAfter($element).append($element);
   
   // Insert an arrow element in the container.
   var $arrow = this.$arrow = $('<div class="pp-popover-view-stack-arrow pp-popover-view-stack-arrow-top"/>').appendTo($container);
@@ -108,7 +109,7 @@ Pushpop.PopoverViewStack.prototype.setTargetElement = function(targetElement) {
   };
   
   var containerPosition = {
-    x: targetPosition.x - (containerOuterSize.width / 2),
+    x: targetPosition.x - (containerOuterSize.width / 2) - Pushpop.PopoverViewStack.POPOVER_CONTAINER_MARGIN,
     y: targetPosition.y
   };
   

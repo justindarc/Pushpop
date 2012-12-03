@@ -51,7 +51,7 @@
         
         <div class="pp-view" id="detail-view-root" data-view-title="PopoverViewStack Demo">
           <div class="pp-navigation-bar-button-items">
-            <a class="pp-button pp-button-alignment-left pp-present-popover" href="#popover-view-1">Popover</a>
+            <a class="pp-button pp-button-style-black pp-button-alignment-left pp-present-popover" href="#popover-view-black">Black Popover</a>
             <a class="pp-button pp-button-alignment-right pp-present-popover" href="#popover-view-1">Popover</a>
           </div>
           
@@ -100,6 +100,18 @@
       <br>
       
       <a class="pp-dismiss-popover" href="#">Dismiss Popover</a>
+    </div>
+  </div>
+
+  <div class="pp-popover-view-stack" data-popover-style="black">
+    <div class="pp-navigation-bar" data-tap-to-top="true"></div>
+    
+    <div class="pp-view" id="popover-view-black" data-view-title="Modal View" data-hide-back-bar-button-item="true">
+      <div class="pp-navigation-bar-button-items">
+        <a class="pp-button pp-button-style-black pp-dismiss-popover" href="#">Close</a>
+      </div>
+      
+      <p>This is some popover view with a black color style.</p>
     </div>
   </div>
 </body>
