@@ -1883,6 +1883,10 @@ Pushpop.InlineTextInputTableViewCell = function InlineTextInputTableViewCell(reu
     
     this._value = value;
   });
+  
+  this.$element.bind(!!('ontouchstart' in window) ? 'touchend' : 'mouseup', function(evt) {
+    evt.preventDefault();
+  });
 };
 
 Pushpop.InlineTextInputTableViewCell.prototype = new Pushpop.TableViewCell('pp-inline-text-input-table-view-cell');
