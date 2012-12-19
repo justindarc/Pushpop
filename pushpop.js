@@ -1460,6 +1460,8 @@ $(function() {
     var button = this.button;
     if (!button || !button.getActive()) return;
     
+    evt.preventDefault();
+    
     button.setActive(false);
     button.triggerAction();
   });
