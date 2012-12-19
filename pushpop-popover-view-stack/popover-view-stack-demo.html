@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Pushpop PopoverViewStack Demo</title>
+  <link rel="stylesheet" href="../externals/scrollkit/scrollkit.css">
+  <link rel="stylesheet" href="../pushpop.css">
+  <link rel="stylesheet" href="../pushpop-table-view/pushpop-table-view.css">
+  <link rel="stylesheet" href="../pushpop-split-view/pushpop-split-view.css">
+  <link rel="stylesheet" href="pushpop-popover-view-stack.css">
+  <script src="../jquery-1.8.0.js"></script>
+  <script src="../externals/scrollkit/scrollkit.js"></script>
+  <script src="../pushpop.js"></script>
+  <script src="../pushpop-table-view/pushpop-table-view.js"></script>
+  <script src="../pushpop-split-view/pushpop-split-view.js"></script>
+  <script src="pushpop-popover-view-stack.js"></script>
+  <script>
+    $(function() {
+      $('#custom-cells-table-view').bind(Pushpop.TableView.EventType.DidSelectRowAtIndex, function(evt) {
+        evt.tableView.getViewStack().push($('#master-view-other')[0].view);
+      });
+    });
+  </script>
+</head>
+<body>
+  <div class="pp-view-stack" id="root-view-stack">
+    <div class="pp-split-view">
+      <div class="pp-view-stack pp-split-view-stack-master">
+        <div class="pp-navigation-bar" data-tap-to-top="true"></div>
+        
+        <div class="pp-view sk-scroll-view" id="master-view-root" data-view-title="Master View">
+          <div class="pp-navigation-bar-button-items">
+            <a class="pp-button pp-button-alignment-left pp-present-popover" href="#popover-view-1">Popover</a>
+            <a class="pp-button pp-button-alignment-right pp-present-popover" href="#popover-view-1">Popover</a>
+          </div>
+          
+          <ul class="pp-table-view" id="custom-cells-table-view" data-contains-search-bar="true" data-set-url="../pushpop-table-view/sample-data/big-data-20.json">
+          
+          </ul>
+        </div>
+        
+        <div class="pp-view" id="master-view-other" data-view-title="Other Master">
+          <p>This is some other "Master" view.</p>
+        </div>
+      </div>
+      
+      <div class="pp-view-stack pp-split-view-stack-detail">
+        <div class="pp-navigation-bar" data-tap-to-top="true"></div>
+        
+        <div class="pp-view" id="detail-view-root" data-view-title="PopoverViewStack Demo">
+          <div class="pp-navigation-bar-button-items">
+            <a class="pp-button pp-button-style-black pp-button-alignment-left pp-present-popover" href="#popover-view-black">Black Popover</a>
+            <a class="pp-button pp-button-alignment-right pp-present-popover" href="#popover-view-1">Popover</a>
+          </div>
+          
+          <a class="pp-button pp-push" data-transition="slide-horizontal" href="#detail-view-other">Slide Horizontal</a>
+          <a class="pp-button pp-button-style-red pp-push" data-transition="slide-vertical" href="#detail-view-other">Slide Vertical</a>
+          <a class="pp-button pp-button-style-green pp-push" data-transition="flip-horizontal" href="#detail-view-other">Flip Horizontal</a>
+          <a class="pp-button pp-button-style-black pp-push" data-transition="flip-vertical" href="#detail-view-other">Flip Vertical</a>
+          <a class="pp-button pp-button-style-blue pp-push" data-transition="card-swap" href="#detail-view-other">Card Swap</a>
+          <a class="pp-button pp-push" data-transition="zoom" href="#detail-view-other">Zoom</a>
+          <a class="pp-button pp-push" data-transition="cross-fade" href="#detail-view-other">Cross Fade</a>
+        </div>
+        
+        <div class="pp-view" id="detail-view-other" data-view-title="Other Detail View">
+          <p>This is some other "Detail" view.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="pp-popover-view-stack">
+    <div class="pp-navigation-bar" data-tap-to-top="true"></div>
+    
+    <div class="pp-view" id="popover-view-1" data-view-title="Modal View" data-hide-back-bar-button-item="true">
+      <div class="pp-navigation-bar-button-items">
+        <a class="pp-button pp-dismiss-popover" href="#">Close</a>
+      </div>
+      
+      <p>This is some popover view.</p>
+      
+      <a class="pp-button pp-push" href="#popover-view-2">Go To Another View</a>
+      <a class="pp-button pp-dismiss-popover" href="#">Dismiss Popover</a>
+      
+      <br>
+      <br>
+      
+      <a class="pp-push" href="#popover-view-2">Go To Another View</a>
+      <a class="pp-dismiss-popover" href="#">Dismiss Popover</a>
+    </div>
+    
+    <div class="pp-view" id="popover-view-2" data-view-title="Other Popover">
+      <p>This is some OTHER popover view!!.</p>
+      
+      <a class="pp-button pp-dismiss-popover" href="#">Dismiss Popover</a>
+      
+      <br>
+      <br>
+      
+      <a class="pp-dismiss-popover" href="#">Dismiss Popover</a>
+    </div>
+  </div>
+
+  <div class="pp-popover-view-stack" data-popover-style="black">
+    <div class="pp-navigation-bar" data-tap-to-top="true"></div>
+    
+    <div class="pp-view" id="popover-view-black" data-view-title="Modal View" data-hide-back-bar-button-item="true">
+      <div class="pp-navigation-bar-button-items">
+        <a class="pp-button pp-button-style-black pp-dismiss-popover" href="#">Close</a>
+      </div>
+      
+      <p>This is some popover view with a black color style.</p>
+    </div>
+  </div>
+</body>
+</html>

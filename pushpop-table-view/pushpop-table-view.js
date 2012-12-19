@@ -729,8 +729,8 @@ Pushpop.TableView.prototype = {
     }
     
     var tableViewCell, $selectedCells = $element.children('.pp-table-view-selected-state');
-    for (i = 0, length = $cells.length; i < length; i++) {
-      tableViewCell = $cells[i].tableViewCell;
+    for (i = 0, length = $selectedCells.length; i < length; i++) {
+      tableViewCell = $selectedCells[i].tableViewCell;
       if (tableViewCell.getIndex() === index) {
         tableViewCell.setSelected(false);
         break;

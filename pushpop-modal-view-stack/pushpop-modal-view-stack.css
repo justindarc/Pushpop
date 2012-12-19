@@ -8,6 +8,9 @@
   visibility: hidden;
   opacity: 0;
   pointer-events: none;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.25em;
   -webkit-border-radius: 6px;
      -moz-border-radius: 6px;
           border-radius: 6px;
@@ -19,6 +22,11 @@
       -ms-backface-visibility: hidden;
        -o-backface-visibility: hidden;
           backface-visibility: hidden;
+  -webkit-text-size-adjust: 100%;
+     -moz-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+       -o-text-size-adjust: 100%;
+          text-size-adjust: 100%;
   -webkit-transform: translate3d(0, 0, 0);
      -moz-transform:   translate(0, 0);
       -ms-transform:   translate(0, 0);
