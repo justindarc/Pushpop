@@ -317,6 +317,9 @@ Pushpop.ViewStack.prototype = {
     
     $oldActiveViewElement.addClass('transition');
     $newActiveViewElement.addClass('transition');
+
+    // If the browser doesn't support css transitions, explicitely trigger the transitionend event
+    if (!Modernizr.csstransitions) $newActiveViewElement.trigger('transitionend');
   },
   
   /**
@@ -444,6 +447,9 @@ Pushpop.ViewStack.prototype = {
     
     $oldActiveViewElement.addClass('transition');
     $newActiveViewElement.addClass('transition');
+
+    // If the browser doesn't support css transitions, explicitely trigger the transitionend event
+    if (!Modernizr.csstransitions) $newActiveViewElement.trigger('transitionend');
   },
   
   /**
