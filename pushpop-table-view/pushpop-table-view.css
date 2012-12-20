@@ -615,10 +615,6 @@
   text-align: right;
 }
 
-.pp-value2-table-view-cell > h1::after {
-  content: '\00a0\00a0'; /* Add spacer after the label text */
-}
-
 .pp-value2-table-view-cell > h2 {
   color: #000;
   font-size: 0.9em;
@@ -628,6 +624,10 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.pp-value2-table-view-cell > h2::before {
+  content: '\00a0\00a0'; /* Add spacer before the value text */
 }
 
 .pp-value2-table-view-cell.pp-table-view-selected-state > h1,
@@ -645,7 +645,7 @@
 }
 
 .pp-inline-text-input-table-view-cell > h1,
-.pp-inline-text-input-table-view-cell > input {
+.pp-inline-text-input-table-view-cell > h2 {
   float: left;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: bold;
@@ -661,22 +661,39 @@
   text-align: right;
 }
 
-.pp-inline-text-input-table-view-cell > h1::after {
-  content: '\00a0\00a0'; /* Add spacer after the label text */
+.pp-inline-text-input-table-view-cell > h2 {
+  color: #000;
+  font-size: 0.9em;
+  line-height: 1.2em;
+  position: relative;
+  margin: 3px 0 0;
+  padding: 0;
+  width: 70%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
-.pp-inline-text-input-table-view-cell > input,
-.pp-inline-text-input-table-view-cell > input:focus {  
+.pp-inline-text-input-table-view-cell > h2::before {
+  content: '\00a0\00a0'; /* Add spacer before the value text */
+}
+
+.pp-inline-text-input-table-view-cell input,
+.pp-inline-text-input-table-view-cell input:focus {  
   background: none;
   border: none;
   color: #000;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 1em;
+  font-weight: bold;
+  text-rendering: auto;
   display: inline-block;
-  font-size: 0.9em;
-  line-height: 1em;
-  margin: 3px 0 0;
+  position: absolute;
+  /*line-height: 1em;*/
+  margin: 0;
   padding: 0;
   outline: none;
-  width: 70%;
+  width: 100%;
   -webkit-border-radius: none;
      -moz-border-radius: none;
           border-radius: none;
@@ -691,7 +708,8 @@
 }
 
 .pp-inline-text-input-table-view-cell.pp-table-view-selected-state > h1,
-.pp-inline-text-input-table-view-cell.pp-table-view-selected-state > input {
+.pp-inline-text-input-table-view-cell.pp-table-view-selected-state > h2,
+.pp-inline-text-input-table-view-cell.pp-table-view-selected-state input {
   color: #fff;
 }
 
@@ -721,10 +739,6 @@
   text-align: right;
 }
 
-.pp-text-area-input-table-view-cell > h1::after {
-  content: '\00a0\00a0'; /* Add spacer after the label text */
-}
-
 .pp-text-area-input-table-view-cell > h2 {
   color: #000;
   font-size: 0.9em;
@@ -740,8 +754,7 @@
 }
 
 .pp-text-area-input-table-view-cell > h2::before {
-  content: '\00a0\00a0'; /* Add spacer after the label text */
-  font-size: 0.5em;
+  content: '\00a0\00a0\00a0'; /* Add spacer before the value text */
 }
 
 .pp-text-area-input-table-view-cell.pp-table-view-selected-state > h1,
@@ -801,10 +814,6 @@
   text-align: right;
 }
 
-.pp-select-input-table-view-cell > h1::after {
-  content: '\00a0\00a0'; /* Add spacer after the label text */
-}
-
 .pp-select-input-table-view-cell > h2 {
   color: #000;
   font-size: 0.9em;
@@ -814,6 +823,10 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.pp-select-input-table-view-cell > h2::before {
+  content: '\00a0\00a0'; /* Add spacer before the value text */
 }
 
 .pp-select-input-table-view-cell.pp-table-view-selected-state > h1,
@@ -847,10 +860,6 @@
   text-align: right;
 }
 
-.pp-date-input-table-view-cell > h1::after {
-  content: '\00a0\00a0'; /* Add spacer after the label text */
-}
-
 .pp-date-input-table-view-cell > h2 {
   color: #000;
   font-size: 0.9em;
@@ -860,6 +869,10 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.pp-date-input-table-view-cell > h2::before {
+  content: '\00a0\00a0'; /* Add spacer before the value text */
 }
 
 .pp-date-input-table-view-cell.pp-table-view-selected-state > h1,
@@ -893,10 +906,6 @@
   text-align: right;
 }
 
-.pp-time-input-table-view-cell > h1::after {
-  content: '\00a0\00a0'; /* Add spacer after the label text */
-}
-
 .pp-time-input-table-view-cell > h2 {
   color: #000;
   font-size: 0.9em;
@@ -906,6 +915,10 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.pp-time-input-table-view-cell > h2::before {
+  content: '\00a0\00a0'; /* Add spacer before the value text */
 }
 
 .pp-time-input-table-view-cell.pp-table-view-selected-state > h1,

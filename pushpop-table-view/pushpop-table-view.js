@@ -1902,12 +1902,12 @@ Pushpop.InlineTextInputTableViewCell.prototype.getHtml = function() {
   autoCorrect = !!(autoCorrect !== 'false' && autoCorrect !== 'off');
   var isPassword = (data) ? (data.password || 'false') : 'false';
   isPassword = isPassword !== 'false';
-  return '<h1>' + title + '</h1><input type="' + (isPassword ? 'password' : 'text') + '" name="' + name + '" value="' + value + '" autocapitalize="' + autoCapitalize + '" autocorrect="' + (autoCorrect ? 'on' : 'off') +'"/>';
+  return '<h1>' + title + '</h1><h2><input type="' + (isPassword ? 'password' : 'text') + '" name="' + name + '" value="' + value + '" autocapitalize="' + autoCapitalize + '" autocorrect="' + (autoCorrect ? 'on' : 'off') +'"/></h2>';
 };
 
 Pushpop.InlineTextInputTableViewCell.prototype.didReceiveTap = function() {
   var $element = this.$element;
-  $element.children('input').trigger('focus');
+  $element.find('input').trigger('focus');
   window.setTimeout(function() { $element.removeClass('pp-table-view-selected-state'); }, 100);
 };
 
