@@ -538,14 +538,12 @@ li[class^='pp-icon-'].icon-large:before, li[class*=' pp-icon-'].icon-large:befor
 
 .pp-navigation-bar-style-black {
   background: #000; /* Old browsers */
-  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAqCAIAAAD9HKYrAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAC9JREFUeNpiSE5OZvrz5w8Y//37lyL627dvDCwsLEyMjIxMIACiYRgfnwi1AAEGAJGMOfkUxRXMAAAAAElFTkSuQmCC) repeat-x; /* IE 8 */
   background: -moz-linear-gradient(top,  #636363 0%, #202020 48%, #000 49%, #000 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#636363), color-stop(48%,#202020), color-stop(49%,#000), color-stop(100%,#000)); /* Chrome,Safari4+ */
   background: -webkit-linear-gradient(top,  #636363 0%,#202020 48%,#000 49%,#000 100%); /* Chrome10+,Safari5.1+ */
   background: -o-linear-gradient(top,  #636363 0%,#202020 48%,#000 49%,#000 100%); /* Opera 11.10+ */
   background: -ms-linear-gradient(top,  #636363 0%,#202020 48%,#000 49%,#000 100%); /* IE10+ */
   background: linear-gradient(top,  #636363 0%,#202020 48%,#000 49%,#000 100%); /* W3C */
-  filter: none; /* IE */
 }
 
 .pp-navigation-bar-back-bar-button-item {
