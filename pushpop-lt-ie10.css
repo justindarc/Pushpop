@@ -1,3 +1,9 @@
+.pp-button {
+   /*IE 9 supports border-radius, but we need to use background images for the buttons
+     because it doesn't support complex gradients, so set it to zero, so we can use the same styles for IE 7-9 */
+  border-radius: 0; 
+}
+
 .pp-navigation-bar-style-black {
   background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAqCAIAAAD9HKYrAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAC9JREFUeNpiSE5OZvrz5w8Y//37lyL627dvDCwsLEyMjIxMIACiYRgfnwi1AAEGAJGMOfkUxRXMAAAAAElFTkSuQmCC) repeat-x;
   filter: none;
@@ -49,7 +55,7 @@
 
 .pp-navigation-bar-back-bar-button-item {
   margin-left: 1.5em;
-  padding-right: 0.25em;
+  padding-right: .25em;
   top: -1px;
 }
 
