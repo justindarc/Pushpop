@@ -1509,8 +1509,7 @@ $(function() {
   // TODO: Is this still needed?
   $(document).bind('touchstart', function() {});
   
-  // TODO: Clean up (use new events?)
-  $('a.pp-push').live('click', function(evt) {
+  $(document).delegate('a.pp-push', 'click', function(evt) {
     var $this = $(this);
     if ($this.hasClass('pp-button')) return;
     
@@ -1528,8 +1527,7 @@ $(function() {
     if (viewStack) viewStack.push(view, $this.attr('data-transition'));
   });
   
-  // TODO: Clean up (use new events?)
-  $('a.pp-pop').live('click', function(evt) {
+  $(document).delegate('a.pp-pop', 'click', function(evt) {
     var $this = $(this);
     if ($this.hasClass('pp-button')) return;
     
